@@ -1,0 +1,60 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+group = 'ua.com.juja'
+version = '1.0-SNAPSHOT'
+
+jar {
+    baseName = "gamification"
+    version = "1"
+}
+
+description = "microservices-gamification"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+test.testLogging {
+    events "skipped", "failed"
+    exceptionFormat "SHORT"
+    showStandardStreams = true
+}
+
+test {
+    afterTest { desc, result ->
+        println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
+    }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: "spring-boot-starter-tomcat"
+    }
+    compile("org.springframework.boot:spring-boot-starter-jetty")
+    compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+    compile group: 'commons-lang', name: 'commons-lang', version:'2.6'
+    compile group: 'javax.inject', name: 'javax.inject', version:'1'
+    compile('org.projectlombok:lombok:1.16.10')
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+

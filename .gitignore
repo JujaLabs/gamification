@@ -1,0 +1,12 @@
+### Java template
+*.class
+.idea
+
+# Package Files #
+*.jar
+*.war
+*.ear
+/gamification.iws
+/gamification.ipr
+/gamification.iml
+
