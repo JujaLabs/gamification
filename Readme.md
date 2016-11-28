@@ -1,37 +1,47 @@
  **For using MongoDB in local machine**
  1. Install MongoDB
- 2. In terminal window go to folder \MongoDB\Server\3.2\bin
- 3. Launch the server Mongo with command "mongod"
- 4. In another terminal window go to the same folder \MongoDB\Server\3.2\bin
- 5. Launch the MongoDB shell with command "mongo"
- 6. You can use command "help" to see available commands
- 7. Create user in the admin db
+ 2. Set up the MongoDB environment.
+    MongoDB requires a data directory to store all data. MongoDB’s 
+    default data directory path is \data\db. Before the first usage,
+    you should create this folder. For more information visit 
+    https://docs.mongodb.com/getting-started/shell/installation/
+ 3. In terminal window go to folder \MongoDB\Server\3.2\bin
+ 4. Launch the server Mongo with command _mongod_
+ 5. In another terminal window go to the same folder \MongoDB\Server\3.2\bin
+ 6. Launch the MongoDB shell with command _mongo_
+ 7. You can use command _help_ to see available commands
+ 8. Create user in the admin db
+ 
         use admin
         db.createUser(
         {
             user: "root",
             pwd: "root",
-            roles: [{role: "root", db: "admin"},{role: "userAdminAnyDatabase", db: "admin"}]
-        }
-        )
- 8. Create or switch to the db gamification
-        use gamification
- 9. Create user in the gamification db
-        db.createUser(
-        {
-        user: "root",
-        pwd: "root",
-        roles: [{role: "dbAdmin", db: "gamification"}]
+            roles: [{role: "root", db: "admin"},
+                    {role: "userAdminAnyDatabase", db: "admin"}]
         }
         )
         
- ** For building and launching application**
+ 9. Create or switch to the db gamification
+ 
+        use gamification
+ 10. Create user in the gamification db
+ 
+        db.createUser(
+        {
+            user: "root",
+            pwd: "root",
+            roles: [{role: "dbAdmin", db: "gamification"}]
+        }
+        )
+        
+ **For building and launching application**
  1. In the terminal window go to the project folder,
-    use command "gradle clean build". "BUILD SUCCESSFUL" means that
+    use command _gradle clean build_. "BUILD SUCCESSFUL" means that
     build is successful :)
  2. You can find the built jar-file in gamification/build/libs,
     go to that folder
- 3. Use command "java -jar gamification-1.jar"
+ 3. Use command _java -jar gamification-1.jar_
  4. The string "Started Gamification" means the successful start. 
     Default port – 8080.
  5. Open one of the helper programs to create and test custom HTTP
@@ -40,7 +50,7 @@
  7. Follow the API. Important: the first - to add something,
     then - you can get it.
     
-   ** API**
+ **API**
 
 | url         | /achieve                              |
 |-------------|---------------------------------------|
