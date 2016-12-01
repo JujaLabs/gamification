@@ -10,3 +10,5 @@
 /gamification.ipr
 /gamification.iml
 
+.gradle/
+build/
