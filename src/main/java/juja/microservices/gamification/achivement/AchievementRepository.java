@@ -15,5 +15,4 @@ public class AchievementRepository {
         mongoTemplate.save(achievement);
         return achievement.getId();
     }
-
 }
