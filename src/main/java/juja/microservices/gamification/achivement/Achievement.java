@@ -26,4 +26,18 @@ public class Achievement {
     public String getId() {
         return id;
     }
+
+    public int getPointCount() {
+        return pointCount;
+    }
+
+    public String getUserFromId() {
+
+        return userFromId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
 }
