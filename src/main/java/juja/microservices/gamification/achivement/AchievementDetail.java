@@ -20,15 +20,9 @@ public class AchievementDetail {
     public AchievementDetail(@JsonProperty("userFromId") String userFromId, @JsonProperty("_id") String sendDate,
                              @JsonProperty("description") String description, @JsonProperty("pointCount") int pointCount) {
         this.userFromId = userFromId;
-        this.sendDate = sendDate;
+        this.sendDate = idDateExtractor(sendDate);
         this.description = description;
         this.pointCount = pointCount;
-    }
-    public AchievementDetail (Achievement achievement){
-        this.userFromId = achievement.getUserFromId();
-        this.description = achievement.getDescription();
-        this.pointCount = achievement.getPointCount();
-        this.sendDate = idDateExtractor(achievement.getId());
     }
 
     private String idDateExtractor(String mongoId){

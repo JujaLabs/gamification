@@ -4,8 +4,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
@@ -34,20 +32,35 @@ public class AchievementRepository {
     }
 
     public List<AchievementDetail> getAllAchievementsByUserId(String id) {
-        Query query = new Query(Criteria.where("userToId").is(id));
-        List<Achievement> achievementsList = mongoTemplate.find(query, Achievement.class);
         List<AchievementDetail> result = new ArrayList<>();
-        for (Achievement achievement:achievementsList) {
-            result.add(new AchievementDetail(achievement));
+        DBCollection collection = mongoTemplate.getCollection("achievement");
+        BasicDBObject query = new BasicDBObject("userToId",id);
+        BasicDBObject field = new BasicDBObject();
+
+        field.put("userFromId",1);
+        field.put("description",1);
+        field.put("pointCount",1);
+        field.put("_id",1);
+
+        DBCursor cursor = collection.find(query,field);
+        while (cursor.hasNext()){
+            BasicDBObject object = (BasicDBObject) cursor.next();
+            String userFromId = object.getString("userFromId");
+            String description = object.getString("description");
+            int pointCount = object.getInt("pointCount");
+            String sendDate = object.getString("_id");
+            AchievementDetail achievementDetail =
+                    new AchievementDetail(userFromId,sendDate,description,pointCount);
+            result.add(achievementDetail);
         }
         return result;
     }
-    public List <String> getAllUserToNames(String collectionName){
+    public List <String> getAllUserToIDs(String collectionName){
         Set<String> resultSet = new HashSet<>();
         DBCollection collection = mongoTemplate.getCollection(collectionName);
-        BasicDBObject query = new BasicDBObject();
-        query.put("userToId",1);
-        DBCursor cursor = collection.find(new BasicDBObject(),query);
+        BasicDBObject field = new BasicDBObject();
+        field.put("userToId",1);
+        DBCursor cursor = collection.find(new BasicDBObject(),field);
         while (cursor.hasNext()){
             BasicDBObject object = (BasicDBObject) cursor.next();
             resultSet.add(object.getString("userToId"));

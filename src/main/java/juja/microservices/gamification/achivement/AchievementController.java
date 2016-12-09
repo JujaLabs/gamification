@@ -22,8 +22,7 @@ public class AchievementController {
     @RequestMapping (value = "/users", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<?> sendUsers(){
-        List <String> listOfAllUsers = achievementRepository.getAllUserToNames("achievement");
-
+        List <String> listOfAllUsers = achievementRepository.getAllUserToIDs("achievement");
         List<UserAchievementDetails> result =
                 achievementRepository.getUserAchievementsDetails(listOfAllUsers);
         return ResponseEntity.ok(result);

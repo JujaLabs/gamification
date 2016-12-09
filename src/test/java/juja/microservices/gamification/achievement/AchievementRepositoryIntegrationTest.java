@@ -59,7 +59,7 @@ public class AchievementRepositoryIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/selectAchieventById.json")
     public void getAllUsersIdsTest(){
 
-       List <String> list = achievementRepository.getAllUserToNames("achievement");
+       List <String> list = achievementRepository.getAllUserToIDs("achievement");
        assertEquals(2,list.size());
     }
 }
