@@ -17,9 +17,6 @@ public class AchievementController {
     @Inject
     private AchievementRepository achievementRepository;
 
-    @Inject
-    private UserRepository userRepository;
-
     @RequestMapping(value = "/achieve", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<?> sendAchievement(@RequestBody Achievement achievement) {
@@ -29,8 +26,8 @@ public class AchievementController {
 
     @RequestMapping(value = "/achieve", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<List<?>> getAllUsersWithAchievement(@RequestBody Achievement achievement) {
-        List<?> users = userRepository.getUsersPointsSum(achievement);
+    public ResponseEntity<?> getAllUsersWithAchievement() {
+        List users = achievementRepository.getAllUsersWithAchievement();
 
         if (users.isEmpty()) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
