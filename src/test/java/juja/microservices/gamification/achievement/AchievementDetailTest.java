@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by ВаНо on 09.12.2016.
  */
-public class AchievementDetailUnitTest {
+public class AchievementDetailTest {
     @Test
     public void idDateExtractorTest(){
         String sendDateGiven = "583d8e106c51051a60928d62";

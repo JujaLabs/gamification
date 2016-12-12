@@ -62,4 +62,11 @@ public class AchievementRepositoryIntegrationTest extends BaseIntegrationTest {
        List <String> list = achievementRepository.getAllUserToIDs("achievement");
        assertEquals(2,list.size());
     }
+    @Test
+    @UsingDataSet(locations = "/datasets/selectAchieventById.json")
+    public void getUserAchievementsDetailsTestForAllUsersList(){
+        List<UserAchievementDetails> list =
+                achievementRepository.getUserAchievementsDetails();
+        assertEquals(2,list.size());
+    }
 }

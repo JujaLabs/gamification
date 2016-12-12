@@ -14,6 +14,7 @@ import java.util.Set;
 
 @Repository
 public class AchievementRepository {
+    private static final String COLLECTION_NAME = "achievement";
 
     @Inject
     private MongoTemplate mongoTemplate;
@@ -30,10 +31,19 @@ public class AchievementRepository {
         }
         return resultList;
     }
+    public List<UserAchievementDetails> getUserAchievementsDetails(){
+        List<String> userIds = getAllUserToIDs(COLLECTION_NAME);
+        List<UserAchievementDetails> resultList = new ArrayList<>();
+        for (String userId : userIds) {
+            List <AchievementDetail> details = getAllAchievementsByUserId(userId);
+            resultList.add(new UserAchievementDetails(userId,details));
+        }
+        return resultList;
+    }
 
     public List<AchievementDetail> getAllAchievementsByUserId(String id) {
         List<AchievementDetail> result = new ArrayList<>();
-        DBCollection collection = mongoTemplate.getCollection("achievement");
+        DBCollection collection = mongoTemplate.getCollection(COLLECTION_NAME);
         BasicDBObject query = new BasicDBObject("userToId",id);
         BasicDBObject field = new BasicDBObject();
 
