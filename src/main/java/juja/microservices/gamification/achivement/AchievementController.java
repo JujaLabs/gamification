@@ -32,7 +32,14 @@ public class AchievementController {
         if (users.isEmpty()) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
-
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @RequestMapping (value = "/users", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<?> readUsers(){
+        List<UserAchievementDetails> result =
+            achievementRepository.getUserAchievementsDetails();
+        return ResponseEntity.ok(result);
     }
 }

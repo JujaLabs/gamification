@@ -42,6 +42,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
     }
+<<<<<<< HEAD
 
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
@@ -51,5 +52,14 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
             .contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
+=======
+    @Test
+    @UsingDataSet(locations = "/datasets/selectAchieventById.json")
+    public void sendUsersShouldSendAllUserAchievementDetails()throws Exception{
+        mockMvc.perform(get("/users")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+>>>>>>> gameorigin/achievement
     }
 }

@@ -28,10 +28,18 @@ public class Achievement {
     }
 
     public String getUserToId() {
-        return this.userToId;
+        return userToId;
     }
 
     public int getPointCount() {
-        return this.pointCount;
+        return pointCount;
+    }
+
+    public String getUserFromId() {
+        return userFromId;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
