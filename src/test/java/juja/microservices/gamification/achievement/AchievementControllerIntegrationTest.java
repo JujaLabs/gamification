@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,6 +39,14 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/achieve")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+    }
+    @Test
+    @UsingDataSet(locations = "/datasets/selectAchieventById.json")
+    public void sendUsersShouldSendAllUserAchievementDetails()throws Exception{
+        mockMvc.perform(get("/users")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
     }

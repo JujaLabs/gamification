@@ -1,0 +1,22 @@
+{
+  "achievement": [
+    {
+      "userFromId":"sasha",
+      "userToId":"ira",
+      "pointCount":2,
+      "description":"good work"
+    },
+    {
+      "userFromId":"misha",
+      "userToId":"ira",
+      "pointCount":1,
+      "description":"good work"
+    },
+    {
+      "userFromId":"misha",
+      "userToId":"sasha",
+      "pointCount":1,
+      "description":"good work"
+    }
+  ]
+}
