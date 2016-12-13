@@ -27,17 +27,19 @@ public class Achievement {
         return id;
     }
 
+    public String getUserToId() {
+        return userToId;
+    }
+
     public int getPointCount() {
         return pointCount;
     }
 
     public String getUserFromId() {
-
         return userFromId;
     }
 
     public String getDescription() {
         return description;
     }
-
 }
