@@ -1,4 +1,4 @@
-package juja.microservices.gamification.achivement;
+package juja.microservices.gamification.Entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,7 +10,7 @@ public class UserPointsSum {
 
     @JsonCreator
     public UserPointsSum(@JsonProperty("userToId") String userToId,
-        @JsonProperty("pointCount") int pointCount) {
+                         @JsonProperty("pointCount") int pointCount) {
         this.userToId = userToId;
         this.pointCount = pointCount;
     }

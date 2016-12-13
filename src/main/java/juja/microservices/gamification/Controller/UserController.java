@@ -1,33 +1,29 @@
-package juja.microservices.gamification.achivement;
+package juja.microservices.gamification.Controller;
 
-import java.util.List;
-import javax.inject.Inject;
+import juja.microservices.gamification.DAO.AchievementRepository;
+import juja.microservices.gamification.Entity.UserAchievementDetails;
+import juja.microservices.gamification.Entity.UserPointsSum;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.inject.Inject;
+import java.util.List;
+
 @RestController
 @RequestMapping(consumes = "application/json", produces = "application/json")
-public class AchievementController {
+public class UserController {
 
     @Inject
     private AchievementRepository achievementRepository;
 
-    @RequestMapping(value = "/achieve", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<?> sendAchievement(@RequestBody Achievement achievement) {
-        String achievementId = achievementRepository.addAchievement(achievement);
-        return ResponseEntity.ok(achievementId);
-    }
-
-    @RequestMapping(value = "/achieve", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/achieveSum", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<?> getAllUsersWithAchievement() {
-        List users = achievementRepository.getAllUsersWithAchievement();
+        List<UserPointsSum> users = achievementRepository.getAllUsersWithAchievement();
 
         if (users.isEmpty()) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -35,11 +31,11 @@ public class AchievementController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @RequestMapping (value = "/users", method = RequestMethod.GET)
+    @RequestMapping (value = "/user/achieveDetails", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<?> readUsers(){
+    public ResponseEntity<?> getUsersWithAchievementDetails(){
         List<UserAchievementDetails> result =
-            achievementRepository.getUserAchievementsDetails();
+                achievementRepository.getUserAchievementsDetails();
         return ResponseEntity.ok(result);
     }
 }

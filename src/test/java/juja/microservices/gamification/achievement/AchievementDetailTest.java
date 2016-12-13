@@ -1,12 +1,12 @@
 package juja.microservices.gamification.achievement;
 
-import juja.microservices.gamification.achivement.AchievementDetail;
+import juja.microservices.gamification.Entity.AchievementDetail;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * Created by ВаНо on 09.12.2016.
+ * @author ВаНо
  */
 public class AchievementDetailTest {
     @Test
