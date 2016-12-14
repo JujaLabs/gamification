@@ -4,20 +4,18 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import javax.inject.Inject;
-
 import juja.microservices.gamification.Entity.Achievement;
 import juja.microservices.gamification.Entity.AchievementDetail;
-import juja.microservices.gamification.Entity.UserPointsSum;
 import juja.microservices.gamification.Entity.UserAchievementDetails;
+import juja.microservices.gamification.Entity.UserPointsSum;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Repository;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Repository
 public class AchievementRepository {
@@ -91,35 +89,13 @@ public class AchievementRepository {
     }
 
     public List<UserPointsSum> getAllUsersWithAchievement() {
-        List<UserPointsSum> result = new ArrayList<>();
-        DBCollection collection = mongoTemplate.getCollection(COLLECTION_NAME);
-
-        BasicDBObject query = new BasicDBObject();
-        BasicDBObject field = new BasicDBObject();
-
-        field.put("userToId", 1);
-        field.put("pointCount", 1);
-
-        DBCursor cursor = collection.find(query, field);
-        Map<String, Integer> map = new HashMap<>();
-        while (cursor.hasNext()) {
-            BasicDBObject object = (BasicDBObject) cursor.next();
-            String userToId = object.getString("userToId");
-            int pointCount = object.getInt("pointCount");
-
-            if (map.containsKey(userToId)) {
-                map.put(userToId, map.get(userToId) + pointCount);
-            } else {
-                map.put(userToId, pointCount);
-            }
-        }
-
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            String user = entry.getKey();
-            Integer pointSum = entry.getValue();
-            UserPointsSum userPointsSum = new UserPointsSum(user, pointSum);
-            result.add(userPointsSum);
-        }
-        return result;
+        Aggregation aggregation = Aggregation.newAggregation(
+            Aggregation.group("userToId")
+                .first("userToId").as("userToId")
+                .sum("pointCount").as("pointCount")
+        );
+        AggregationResults<UserPointsSum> result =
+            mongoTemplate.aggregate(aggregation, Achievement.class, UserPointsSum.class);
+        return result.getMappedResults();
     }
 }
