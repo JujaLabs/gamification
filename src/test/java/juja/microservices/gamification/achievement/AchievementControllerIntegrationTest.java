@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Created by danil.kuznetsov on 01/12/16.
+ * @author danil.kuznetsov
  */
 @RunWith(SpringRunner.class)
 public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
@@ -32,7 +32,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     @ShouldMatchDataSet(location = "/datasets/addNewAchievement-expected.json")
-    public void sendAchievementShouldAddNewAchievementAndReturnJson() throws Exception {
+    public void createAchievementShouldAddNewAchievementAndReturnJson() throws Exception {
         String jsonContentRequest = "{\"userFromId\":\"sasha\",\"userToId\":\"ira\"," +
                 "\"pointCount\":2,\"description\":\"good work\"}";
 
@@ -45,21 +45,19 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
-    public void getListAllUsersWithAchievementAndReturnJson() throws Exception {
-
-        mockMvc.perform(get("/achieve")
+    public void getAllUsersWithAchievementAndReturnJson() throws Exception {
+        mockMvc.perform(get("/user/achieveSum")
             .contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
     }
 
     @Test
-    @UsingDataSet(locations = "/datasets/selectAchieventById.json")
-    public void sendUsersShouldSendAllUserAchievementDetails()throws Exception{
-        mockMvc.perform(get("/users")
+    @UsingDataSet(locations = "/datasets/selectAchievementById.json")
+    public void getUsersAchievementDetailsAndReturnJson()throws Exception{
+        mockMvc.perform(get("/user/achieveDetails")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
-
     }
 }

@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import static juja.microservices.gamification.GamificationTestConfig.TEST_DATABASE_NAME;
 
 /**
- * Created by danil.kuznetsov on 01/12/16.
+ * @author danil.kuznetsov
  */
 @SpringBootTest(classes = {GamificationTestConfig.class, Gamification.class})
 public class BaseIntegrationTest {

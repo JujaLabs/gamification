@@ -1,4 +1,4 @@
-package juja.microservices.gamification.achivement;
+package juja.microservices.gamification.DAO;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -8,6 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+
+import juja.microservices.gamification.Entity.Achievement;
+import juja.microservices.gamification.Entity.AchievementDetail;
+import juja.microservices.gamification.Entity.UserPointsSum;
+import juja.microservices.gamification.Entity.UserAchievementDetails;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -36,7 +41,7 @@ public class AchievementRepository {
     }
 
     public List<UserAchievementDetails> getUserAchievementsDetails(){
-        List<String> userIds = getAllUserToIDs(COLLECTION_NAME);
+        List<String> userIds = getAllUserToIDs();
         List<UserAchievementDetails> resultList = new ArrayList<>();
         for (String userId : userIds) {
             List <AchievementDetail> details = getAllAchievementsByUserId(userId);
@@ -70,9 +75,9 @@ public class AchievementRepository {
         return result;
     }
 
-    public List<String> getAllUserToIDs(String collectionName){
+    public List<String> getAllUserToIDs(){
         Set<String> resultSet = new HashSet<>();
-        DBCollection collection = mongoTemplate.getCollection(collectionName);
+        DBCollection collection = mongoTemplate.getCollection(COLLECTION_NAME);
         BasicDBObject field = new BasicDBObject();
         field.put("userToId",1);
         DBCursor cursor = collection.find(new BasicDBObject(),field);
@@ -87,7 +92,7 @@ public class AchievementRepository {
 
     public List<UserPointsSum> getAllUsersWithAchievement() {
         List<UserPointsSum> result = new ArrayList<>();
-        DBCollection collection = mongoTemplate.getCollection("achievement");
+        DBCollection collection = mongoTemplate.getCollection(COLLECTION_NAME);
 
         BasicDBObject query = new BasicDBObject();
         BasicDBObject field = new BasicDBObject();
@@ -110,7 +115,7 @@ public class AchievementRepository {
         }
 
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            String user = entry.getKey().toString();
+            String user = entry.getKey();
             Integer pointSum = entry.getValue();
             UserPointsSum userPointsSum = new UserPointsSum(user, pointSum);
             result.add(userPointsSum);

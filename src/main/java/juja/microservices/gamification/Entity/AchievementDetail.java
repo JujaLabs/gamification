@@ -1,4 +1,4 @@
-package juja.microservices.gamification.achivement;
+package juja.microservices.gamification.Entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by ВаНо on 08.12.2016.
+ * @author ВаНо
  */
 public class AchievementDetail {
 

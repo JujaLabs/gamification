@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import javax.inject.Inject;
 
 /**
- * Created by danil.kuznetsov on 01/12/16.
+ * @author danil.kuznetsov
  */
 @Configuration
 public class GamificationTestConfig extends AbstractMongoConfiguration {
@@ -24,7 +24,6 @@ public class GamificationTestConfig extends AbstractMongoConfiguration {
         return new Fongo("inMemoryMongoClient").getMongo();
     }
 
-
     @Override
     protected String getDatabaseName() {
         return TEST_DATABASE_NAME;
@@ -35,5 +34,4 @@ public class GamificationTestConfig extends AbstractMongoConfiguration {
     public MongoClient mongo() {
         return mongoClient;
     }
-
 }

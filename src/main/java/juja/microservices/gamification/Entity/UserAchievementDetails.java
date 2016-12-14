@@ -1,12 +1,11 @@
-package juja.microservices.gamification.achivement;
+package juja.microservices.gamification.Entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 /**
- * Created by ВаНо on 08.12.2016.
+ * @author ВаНо
  */
 public class UserAchievementDetails {
     private final String userId;
