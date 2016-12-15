@@ -2,19 +2,18 @@ package juja.microservices.gamification.achievement;
 
 import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import juja.microservices.gamification.BaseIntegrationTest;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringRunner;
 import juja.microservices.gamification.Entity.Achievement;
 import juja.microservices.gamification.Entity.AchievementDetail;
 import juja.microservices.gamification.DAO.AchievementRepository;
 import juja.microservices.gamification.Entity.UserPointsSum;
 import juja.microservices.gamification.Entity.UserAchievementDetails;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -51,12 +50,14 @@ public class AchievementRepositoryIntegrationTest extends BaseIntegrationTest {
     public void shouldReturnAllUsersNameAndSumAchievements() {
         List<UserPointsSum> list = achievementRepository.getAllUsersWithAchievement();
 
-        list.get(0).getUserToId().equals("peter");
+        String expectedFirstName = "peter";
         int expectedSumPointUserPeter = 6;
+        assertEquals(expectedFirstName, list.get(0).getUserToId());
         assertEquals(expectedSumPointUserPeter, list.get(0).getPointCount());
 
-        list.get(1).getUserToId().equals("max");
+        String expectedSecondName = "max";
         int expectedSumPointUserMax = 4;
+        assertEquals(expectedSecondName, list.get(1).getUserToId());
         assertEquals(expectedSumPointUserMax, list.get(1).getPointCount());
     }
 

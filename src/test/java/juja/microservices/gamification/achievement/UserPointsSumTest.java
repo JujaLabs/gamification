@@ -8,7 +8,7 @@ import static org.junit.Assert.assertNotNull;
 public class UserPointsSumTest {
 
     @Test
-    public void shouldCreateAuthFromColonSeparated() {
+    public void shouldReturnUserAchievement() {
         String name = "johnny";
         int pointSum = 10;
 

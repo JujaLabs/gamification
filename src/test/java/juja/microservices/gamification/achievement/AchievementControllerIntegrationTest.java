@@ -47,9 +47,9 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
     public void getAllUsersWithAchievementAndReturnJson() throws Exception {
         mockMvc.perform(get("/user/achieveSum")
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
     }
 
     @Test

@@ -2,8 +2,6 @@ package juja.microservices.gamification.Entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import juja.microservices.gamification.Entity.AchievementDetail;
-
 import java.util.List;
 
 /**
