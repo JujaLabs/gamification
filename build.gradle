@@ -58,5 +58,7 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("com.github.fakemongo:fongo:2.0.10")
     testCompile("com.lordofthejars:nosqlunit-mongodb:0.8.1")
+    testCompile 'org.assertj:assertj-core:3.6.1'
+    testCompile 'io.rest-assured:rest-assured:3.0.1'
 }
 
