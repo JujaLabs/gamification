@@ -3,11 +3,6 @@ package juja.microservices.gamification.DAO;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.inject.Inject;
 import juja.microservices.gamification.Entity.Achievement;
 import juja.microservices.gamification.Entity.AchievementDetail;
 import juja.microservices.gamification.Entity.UserAchievementDetails;
@@ -16,6 +11,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Repository;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class AchievementRepository {
@@ -74,18 +73,7 @@ public class AchievementRepository {
     }
 
     public List<String> getAllUserToIDs(){
-        Set<String> resultSet = new HashSet<>();
-        DBCollection collection = mongoTemplate.getCollection(COLLECTION_NAME);
-        BasicDBObject field = new BasicDBObject();
-        field.put("userToId",1);
-        DBCursor cursor = collection.find(new BasicDBObject(),field);
-        while (cursor.hasNext()){
-            BasicDBObject object = (BasicDBObject) cursor.next();
-            resultSet.add(object.getString("userToId"));
-        }
-        List <String> resultList = new ArrayList<>();
-        resultList.addAll(resultSet);
-        return resultList;
+        return mongoTemplate.getCollection(COLLECTION_NAME).distinct("userToId");
     }
 
     public List<UserPointsSum> getAllUsersWithAchievement() {
