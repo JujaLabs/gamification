@@ -10,6 +10,8 @@ import juja.microservices.gamification.Entity.UserPointsSum;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
@@ -70,6 +72,33 @@ public class AchievementRepository {
             result.add(achievementDetail);
         }
         return result;
+    }
+    public List<AchievementDetail> getAllAchievementsByUserIdAggregation(String id) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("userToId").is(id)),
+                Aggregation.project(
+                        Aggregation.bind("userFromId","userFromId")
+                                .and("description","description")
+                                .and("pointCount","pointCount")
+                                .and("sendDate","id")
+                ));
+        AggregationResults<AchievementDetail> results =
+                mongoTemplate.aggregate(aggregation,Achievement.class,AchievementDetail.class);
+        return results.getMappedResults();
+    }
+    public List<AchievementDetail> getAllAchievementsByUserIdSimpleWrapping(String id) {
+        List<Achievement> list = mongoTemplate.find(new Query(Criteria.where("userToId").is(id)),Achievement.class);
+        List<AchievementDetail> listDet = new ArrayList<>();
+        for (Achievement a : list) {
+            AchievementDetail detail = new AchievementDetail(
+                    a.getUserFromId(),
+                    a.getId(),
+                    a.getDescription(),
+                    a.getPointCount()
+            );
+            listDet.add(detail);
+        }
+            return listDet;
     }
 
     public List<String> getAllUserToIDs(){

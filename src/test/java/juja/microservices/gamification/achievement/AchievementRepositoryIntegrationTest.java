@@ -2,18 +2,19 @@ package juja.microservices.gamification.achievement;
 
 import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import juja.microservices.gamification.BaseIntegrationTest;
+import juja.microservices.gamification.DAO.AchievementRepository;
+import juja.microservices.gamification.Entity.Achievement;
+import juja.microservices.gamification.Entity.AchievementDetail;
+import juja.microservices.gamification.Entity.UserAchievementDetails;
+import juja.microservices.gamification.Entity.UserPointsSum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-import juja.microservices.gamification.Entity.Achievement;
-import juja.microservices.gamification.Entity.AchievementDetail;
-import juja.microservices.gamification.DAO.AchievementRepository;
-import juja.microservices.gamification.Entity.UserPointsSum;
-import juja.microservices.gamification.Entity.UserAchievementDetails;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
