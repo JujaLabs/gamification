@@ -33,20 +33,34 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    public void createAchievementShouldCheckReturnedJson() throws Exception {
+
+        String jsonContentRequest = "{\"userFromId\":\"sasha\",\"userToId\":\"ira\"," +
+                "\"pointCount\":2,\"description\":\"good work\"}";
+
+        String regExIdValidator = "\\{\"id\":\"[0-9a-zA-Z]{24}\"\\}";
+
+        String idJsonAsString = mockMvc.perform(post("/achieve")
+                                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                                .content(jsonContentRequest))
+                                .andReturn()
+                                .getResponse()
+                                .getContentAsString();
+
+        Assert.assertTrue(Pattern.matches(regExIdValidator,idJsonAsString));
+    }
+    @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     @ShouldMatchDataSet(location = "/datasets/addNewAchievement-expected.json")
     public void createAchievementShouldAddNewAchievementAndReturnJson() throws Exception {
         String jsonContentRequest = "{\"userFromId\":\"sasha\",\"userToId\":\"ira\"," +
                 "\"pointCount\":2,\"description\":\"good work\"}";
 
-        String idJsonAsString = mockMvc.perform(post("/achieve")
+        mockMvc.perform(post("/achieve")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        Assert.assertTrue(Pattern.matches("\\{\"id\":\"[0-9a-zA-Z]{24}\"\\}",idJsonAsString));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
     }
 
     @Test
