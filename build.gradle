@@ -54,9 +54,14 @@ dependencies {
     compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
     compile group: 'javax.inject', name: 'javax.inject', version: '1'
     compile('org.projectlombok:lombok:1.16.10')
+    compile 'net.minidev:json-smart:2.2.1'
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("com.github.fakemongo:fongo:2.0.10")
     testCompile("com.lordofthejars:nosqlunit-mongodb:0.8.1")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.3'
 }
 
