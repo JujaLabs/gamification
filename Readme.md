@@ -51,17 +51,5 @@
     then - you can get it.
     
  **API**
-
-| url         | /achieve                              |
-|-------------|---------------------------------------|
-| method      | post                                  |
-| ------------|---------------------------------------|
-| body        | {                                     |
-|             |   "userFromId": "sasha",              |
-|             |   "userToId": "ira",                  |
-|             |   "pointCount": 2,                    |
-|             |   "description": "good work"          |
-|             | }                                     |
-|-------------|---------------------------------------|
-| description | to add an achievement and receive the |
-|             | response with the achievement id      |
+ 
+[REST APIs](https://github.com/JuniorsJava/gamification/wiki/REST-APIs)
