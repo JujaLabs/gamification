@@ -52,9 +52,9 @@ public class IntegrationTestValidationJson extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")
     public void addAchievementIsDatabaseExistingAchievementShouldReturnValidJson() throws Exception {
-        String expectedJson = "[{\"userToId\":\"sasha\",\"pointCount\":6},{\"userToId\":\"ira\",\"pointCount\":3}]";
+        String expectedJson = "[{\"userToId\":\"sasha\",\"pointCount\":5},{\"userToId\":\"ira\",\"pointCount\":3}]";
         String jsonContentRequest = "{\"userFromId\":\"ira\",\"userToId\":\"sasha\"," +
-            "\"pointCount\":5,\"description\":\"good work\"}";
+            "\"pointCount\":4,\"description\":\"good work\"}";
 
         mockMvc.perform(post("/achieve")
             .contentType(APPLICATION_JSON_UTF8)
@@ -73,9 +73,10 @@ public class IntegrationTestValidationJson extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
     public void addNewAchievementIsDatabaseExistingAchievementShouldAndReturnValidJson() throws Exception {
-        String expectedJson = "[{\"userToId\":\"peter\",\"pointCount\":6},{\"userToId\":\"sasha\",\"pointCount\":5},{\"userToId\":\"max\",\"pointCount\":4}]";
+        String expectedJson = "[{\"userToId\":\"peter\",\"pointCount\":6},{\"userToId\":\"sasha\",\"pointCount\":3}," +
+            "{\"userToId\":\"max\",\"pointCount\":4}]";
         String jsonContentRequest = "{\"userFromId\":\"ira\",\"userToId\":\"sasha\"," +
-            "\"pointCount\":5,\"description\":\"good work\"}";
+            "\"pointCount\":3,\"description\":\"good work\"}";
 
         mockMvc.perform(post("/achieve")
             .contentType(APPLICATION_JSON_UTF8)
@@ -89,5 +90,39 @@ public class IntegrationTestValidationJson extends BaseIntegrationTest {
 
         String content = result.getResponse().getContentAsString();
         assertEquals(expectedJson, content);
+    }
+
+
+    @Test(expected = Error.class)
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void checkErrorAddInvalidAchievementIsEmptyDatabase() throws Exception {
+        String jsonInvalidContentRequest = "{\"userFromId\":,\"userToId\":\"ira\"," +
+            "\"pointCount\":5,:\"good work\"}";
+
+        mockMvc.perform(post("/achieve")
+            .contentType(APPLICATION_JSON_UTF8)
+            .content(jsonInvalidContentRequest))
+            .andExpect(content().contentType(APPLICATION_JSON_UTF8));
+    }
+
+    @Test(expected = Error.class)
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void checkErrorAddAchievementIsEmptyDatabase() throws Exception {
+        String expectedInvalidJson = "[{\"userToId\":,\"pointCount\":6},{\"userToId\":\"sasha\",:3},{\"userToId\":ax}]";
+        String jsonContentRequest = "{\"userFromId\":\"ira\",\"userToId\":\"sasha\"," +
+            "\"pointCount\":3,\"description\":\"good work\"}";
+
+        mockMvc.perform(post("/achieve")
+            .contentType(APPLICATION_JSON_UTF8)
+            .content(jsonContentRequest))
+            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
+
+        MvcResult result = mockMvc
+            .perform(MockMvcRequestBuilders.get("/user/achieveSum").contentType(APPLICATION_JSON_UTF8))
+            .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        assertEquals(expectedInvalidJson, content);
     }
 }
