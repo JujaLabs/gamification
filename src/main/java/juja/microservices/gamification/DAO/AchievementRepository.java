@@ -3,11 +3,6 @@ package juja.microservices.gamification.DAO;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.inject.Inject;
 import juja.microservices.gamification.Entity.Achievement;
 import juja.microservices.gamification.Entity.AchievementDetail;
 import juja.microservices.gamification.Entity.UserAchievementDetails;
@@ -15,7 +10,13 @@ import juja.microservices.gamification.Entity.UserPointsSum;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class AchievementRepository {
@@ -72,20 +73,36 @@ public class AchievementRepository {
         }
         return result;
     }
+    public List<AchievementDetail> getAllAchievementsByUserIdAggregation(String id) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("userToId").is(id)),
+                Aggregation.project(
+                        Aggregation.bind("userFromId","userFromId")
+                                .and("description","description")
+                                .and("pointCount","pointCount")
+                                .and("sendDate","id")
+                ));
+        AggregationResults<AchievementDetail> results =
+                mongoTemplate.aggregate(aggregation,Achievement.class,AchievementDetail.class);
+        return results.getMappedResults();
+    }
+    public List<AchievementDetail> getAllAchievementsByUserIdSimpleWrapping(String id) {
+        List<Achievement> list = mongoTemplate.find(new Query(Criteria.where("userToId").is(id)),Achievement.class);
+        List<AchievementDetail> listDet = new ArrayList<>();
+        for (Achievement a : list) {
+            AchievementDetail detail = new AchievementDetail(
+                    a.getUserFromId(),
+                    a.getId(),
+                    a.getDescription(),
+                    a.getPointCount()
+            );
+            listDet.add(detail);
+        }
+            return listDet;
+    }
 
     public List<String> getAllUserToIDs(){
-        Set<String> resultSet = new HashSet<>();
-        DBCollection collection = mongoTemplate.getCollection(COLLECTION_NAME);
-        BasicDBObject field = new BasicDBObject();
-        field.put("userToId",1);
-        DBCursor cursor = collection.find(new BasicDBObject(),field);
-        while (cursor.hasNext()){
-            BasicDBObject object = (BasicDBObject) cursor.next();
-            resultSet.add(object.getString("userToId"));
-        }
-        List <String> resultList = new ArrayList<>();
-        resultList.addAll(resultSet);
-        return resultList;
+        return mongoTemplate.getCollection(COLLECTION_NAME).distinct("userToId");
     }
 
     public List<UserPointsSum> getAllUsersWithAchievement() {
