@@ -31,7 +31,7 @@ public class AchievementValidationJsonIntegrationTest extends BaseIntegrationTes
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    public void addAchievementIsEmptyDatabaseShouldReturnValidJson() throws Exception {
+    public void addAchievementInEmptyDatabaseShouldReturnValidJson() throws Exception {
         String expectedJson =
             "[{\"userToId\":\"ira\",\"pointCount\":5}]";
         String jsonContentRequest =
@@ -48,7 +48,7 @@ public class AchievementValidationJsonIntegrationTest extends BaseIntegrationTes
 
     @Test
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")
-    public void addAchievementIsDatabaseExistingAchievementShouldReturnValidJson() throws Exception {
+    public void addAchievementInDatabaseWhereinExistingAchievementShouldReturnValidJson() throws Exception {
         String expectedJson =
             "[{\"userToId\":\"sasha\",\"pointCount\":5}," +
                 "{\"userToId\":\"ira\",\"pointCount\":3}]";
@@ -66,7 +66,7 @@ public class AchievementValidationJsonIntegrationTest extends BaseIntegrationTes
 
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
-    public void addNewAchievementIsDatabaseExistingAchievementShouldAndReturnValidJson() throws Exception {
+    public void addNewAchievementInDatabaseWhereinExistingAchievementShouldReturnValidJson() throws Exception {
         String expectedJson =
             "[{\"userToId\":\"peter\",\"pointCount\":6}," +
                 "{\"userToId\":\"sasha\",\"pointCount\":3}," +
@@ -85,7 +85,7 @@ public class AchievementValidationJsonIntegrationTest extends BaseIntegrationTes
 
     @Test(expected = Error.class)
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    public void checkErrorAddInvalidAchievementIsEmptyDatabase() throws Exception {
+    public void checkErrorAddInvalidAchievementInEmptyDatabase() throws Exception {
         String jsonInvalidContentRequest =
             "{\"userId\":,\"userId\":\"ira\",\"pointCount\":5,:\"good work\"}";
 
@@ -94,7 +94,7 @@ public class AchievementValidationJsonIntegrationTest extends BaseIntegrationTes
 
     @Test(expected = Error.class)
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    public void checkErrorAddAchievementIsEmptyDatabase() throws Exception {
+    public void checkErrorAddAchievementInEmptyDatabaseCompareInvalidJson() throws Exception {
         String expectedInvalidJson =
             "[{\"userToId\":,Count\":6},{\"userToId\":},{\"userToId\":max}]";
         String jsonContentRequest =
@@ -111,7 +111,7 @@ public class AchievementValidationJsonIntegrationTest extends BaseIntegrationTes
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    public void addNullAchievementIsEmptyDatabaseShouldReturnValidJson() throws Exception {
+    public void addNullAchievementInEmptyDatabaseShouldReturnValidJson() throws Exception {
         String expectedJson =
             "[{\"userToId\":\"ira\",\"pointCount\":0}]";
         String jsonContentRequest =
@@ -128,7 +128,7 @@ public class AchievementValidationJsonIntegrationTest extends BaseIntegrationTes
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    public void addMinusAchievementIsEmptyDatabaseShouldReturnValidJson() throws Exception {
+    public void addMinusAchievementInEmptyDatabaseShouldReturnValidJson() throws Exception {
         String expectedJson =
             "[{\"userToId\":\"ira\",\"pointCount\":-15}]";
         String jsonContentRequest =
@@ -145,7 +145,7 @@ public class AchievementValidationJsonIntegrationTest extends BaseIntegrationTes
 
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
-    public void addAndMinusAchievementIsDatabaseExistingAchievementShouldAndReturnValidJson() throws Exception {
+    public void addAndMinusAchievementInDatabaseWhereinExistingAchievementShouldReturnValidJson() throws Exception {
         String expectedJson =
             "[{\"userToId\":\"peter\",\"pointCount\":5}," +
                 "{\"userToId\":\"max\",\"pointCount\":4}," +
