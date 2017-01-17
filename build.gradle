@@ -4,7 +4,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE")
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE'
     }
 }
 
@@ -47,21 +47,20 @@ test {
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web") {
-        exclude module: "spring-boot-starter-tomcat"
+        exclude module: 'spring-boot-starter-tomcat'
     }
-    compile("org.springframework.boot:spring-boot-starter-jetty")
-    compile("org.springframework.boot:spring-boot-starter-data-mongodb")
-    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
-    compile group: 'javax.inject', name: 'javax.inject', version: '1'
-    compile('org.projectlombok:lombok:1.16.10')
+    compile 'org.springframework.boot:spring-boot-starter-jetty'
+    compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    compile 'commons-lang:commons-lang:2.6'
+    compile 'javax.inject:javax.inject:1'
+    compile 'org.projectlombok:lombok:1.16.10'
     compile 'net.minidev:json-smart:2.2.1'
 
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-    testCompile("com.github.fakemongo:fongo:2.0.10")
-    testCompile("com.lordofthejars:nosqlunit-mongodb:0.8.1")
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'com.github.fakemongo:fongo:2.0.10'
+    testCompile 'com.lordofthejars:nosqlunit-mongodb:0.8.1'
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '3.3'
 }
-
