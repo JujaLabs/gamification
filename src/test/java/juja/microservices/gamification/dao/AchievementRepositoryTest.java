@@ -1,19 +1,17 @@
-package juja.microservices.gamification.achievement;
+package juja.microservices.gamification.dao;
 
 import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import juja.microservices.gamification.BaseIntegrationTest;
-import juja.microservices.gamification.DAO.AchievementRepository;
-import juja.microservices.gamification.Entity.Achievement;
-import juja.microservices.gamification.Entity.AchievementDetail;
-import juja.microservices.gamification.Entity.UserAchievementDetails;
-import juja.microservices.gamification.Entity.UserPointsSum;
+import juja.microservices.gamification.integration.BaseIntegrationTest;
+import juja.microservices.gamification.entity.Achievement;
+import juja.microservices.gamification.entity.AchievementType;
+import juja.microservices.gamification.entity.UserAchievementDetails;
+import juja.microservices.gamification.entity.UserPointsSum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,7 +22,7 @@ import static org.junit.Assert.assertEquals;
  * @author danil.kuznetsov
  */
 @RunWith(SpringRunner.class)
-public class AchievementRepositoryIntegrationTest extends BaseIntegrationTest {
+public class AchievementRepositoryTest extends BaseIntegrationTest {
 
     @Inject
     private AchievementRepository achievementRepository;
@@ -33,7 +31,7 @@ public class AchievementRepositoryIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     @ShouldMatchDataSet(location = "/datasets/addNewAchievement-expected.json")
     public void shouldAddNewAchievementAndReturnNotNullId() {
-        Achievement testAchievement = new Achievement("sasha", "ira", 2, "good work");
+        Achievement testAchievement = new Achievement("sasha", "ira", 2, "good work", AchievementType.DAILY);
 
         String actualId = achievementRepository.addAchievement(testAchievement);
         assertThat(actualId,notNullValue());
@@ -65,19 +63,8 @@ public class AchievementRepositoryIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")
     public void getAllAchievementsByUserIdTest(){
-        List<AchievementDetail> list = achievementRepository.getAllAchievementsByUserId("ira");
+        List<Achievement> list = achievementRepository.getAllAchievementsByUserId("ira");
         assertEquals(2,list.size());
-    }
-
-    @Test
-    @UsingDataSet(locations = "/datasets/selectAchievementById.json")
-    public void getUserAchievementsDetailsTest(){
-        List <String> usersList = new ArrayList<>();
-        usersList.add("ira");
-        usersList.add("sasha");
-        usersList.add("peter");
-        List<UserAchievementDetails> list = achievementRepository.getUserAchievementsDetails(usersList);
-        assertEquals(3,list.size());
     }
 
     @Test

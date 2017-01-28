@@ -1,8 +1,7 @@
-package juja.microservices.gamification.achievement;
+package juja.microservices.gamification.integration;
 
 import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import juja.microservices.gamification.BaseIntegrationTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

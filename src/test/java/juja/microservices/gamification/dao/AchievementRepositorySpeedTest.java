@@ -1,9 +1,9 @@
-package juja.microservices.gamification.achievement;
+package juja.microservices.gamification.dao;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import juja.microservices.gamification.BaseIntegrationTest;
-import juja.microservices.gamification.DAO.AchievementRepository;
-import juja.microservices.gamification.Entity.Achievement;
+import juja.microservices.gamification.integration.BaseIntegrationTest;
+import juja.microservices.gamification.entity.Achievement;
+import juja.microservices.gamification.entity.AchievementType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@ public class AchievementRepositorySpeedTest extends BaseIntegrationTest {
     public void setupDatabase() {
         if (!initialized) {
             for (int i = 0; i < numberOfRecords; i++) {
-                Achievement testAchievement = new Achievement("sasha", "ira", 2, "good work");
+                Achievement testAchievement = new Achievement("sasha", "ira", 2, "good work", AchievementType.DAILY);
                 achievementRepository.addAchievement(testAchievement);
             }
         }
