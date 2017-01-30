@@ -36,11 +36,11 @@ public class AchievementRepository {
         return resultList;
     }
 
-    protected List<Achievement> getAllAchievementsByUserId(String id) {
+    public List<Achievement> getAllAchievementsByUserId(String id) {
         return mongoTemplate.find(new Query(Criteria.where("userToId").is(id)),Achievement.class);
     }
 
-    protected List<String> getAllUserToIDs(){
+    public List<String> getAllUserToIDs(){
         return mongoTemplate.getCollection(COLLECTION_NAME).distinct("userToId");
     }
 

@@ -1,12 +1,13 @@
-package juja.microservices.gamification.dao;
+package juja.microservices.gamification;
 
 import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import juja.microservices.gamification.DAO.AchievementRepository;
 import juja.microservices.gamification.integration.BaseIntegrationTest;
-import juja.microservices.gamification.entity.Achievement;
-import juja.microservices.gamification.entity.AchievementType;
-import juja.microservices.gamification.entity.UserAchievementDetails;
-import juja.microservices.gamification.entity.UserPointsSum;
+import juja.microservices.gamification.Entity.Achievement;
+import juja.microservices.gamification.Entity.AchievementType;
+import juja.microservices.gamification.Entity.UserAchievementDetails;
+import juja.microservices.gamification.Entity.UserPointsSum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;

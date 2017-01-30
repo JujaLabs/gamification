@@ -3,9 +3,11 @@ package juja.microservices.gamification.Service;
 import juja.microservices.gamification.DAO.AchievementRepository;
 import juja.microservices.gamification.Entity.Achievement;
 import juja.microservices.gamification.Entity.AchievementType;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
+@Service
 public class AchievementService {
 
     @Inject
