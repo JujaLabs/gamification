@@ -9,11 +9,11 @@ import java.util.List;
  */
 public class UserAchievementDetails {
     private final String userId;
-    private List<AchievementDetail> details;
+    private List<Achievement> details;
 
     @JsonCreator
     public UserAchievementDetails(@JsonProperty("userId") String userId,
-                                  @JsonProperty("details") List<AchievementDetail> details) {
+                                  @JsonProperty("details") List<Achievement> details) {
         this.userId = userId;
         this.details = details;
     }
@@ -22,7 +22,7 @@ public class UserAchievementDetails {
         return userId;
     }
 
-    public List<AchievementDetail> getDetails() {
+    public List<Achievement> getDetails() {
         return details;
     }
 }

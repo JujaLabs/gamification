@@ -11,16 +11,20 @@ public class Achievement {
 
     private String userFromId;
     private String userToId;
+    private String sendDate;
     private int pointCount;
     private String description;
+    private AchievementType type;
 
     @JsonCreator
-    public Achievement(@JsonProperty("userFromId") String userFromId, @JsonProperty("userToId") String userToId,
-                       @JsonProperty("pointCount") int pointCount, @JsonProperty("description") String description) {
+    public Achievement(@JsonProperty("userFromId") String userFromId,@JsonProperty("userToId") String userToId,
+                       @JsonProperty("pointCount") int pointCount, @JsonProperty("description") String description,
+                       @JsonProperty("type") AchievementType type) {
         this.userFromId = userFromId;
         this.userToId = userToId;
         this.pointCount = pointCount;
         this.description = description;
+        this.type = type;
     }
 
     public String getId() {
@@ -41,5 +45,17 @@ public class Achievement {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getSendDate() {
+        return sendDate;
+    }
+
+    public void setSendDate(String sendDate) {
+        this.sendDate = sendDate;
+    }
+
+    public AchievementType getType() {
+        return type;
     }
 }

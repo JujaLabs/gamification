@@ -1,7 +1,6 @@
 package juja.microservices.gamification.DAO;
 
 import juja.microservices.gamification.Entity.Achievement;
-import juja.microservices.gamification.Entity.AchievementDetail;
 import juja.microservices.gamification.Entity.UserAchievementDetails;
 import juja.microservices.gamification.Entity.UserPointsSum;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -27,41 +26,21 @@ public class AchievementRepository {
         return achievement.getId();
     }
 
-    public List<UserAchievementDetails> getUserAchievementsDetails(List<String> userIds){
-        List<UserAchievementDetails> resultList = new ArrayList<>();
-        for (String userId : userIds) {
-            List <AchievementDetail> details = getAllAchievementsByUserId(userId);
-            resultList.add(new UserAchievementDetails(userId,details));
-        }
-        return resultList;
-    }
-
     public List<UserAchievementDetails> getUserAchievementsDetails(){
         List<String> userIds = getAllUserToIDs();
         List<UserAchievementDetails> resultList = new ArrayList<>();
         for (String userId : userIds) {
-            List <AchievementDetail> details = getAllAchievementsByUserId(userId);
+            List <Achievement> details = getAllAchievementsByUserId(userId);
             resultList.add(new UserAchievementDetails(userId,details));
         }
         return resultList;
     }
 
-    public List<AchievementDetail> getAllAchievementsByUserId(String id) {
-        List<Achievement> achievements = mongoTemplate.find(new Query(Criteria.where("userToId").is(id)),Achievement.class);
-        List<AchievementDetail> listDet = new ArrayList<>();
-        for (Achievement a : achievements) {
-            AchievementDetail detail = new AchievementDetail(
-                    a.getUserFromId(),
-                    a.getId(),
-                    a.getDescription(),
-                    a.getPointCount()
-            );
-            listDet.add(detail);
-        }
-            return listDet;
+    protected List<Achievement> getAllAchievementsByUserId(String id) {
+        return mongoTemplate.find(new Query(Criteria.where("userToId").is(id)),Achievement.class);
     }
 
-    public List<String> getAllUserToIDs(){
+    protected List<String> getAllUserToIDs(){
         return mongoTemplate.getCollection(COLLECTION_NAME).distinct("userToId");
     }
 

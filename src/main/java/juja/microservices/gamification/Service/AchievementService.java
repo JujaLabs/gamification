@@ -1,4 +1,20 @@
 package juja.microservices.gamification.Service;
 
+import juja.microservices.gamification.DAO.AchievementRepository;
+import juja.microservices.gamification.Entity.Achievement;
+import juja.microservices.gamification.Entity.AchievementType;
+
+import javax.inject.Inject;
+
 public class AchievementService {
+
+    @Inject
+    private AchievementRepository achievementRepository;
+
+    public String addDaily(String report, String userFromId) {
+        //TODO To check if the daily is given today
+
+        Achievement achievement = new Achievement(userFromId, null, 1, report, AchievementType.DAILY);
+        return achievementRepository.addAchievement(achievement);
+    }
 }
