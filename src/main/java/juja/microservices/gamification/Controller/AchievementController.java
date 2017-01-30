@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 
+/**
+ * @author Olga Kulykova
+ */
 @RestController
 @RequestMapping(consumes = "application/json", produces = "application/json")
 public class AchievementController {
