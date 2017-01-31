@@ -1,8 +1,8 @@
 package juja.microservices.gamification.controller;
 
-import juja.microservices.gamification.DAO.AchievementRepository;
 import juja.microservices.gamification.Entity.UserAchievementDetails;
 import juja.microservices.gamification.Entity.UserPointsSum;
+import juja.microservices.gamification.dao.AchievementRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;

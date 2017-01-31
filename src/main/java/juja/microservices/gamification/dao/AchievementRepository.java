@@ -1,4 +1,4 @@
-package juja.microservices.gamification.DAO;
+package juja.microservices.gamification.dao;
 
 import juja.microservices.gamification.Entity.Achievement;
 import juja.microservices.gamification.Entity.UserAchievementDetails;
