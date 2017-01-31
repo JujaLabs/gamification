@@ -1,8 +1,9 @@
-package juja.microservices.gamification.Service;
+package juja.microservices.gamification.service;
 
-import juja.microservices.gamification.DAO.AchievementRepository;
-import juja.microservices.gamification.Entity.Achievement;
-import juja.microservices.gamification.Entity.AchievementType;
+
+import juja.microservices.gamification.dao.AchievementRepository;
+import juja.microservices.gamification.entity.Achievement;
+import juja.microservices.gamification.entity.AchievementType;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
