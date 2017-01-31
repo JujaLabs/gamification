@@ -2,11 +2,11 @@ package juja.microservices.gamification.dao;
 
 import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import juja.microservices.gamification.BaseIntegrationTest;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
 import juja.microservices.gamification.entity.UserAchievementDetails;
 import juja.microservices.gamification.entity.UserPointsSum;
-import juja.microservices.gamification.BaseIntegrationTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -29,12 +29,13 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    @ShouldMatchDataSet(location = "/datasets/addNewAchievement-expected.json")
+    @ShouldMatchDataSet(location = "/datasets/addNewAchievement.json")
     public void shouldAddNewAchievementAndReturnNotNullId() {
-        Achievement testAchievement = new Achievement("sasha", "ira", 2, "good work", AchievementType.DAILY);
+        Achievement testAchievement = new Achievement("sasha", "ira", 2,
+                "good work", AchievementType.DAILY);
 
         String actualId = achievementRepository.addAchievement(testAchievement);
-        assertThat(actualId,notNullValue());
+        assertThat(actualId, notNullValue());
     }
 
     @Test
@@ -62,22 +63,22 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")
-    public void getAllAchievementsByUserIdTest(){
+    public void getAllAchievementsByUserIdTest() {
         List<Achievement> list = achievementRepository.getAllAchievementsByUserId("ira");
-        assertEquals(2,list.size());
+        assertEquals(2, list.size());
     }
 
     @Test
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")
-    public void getAllUsersIdsTest(){
-       List <String> list = achievementRepository.getAllUserToIDs();
-       assertEquals(2, list.size());
+    public void getAllUsersIdsTest() {
+        List<String> list = achievementRepository.getAllUserToIDs();
+        assertEquals(2, list.size());
     }
 
     @Test
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")
-    public void getUserAchievementsDetailsTestForAllUsersList(){
+    public void getUserAchievementsDetailsTestForAllUsersList() {
         List<UserAchievementDetails> list = achievementRepository.getUserAchievementsDetails();
-        assertEquals(2,list.size());
+        assertEquals(2, list.size());
     }
 }
