@@ -1,8 +1,9 @@
 package juja.microservices.gamification.dao;
 
-import juja.microservices.gamification.Entity.Achievement;
-import juja.microservices.gamification.Entity.UserAchievementDetails;
-import juja.microservices.gamification.Entity.UserPointsSum;
+
+import juja.microservices.gamification.entity.Achievement;
+import juja.microservices.gamification.entity.UserAchievementDetails;
+import juja.microservices.gamification.entity.UserPointsSum;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;

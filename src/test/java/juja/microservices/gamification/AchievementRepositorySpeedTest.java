@@ -1,9 +1,9 @@
 package juja.microservices.gamification;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import juja.microservices.gamification.Entity.Achievement;
-import juja.microservices.gamification.Entity.AchievementType;
 import juja.microservices.gamification.dao.AchievementRepository;
+import juja.microservices.gamification.entity.Achievement;
+import juja.microservices.gamification.entity.AchievementType;
 import juja.microservices.gamification.integration.BaseIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
