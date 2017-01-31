@@ -1,6 +1,5 @@
-package juja.microservices.gamification;
+package juja.microservices.gamification.entity;
 
-import juja.microservices.gamification.entity.UserPointsSum;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
