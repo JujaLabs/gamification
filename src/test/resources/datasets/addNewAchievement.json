@@ -4,7 +4,8 @@
       "userFromId":"sasha",
       "userToId":"ira",
       "pointCount":2,
-      "description":"good work"
+      "description":"good work",
+      "type":"DAILY"
     }
   ]
 }

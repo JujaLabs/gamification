@@ -49,7 +49,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     }
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    @ShouldMatchDataSet(location = "/datasets/addNewAchievement-expected.json")
+    @ShouldMatchDataSet(location = "/datasets/addNewAchievement.json")
     public void createAchievementShouldAddNewAchievementAndReturnJson() throws Exception {
         String jsonContentRequest = "{\"userFromId\":\"sasha\",\"userToId\":\"ira\"," +
                 "\"pointCount\":2,\"description\":\"good work\"}";
