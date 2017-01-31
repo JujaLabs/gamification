@@ -1,4 +1,4 @@
-package juja.microservices.gamification.Controller;
+package juja.microservices.gamification.controller;
 
 import juja.microservices.gamification.DAO.AchievementRepository;
 import juja.microservices.gamification.Entity.UserAchievementDetails;
