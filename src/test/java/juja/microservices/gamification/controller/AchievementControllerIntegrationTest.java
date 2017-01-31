@@ -52,7 +52,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @ShouldMatchDataSet(location = "/datasets/addNewAchievement.json")
     public void createAchievementShouldAddNewAchievementAndReturnJson() throws Exception {
         String jsonContentRequest = "{\"userFromId\":\"sasha\",\"userToId\":\"ira\"," +
-                "\"pointCount\":2,\"description\":\"good work\"}";
+                "\"pointCount\":2,\"description\":\"good work\",\"type\":\"DAILY\"}";
 
         mockMvc.perform(post("/achieve")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
