@@ -1,6 +1,6 @@
 package juja.microservices.gamification.controller;
 
-import juja.microservices.gamification.Service.AchievementService;
+import juja.microservices.gamification.service.AchievementService;
 import net.minidev.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

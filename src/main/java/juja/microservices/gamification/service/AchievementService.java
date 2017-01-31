@@ -1,4 +1,4 @@
-package juja.microservices.gamification.Service;
+package juja.microservices.gamification.service;
 
 
 import juja.microservices.gamification.dao.AchievementRepository;
