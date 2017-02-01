@@ -38,4 +38,13 @@ public class AchievementController {
         jsonObject.put("id", achievementId);
         return ResponseEntity.ok(jsonObject);
     }
+
+    @RequestMapping(value = "/achieve/thanks", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<?> addThanks(@RequestParam String userFromId, String userToId, String report) {
+        String achievementId = achievementService.addThanks(userFromId, userToId, report);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", achievementId);
+        return ResponseEntity.ok(jsonObject);
+    }
 }
