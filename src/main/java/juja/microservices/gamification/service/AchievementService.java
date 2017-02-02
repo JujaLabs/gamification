@@ -16,8 +16,9 @@ public class AchievementService {
 
     public String addDaily(String report, String userFromId) {
         //TODO To check if the daily is given today
+        String userToId = userFromId;
 
-        Achievement achievement = new Achievement(userFromId, null, 1, report, AchievementType.DAILY);
+        Achievement achievement = new Achievement(userFromId, userToId, 1, report, AchievementType.DAILY);
         return achievementRepository.addAchievement(achievement);
     }
 }
