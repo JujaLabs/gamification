@@ -55,8 +55,4 @@ public class AchievementRepository {
             mongoTemplate.aggregate(aggregation, Achievement.class, UserPointsSum.class);
         return result.getMappedResults();
     }
-
-    public void updateAchievementDescription(Achievement achievementToUpdate) {
-
-    }
 }

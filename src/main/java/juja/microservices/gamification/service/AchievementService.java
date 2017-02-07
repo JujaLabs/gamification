@@ -20,7 +20,7 @@ public class AchievementService {
     public String addDaily(String description, String userFromId) {
         String userToId = userFromId;
         String currentDate = getFormattedCurrentDate();
-        List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserToId(userFromId);
+        List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserToId(userToId);
         for (Achievement achievement : userFromIdList) {
             if (AchievementType.DAILY.equals(achievement.getType())&&
                     currentDate.equals(achievement.getSendDate()))
@@ -29,6 +29,8 @@ public class AchievementService {
                 description = oldDescription
                         .concat(System.lineSeparator())
                         .concat(description);
+                achievement.setDescription(description);
+                return achievementRepository.addAchievement(achievement);
             }
         }
         Achievement newAchievement = new Achievement(userFromId, userToId, 1, description, AchievementType.DAILY);
@@ -36,7 +38,7 @@ public class AchievementService {
     }
     private String getFormattedCurrentDate(){
         Date currentDate = new Date(System.currentTimeMillis());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(currentDate);
     }
 }

@@ -58,4 +58,9 @@ public class Achievement {
     public AchievementType getType() {
         return type;
     }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 }
