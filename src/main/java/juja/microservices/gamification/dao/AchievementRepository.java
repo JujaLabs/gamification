@@ -31,14 +31,14 @@ public class AchievementRepository {
         List<String> userIds = getAllUserToIDs();
         List<UserAchievementDetails> resultList = new ArrayList<>();
         for (String userId : userIds) {
-            List <Achievement> details = getAllAchievementsByUserId(userId);
+            List <Achievement> details = getAllAchievementsByUserToId(userId);
             resultList.add(new UserAchievementDetails(userId,details));
         }
         return resultList;
     }
 
-    public List<Achievement> getAllAchievementsByUserId(String id) {
-        return mongoTemplate.find(new Query(Criteria.where("userToId").is(id)),Achievement.class);
+    public List<Achievement> getAllAchievementsByUserToId(String userToId) {
+        return mongoTemplate.find(new Query(Criteria.where("userToId").is(userToId)),Achievement.class);
     }
 
     public List<String> getAllUserToIDs(){
@@ -54,5 +54,9 @@ public class AchievementRepository {
         AggregationResults<UserPointsSum> result =
             mongoTemplate.aggregate(aggregation, Achievement.class, UserPointsSum.class);
         return result.getMappedResults();
+    }
+
+    public void updateAchievementDescription(Achievement achievementToUpdate) {
+
     }
 }
