@@ -72,26 +72,19 @@ public class AchievementServiceTest extends BaseIntegrationTest{
 
 
         Achievement testAchievement = new Achievement(userFromId,userToId,1,firstDescription, AchievementType.DAILY);
-        String achievementId = achievementRepository.addAchievement(testAchievement);
-        int achievementPointCount = testAchievement.getPointCount();
+        achievementRepository.addAchievement(testAchievement);
+
         List <Achievement> achievementListBeforeUpdate =  achievementRepository.getAllAchievementsByUserToId("oleg");
-        Achievement achievementFromDbBeforeUpdate = achievementListBeforeUpdate.get(0);
-        String sendDateBeforeUpdate = achievementFromDbBeforeUpdate.getSendDate();
-        String typeBeforeUpdate = achievementFromDbBeforeUpdate.getType().toString();
+        Achievement shouldMuchAchievement = achievementListBeforeUpdate.get(0);
+        shouldMuchAchievement.setDescription(shouldMuchDescription);
+        String shouldMuchAchievementToString = shouldMuchAchievement.toString();
 
         achievementService.addDaily(updateForDescription,userToId);
         List <Achievement> achievementList =  achievementRepository.getAllAchievementsByUserToId("oleg");
-        Achievement updatedAchievement = achievementList.get(0);
-        String sendDateAfterUpdate = updatedAchievement.getSendDate();
-        String actualDescription = updatedAchievement.getDescription();
 
-        assertEquals(achievementId,updatedAchievement.getId());
-        assertEquals(userToId,updatedAchievement.getUserToId());
-        assertEquals(achievementPointCount,updatedAchievement.getPointCount());
-        assertEquals(userFromId,updatedAchievement.getUserFromId());
-        assertEquals(shouldMuchDescription,actualDescription);
-        assertEquals(sendDateBeforeUpdate,sendDateAfterUpdate);
-        assertEquals(typeBeforeUpdate,updatedAchievement.getType().toString());
+        String updatedAchievement = achievementList.get(0).toString();
+
+        assertEquals(shouldMuchAchievementToString,updatedAchievement);
 
     }
 }
