@@ -1,0 +1,40 @@
+{
+  "achievement": [
+    {
+      "_id":"589b16a4f3d8e118d0ddb2c3",
+      "userFromId":"ira",
+      "userToId":"ira",
+      "sendDate":"2017-02-07",
+      "pointCount":1,
+      "description":"New daily report",
+      "type":"DAILY"
+    },
+    {
+          "_id":"579b16a4f3d8e118d0ddb2c3",
+          "userFromId":"oleg",
+          "userToId":"oleg",
+          "sendDate":"2017-02-05",
+          "pointCount":1,
+          "description":"Old daily report",
+          "type":"DAILY"
+    },
+    {
+          "_id":"589b16a4f3d8e111d0ddb2c3",
+          "userFromId":"oleg",
+          "userToId":"oleg",
+          "sendDate":"2017-02-07",
+          "pointCount":1,
+          "description":"Old daily report",
+          "type":"DAILY"
+    },
+    {
+              "_id":"589b16a4f3d8e111d1ddb2c3",
+              "userFromId":"oleg",
+              "userToId":"oleg",
+              "sendDate":"2017-02-05",
+              "pointCount":1,
+              "description":"Not a daily report",
+              "type":"THANKS"
+    }
+  ]
+}
