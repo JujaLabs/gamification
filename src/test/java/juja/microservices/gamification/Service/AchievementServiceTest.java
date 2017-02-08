@@ -59,4 +59,39 @@ public class AchievementServiceTest extends BaseIntegrationTest{
 
         assertEquals(shouldMuchDescription,actualDescription);
     }
+    @Test
+    @UsingDataSet(locations = "/datasets/addDailyAchievement.json")
+    public void shouldUpdateOnlyDescriptionFieldDailyAchievement(){
+        String userToId = "oleg";
+        String userFromId = userToId;
+        String firstDescription = "This is a daily report";
+        String updateForDescription = "Some update for the daily report";
+        String shouldMuchDescription = firstDescription
+                .concat(System.lineSeparator())
+                .concat(updateForDescription);
+
+
+        Achievement testAchievement = new Achievement(userFromId,userToId,1,firstDescription, AchievementType.DAILY);
+        String achievementId = achievementRepository.addAchievement(testAchievement);
+        int achievementPointCount = testAchievement.getPointCount();
+        List <Achievement> achievementListBeforeUpdate =  achievementRepository.getAllAchievementsByUserToId("oleg");
+        Achievement achievementFromDbBeforeUpdate = achievementListBeforeUpdate.get(0);
+        String sendDateBeforeUpdate = achievementFromDbBeforeUpdate.getSendDate();
+        String typeBeforeUpdate = achievementFromDbBeforeUpdate.getType().toString();
+
+        achievementService.addDaily(updateForDescription,userToId);
+        List <Achievement> achievementList =  achievementRepository.getAllAchievementsByUserToId("oleg");
+        Achievement updatedAchievement = achievementList.get(0);
+        String sendDateAfterUpdate = updatedAchievement.getSendDate();
+        String actualDescription = updatedAchievement.getDescription();
+
+        assertEquals(achievementId,updatedAchievement.getId());
+        assertEquals(userToId,updatedAchievement.getUserToId());
+        assertEquals(achievementPointCount,updatedAchievement.getPointCount());
+        assertEquals(userFromId,updatedAchievement.getUserFromId());
+        assertEquals(shouldMuchDescription,actualDescription);
+        assertEquals(sendDateBeforeUpdate,sendDateAfterUpdate);
+        assertEquals(typeBeforeUpdate,updatedAchievement.getType().toString());
+
+    }
 }
