@@ -15,24 +15,28 @@ public class AchievementService {
     @Inject
     private AchievementRepository achievementRepository;
 
+    /**
+     * In this method userFromId = userToId because users add DAILY achievements to themselves.
+     * If the DAILY achievement already exists in the database and user wants to add another DAILY
+     * achievement at the same day, the only field description will be updated.
+     */
+    //TODO в системе может существовать только 1 дейлик за один конкретный день. Иначе -?
     public String addDaily(String description, String userFromId) {
-        String userToId = userFromId;
         String currentDate = achievementRepository.getFormattedCurrentDate();
-        List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserToId(userToId);
-        for (Achievement achievement : userFromIdList) {
-            if (AchievementType.DAILY.equals(achievement.getType())&&
-                    currentDate.equals(achievement.getSendDate()))
-            {
-                String oldDescription = achievement.getDescription();
-                description = oldDescription
-                        .concat(System.lineSeparator())
-                        .concat(description);
-                achievement.setDescription(description);
-                return achievementRepository.addAchievement(achievement);
-            }
+        List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdSendDateType(userFromId,currentDate,AchievementType.DAILY);
+
+        if (userFromIdList.size()==0){
+            Achievement newAchievement = new Achievement(userFromId, userFromId, 1, description, AchievementType.DAILY);
+            return achievementRepository.addAchievement(newAchievement);
+        } else {
+            Achievement achievement = userFromIdList.get(0);
+            String oldDescription = achievement.getDescription();
+            description = oldDescription
+                    .concat(System.lineSeparator())
+                    .concat(description);
+            achievement.setDescription(description);
+            return achievementRepository.addAchievement(achievement);
         }
-        Achievement newAchievement = new Achievement(userFromId, userToId, 1, description, AchievementType.DAILY);
-        return achievementRepository.addAchievement(newAchievement);
     }
 
 }
