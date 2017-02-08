@@ -81,4 +81,24 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         List<UserAchievementDetails> list = achievementRepository.getUserAchievementsDetails();
         assertEquals(2, list.size());
     }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/selectAchievementByUserFromIdSendDateType.json")
+    public void getAllAchievementsByUserFromIdSendDateTypeTest(){
+        List<Achievement> list = achievementRepository.getAllAchievementsByUserFromIdSendDateType("oleg","2017-02-05",AchievementType.DAILY);
+        String lineSeparator = System.lineSeparator();
+
+        String shouldMuchRetrievedAchievement =
+                "Achievement:".concat(lineSeparator)
+                .concat("id = ").concat("579b16a4f3d8e118d0ddb2c3").concat(lineSeparator)
+                .concat("userFromId = ").concat("oleg").concat(lineSeparator)
+                .concat("userToId = ").concat("oleg").concat(lineSeparator)
+                .concat("sendDate = ").concat("2017-02-05").concat(lineSeparator)
+                .concat("pointCount = ").concat("1").concat(lineSeparator)
+                .concat("description = ").concat("Old daily report").concat(lineSeparator)
+                .concat("type = ").concat("DAILY").concat(lineSeparator);
+
+        assertEquals(1,list.size());
+        assertEquals(shouldMuchRetrievedAchievement,list.get(0).toString());
+    }
 }

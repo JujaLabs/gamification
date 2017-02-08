@@ -2,6 +2,7 @@ package juja.microservices.gamification.dao;
 
 
 import juja.microservices.gamification.entity.Achievement;
+import juja.microservices.gamification.entity.AchievementType;
 import juja.microservices.gamification.entity.UserAchievementDetails;
 import juja.microservices.gamification.entity.UserPointsSum;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -49,6 +50,12 @@ public class AchievementRepository {
 
     public List<Achievement> getAllAchievementsByUserToId(String userToId) {
         return mongoTemplate.find(new Query(Criteria.where("userToId").is(userToId)),Achievement.class);
+    }
+    public List<Achievement> getAllAchievementsByUserFromIdSendDateType(String userFromId, String sendDate, AchievementType type) {
+        return mongoTemplate.find(new Query(
+                Criteria.where("userFromId").is(userFromId)
+                            .and("sendDate").is(sendDate)
+                            .and("type").is(type.toString())),Achievement.class);
     }
 
     public List<String> getAllUserToIDs(){
