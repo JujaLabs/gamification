@@ -12,7 +12,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -23,8 +25,16 @@ public class AchievementRepository {
     private MongoTemplate mongoTemplate;
 
     public String addAchievement(Achievement achievement) {
+        if (achievement.getSendDate()==null){
+            achievement.setSendDate(getFormattedCurrentDate());
+        }
         mongoTemplate.save(achievement);
         return achievement.getId();
+    }
+    public String getFormattedCurrentDate(){
+        Date currentDate = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.format(currentDate);
     }
 
     public List<UserAchievementDetails> getUserAchievementsDetails(){
