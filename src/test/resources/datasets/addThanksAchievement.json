@@ -1,0 +1,36 @@
+{
+  "achievement": [
+    {
+      "userFromId":"sasha",
+      "userToId":"max",
+      "pointCount":1,
+      "description":"For helping with...",
+      "sendDate":"2017-02-09",
+      "type":"THANKS"
+    },
+    {
+      "userFromId":"sasha",
+      "userToId":"ira",
+      "pointCount":1,
+      "description":"For helping with...",
+      "sendDate":"2017-02-09",
+      "type":"THANKS"
+    },
+    {
+      "userFromId":"sasha",
+      "userToId":"sasha",
+      "pointCount":1,
+      "description":"Issued two thanks",
+      "sendDate":"2017-02-09",
+      "type":"THANKS"
+    },
+    {
+      "userFromId":"misha",
+      "userToId":"sasha",
+      "pointCount":1,
+      "description":"For helping with...",
+      "sendDate":"2017-02-09",
+      "type":"THANKS"
+    }
+  ]
+}
