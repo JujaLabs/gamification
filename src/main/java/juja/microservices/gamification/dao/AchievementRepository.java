@@ -1,6 +1,5 @@
 package juja.microservices.gamification.dao;
 
-
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
 import juja.microservices.gamification.entity.UserAchievementDetails;
@@ -26,43 +25,43 @@ public class AchievementRepository {
     private MongoTemplate mongoTemplate;
 
     public String addAchievement(Achievement achievement) {
-        if (achievement.getSendDate()==null){
+        if (achievement.getSendDate() == null) {
             achievement.setSendDate(getFormattedCurrentDate());
         }
         mongoTemplate.save(achievement);
         return achievement.getId();
     }
 
-    public String getFormattedCurrentDate(){
+    public String getFormattedCurrentDate() {
         Date currentDate = new Date(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(currentDate);
     }
 
-    public List<UserAchievementDetails> getUserAchievementsDetails(){
+    public List<UserAchievementDetails> getUserAchievementsDetails() {
         List<String> userIds = getAllUserToIDs();
         List<UserAchievementDetails> resultList = new ArrayList<>();
         for (String userId : userIds) {
-            List <Achievement> details = getAllAchievementsByUserToId(userId);
-            resultList.add(new UserAchievementDetails(userId,details));
+            List<Achievement> details = getAllAchievementsByUserToId(userId);
+            resultList.add(new UserAchievementDetails(userId, details));
         }
         return resultList;
     }
 
     public List<Achievement> getAllAchievementsByUserToId(String userToId) {
-        return mongoTemplate.find(new Query(Criteria.where("userToId").is(userToId)),Achievement.class);
+        return mongoTemplate.find(new Query(Criteria.where("userToId").is(userToId)), Achievement.class);
     }
 
     public List<Achievement> getAllAchievementsByUserFromIdCurrentDateType(String userFromId, AchievementType type) {
         String sendDate = getFormattedCurrentDate();
 
         return mongoTemplate.find(new Query(
-                Criteria.where("userFromId").is(userFromId)
-                            .and("sendDate").is(sendDate)
-                            .and("type").is(type.toString())),Achievement.class);
+            Criteria.where("userFromId").is(userFromId)
+                .and("sendDate").is(sendDate)
+                .and("type").is(type.toString())), Achievement.class);
     }
 
-    public List<String> getAllUserToIDs(){
+    public List<String> getAllUserToIDs() {
         return mongoTemplate.getCollection(COLLECTION_NAME).distinct("userToId");
     }
 
