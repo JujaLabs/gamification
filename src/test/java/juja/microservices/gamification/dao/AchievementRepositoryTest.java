@@ -1,6 +1,5 @@
 package juja.microservices.gamification.dao;
 
-import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import juja.microservices.gamification.BaseIntegrationTest;
 import juja.microservices.gamification.entity.Achievement;
@@ -29,7 +28,7 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    @ShouldMatchDataSet(location = "/datasets/addNewAchievement.json")
+    //@ShouldMatchDataSet(location = "/datasets/addNewAchievement.json") //after uncommenting this line you should change date in addNewAchievement.json on actual one
     public void shouldAddNewAchievementAndReturnNotNullId() {
         Achievement testAchievement = new Achievement("sasha", "ira", 2,
                 "good work", AchievementType.DAILY);
@@ -64,7 +63,7 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")
     public void getAllAchievementsByUserIdTest() {
-        List<Achievement> list = achievementRepository.getAllAchievementsByUserId("ira");
+        List<Achievement> list = achievementRepository.getAllAchievementsByUserToId("ira");
         assertEquals(2, list.size());
     }
 
@@ -80,5 +79,38 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
     public void getUserAchievementsDetailsTestForAllUsersList() {
         List<UserAchievementDetails> list = achievementRepository.getUserAchievementsDetails();
         assertEquals(2, list.size());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void getAllAchievementsByUserFromIdSendDateTypeTest(){
+        String sendDate = achievementRepository.getFormattedCurrentDate();
+        String lineSeparator = System.lineSeparator();
+
+        Achievement testAchievement = new Achievement("oleg","oleg",1,"Old daily report",AchievementType.DAILY);
+        Achievement testAchievementAnotherDate = new Achievement("oleg","oleg",1,"Old another date daily report",AchievementType.DAILY);
+        Achievement testAchievementNotADaily = new Achievement("oleg","olga",1,"Not a daily report",AchievementType.THANKS);
+
+        testAchievement.setSendDate(sendDate);
+        testAchievementAnotherDate.setSendDate("1917-02-09");
+
+        String id = achievementRepository.addAchievement(testAchievement);
+        achievementRepository.addAchievement(testAchievementAnotherDate);
+        achievementRepository.addAchievement(testAchievementNotADaily);
+
+        List<Achievement> list = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType("oleg", AchievementType.DAILY);
+
+        String shouldMuchRetrievedAchievement =
+                "Achievement:".concat(lineSeparator)
+                .concat("id = ").concat(id).concat(lineSeparator)
+                .concat("userFromId = ").concat("oleg").concat(lineSeparator)
+                .concat("userToId = ").concat("oleg").concat(lineSeparator)
+                .concat("sendDate = ").concat(sendDate).concat(lineSeparator)
+                .concat("pointCount = ").concat("1").concat(lineSeparator)
+                .concat("description = ").concat("Old daily report").concat(lineSeparator)
+                .concat("type = ").concat("DAILY").concat(lineSeparator);
+
+        assertEquals(1,list.size());
+        assertEquals(shouldMuchRetrievedAchievement,list.get(0).toString());
     }
 }
