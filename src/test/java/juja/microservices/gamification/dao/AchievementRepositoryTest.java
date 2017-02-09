@@ -1,5 +1,6 @@
 package juja.microservices.gamification.dao;
 
+import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import juja.microservices.gamification.BaseIntegrationTest;
 import juja.microservices.gamification.entity.Achievement;
@@ -28,12 +29,13 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    //@ShouldMatchDataSet(location = "/datasets/addNewAchievement.json") //after uncommenting this line you should change date in addNewAchievement.json on actual one
+    @ShouldMatchDataSet(location = "/datasets/addNewAchievement.json")
     public void shouldAddNewAchievementAndReturnNotNullId() {
         Achievement testAchievement = new Achievement("sasha", "ira", 2,
                 "good work", AchievementType.DAILY);
-
+        testAchievement.setSendDate("1917-02-09");
         String actualId = achievementRepository.addAchievement(testAchievement);
+
         assertThat(actualId, notNullValue());
     }
 
@@ -83,7 +85,7 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    public void getAllAchievementsByUserFromIdSendDateTypeTest(){
+    public void getAllAchievementsByUserFromIdCurrentDateTypeTest(){
         String sendDate = achievementRepository.getFormattedCurrentDate();
         String lineSeparator = System.lineSeparator();
 
