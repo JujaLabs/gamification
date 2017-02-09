@@ -1,18 +1,12 @@
 package juja.microservices.gamification.service;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 import javax.inject.Inject;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
 import java.util.List;
 
 @Service
