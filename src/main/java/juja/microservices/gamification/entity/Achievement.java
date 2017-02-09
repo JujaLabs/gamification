@@ -58,4 +58,21 @@ public class Achievement {
     public AchievementType getType() {
         return type;
     }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        String lineSeparator = System.lineSeparator();
+        return "Achievement:".concat(lineSeparator)
+                .concat("id = ").concat(id).concat(lineSeparator)
+                .concat("userFromId = ").concat(userFromId).concat(lineSeparator)
+                .concat("userToId = ").concat(userToId).concat(lineSeparator)
+                .concat("sendDate = ").concat(sendDate).concat(lineSeparator)
+                .concat("pointCount = ").concat(Integer.toString(pointCount)).concat(lineSeparator)
+                .concat("description = ").concat(description).concat(lineSeparator)
+                .concat("type = ").concat(type.toString()).concat(lineSeparator);
+    }
 }

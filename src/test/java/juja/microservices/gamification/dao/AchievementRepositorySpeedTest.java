@@ -43,7 +43,7 @@ public class AchievementRepositorySpeedTest extends BaseIntegrationTest {
     public void getAllAchievementsByUserIdTestSpeed(){
 
         long startTime = System.currentTimeMillis();
-        achievementRepository.getAllAchievementsByUserId("ira");
+        achievementRepository.getAllAchievementsByUserToId("ira");
         long endTime = System.currentTimeMillis();
         long timeDifference = endTime - startTime;
         assertThat((message),timeDifference,lessThan(timeBorderInMillis));

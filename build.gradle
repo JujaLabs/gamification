@@ -40,6 +40,9 @@ test.testLogging {
 }
 
 test {
+    filter{
+        includeTestsMatching "juja.microservices.gamification.*"
+    }
     afterTest { desc, result ->
         println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
     }
@@ -59,6 +62,8 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'com.github.fakemongo:fongo:2.0.10'
     testCompile 'com.lordofthejars:nosqlunit-mongodb:0.8.1'
+    testCompile 'io.rest-assured:rest-assured:3.0.2'
+    testCompile 'io.rest-assured:json-schema-validator:3.0.2'
 }
 
 task wrapper(type: Wrapper) {
