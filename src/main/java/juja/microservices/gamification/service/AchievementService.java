@@ -22,8 +22,7 @@ public class AchievementService {
      */
     //TODO в системе может существовать только 1 дейлик за один конкретный день. Иначе -?
     public String addDaily(String description, String userFromId) {
-        String currentDate = achievementRepository.getFormattedCurrentDate();
-        List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdSendDateType(userFromId,currentDate,AchievementType.DAILY);
+        List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.DAILY);
 
         if (userFromIdList.size()==0){
             Achievement newAchievement = new Achievement(userFromId, userFromId, 1, description, AchievementType.DAILY);

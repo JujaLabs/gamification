@@ -32,6 +32,7 @@ public class AchievementRepository {
         mongoTemplate.save(achievement);
         return achievement.getId();
     }
+
     public String getFormattedCurrentDate(){
         Date currentDate = new Date(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -51,7 +52,10 @@ public class AchievementRepository {
     public List<Achievement> getAllAchievementsByUserToId(String userToId) {
         return mongoTemplate.find(new Query(Criteria.where("userToId").is(userToId)),Achievement.class);
     }
-    public List<Achievement> getAllAchievementsByUserFromIdSendDateType(String userFromId, String sendDate, AchievementType type) {
+
+    public List<Achievement> getAllAchievementsByUserFromIdCurrentDateType(String userFromId, AchievementType type) {
+        String sendDate = getFormattedCurrentDate();
+
         return mongoTemplate.find(new Query(
                 Criteria.where("userFromId").is(userFromId)
                             .and("sendDate").is(sendDate)

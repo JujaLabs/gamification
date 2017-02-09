@@ -38,6 +38,7 @@ public class AchievementServiceTest extends BaseIntegrationTest{
 
         assertEquals(shouldMuchDescription,actualDescription);
     }
+
     @Test
     @UsingDataSet(locations = "/datasets/addDailyAchievement.json")
     public void shouldUpdateExistingDailyAchievement(){
@@ -59,6 +60,7 @@ public class AchievementServiceTest extends BaseIntegrationTest{
 
         assertEquals(shouldMuchDescription,actualDescription);
     }
+
     @Test
     @UsingDataSet(locations = "/datasets/addDailyAchievement.json")
     public void shouldUpdateOnlyDescriptionFieldDailyAchievement(){
@@ -85,6 +87,5 @@ public class AchievementServiceTest extends BaseIntegrationTest{
         String updatedAchievement = achievementList.get(0).toString();
 
         assertEquals(shouldMuchAchievementToString,updatedAchievement);
-
     }
 }
