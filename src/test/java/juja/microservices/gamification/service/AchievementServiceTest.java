@@ -1,8 +1,6 @@
 package juja.microservices.gamification.service;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import java.util.List;
-import javax.inject.Inject;
 import juja.microservices.gamification.BaseIntegrationTest;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
@@ -10,6 +8,10 @@ import juja.microservices.gamification.entity.AchievementType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.inject.Inject;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -84,36 +86,5 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String updatedAchievement = achievementList.get(0).toString();
 
         assertEquals(shouldMuchAchievementToString, updatedAchievement);
-    }
-
-    @Test
-    @UsingDataSet(locations = "/datasets/addThanksAchievement.json")
-    public void shouldAddThanksAchievement() {
-        String userFromId = "sasha";
-        String userToId = "max";
-        String expectedDescription = "For helping with...";
-
-        achievementService.addThanks(userFromId, userToId, expectedDescription);
-        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("max");
-        String actualDescription = achievementList.get(0).getDescription();
-
-        assertEquals(expectedDescription, actualDescription);
-    }
-
-    @Test
-    @UsingDataSet(locations = "/datasets/addThanksAchievement.json")
-    public void shouldExistingThirdThanksAchievement() {
-        String userFromId = "sasha";
-        String userToId = "sasha";
-        String expectedDescription = "Issued two thanks";
-
-        Achievement testAchievement = new Achievement(userFromId, userToId, 1, expectedDescription, AchievementType.THANKS);
-        achievementRepository.addAchievement(testAchievement);
-
-        achievementService.addThanks(userFromId, userToId, expectedDescription);
-        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
-        String actualDescription = achievementList.get(0).getDescription();
-
-        assertEquals(expectedDescription, actualDescription);
     }
 }
