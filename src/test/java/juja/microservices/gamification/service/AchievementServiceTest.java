@@ -71,7 +71,6 @@ public class AchievementServiceTest extends BaseIntegrationTest {
             .concat(System.lineSeparator())
             .concat(updateForDescription);
 
-
         Achievement testAchievement = new Achievement(userFromId, userToId, 1, firstDescription, AchievementType.DAILY);
         achievementRepository.addAchievement(testAchievement);
 
@@ -86,5 +85,41 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String updatedAchievement = achievementList.get(0).toString();
 
         assertEquals(shouldMuchAchievementToString, updatedAchievement);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/addThanksAchievement.json")
+    public void shouldAddNewThanksAchievement() {
+        String expectedUserFrom = "sasha";
+        String expectedUserTo = "max";
+        String expectedDescription = "For helping with...";
+
+        achievementService.addThanks(expectedUserFrom, expectedUserTo, expectedDescription);
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("max");
+        String actualUserFrom = achievementList.get(0).getUserFromId();
+        String actualUserTo = achievementList.get(0).getUserToId();
+        String actualDescription = achievementList.get(0).getDescription();
+
+        assertEquals(expectedUserFrom, actualUserFrom);
+        assertEquals(expectedUserTo, actualUserTo);
+        assertEquals(expectedDescription, actualDescription);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/addThanksAchievement.json")
+    public void shouldAddThirdThanksAchievement() {
+        String expectedUserFrom = "sasha";
+        String expectedUserTo = "sasha";
+        String expectedDescription = "Issued two thanks";
+
+        achievementService.addThanks(expectedUserFrom, expectedUserTo, expectedDescription);
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(expectedUserFrom, AchievementType.THANKS);
+        String actualUserFrom = achievementList.get(0).getUserFromId();
+        String actualUserTo = achievementList.get(0).getUserToId();
+        String actualDescription = achievementList.get(0).getDescription();
+
+        assertEquals(expectedUserFrom, actualUserFrom);
+        assertEquals(expectedUserTo, actualUserTo);
+        assertEquals(expectedDescription, actualDescription);
     }
 }
