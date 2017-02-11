@@ -45,16 +45,22 @@ public class AchievementService {
         List<Achievement> userFromAndToListToday = achievementRepository
             .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
 
-        int countThanks = Collections.frequency(userFromAndToListToday, userFromId);
+        for (Achievement achievement : userFromAndToListToday) {
+            if (achievement.getUserToId().equals(userToId)) {
+                new UnsupportedOperationException("You cannot give more than one thanks for day one person");
+                return result;
+            } else if (achievement.getUserFromId().equals(userFromId)) {
+                new UnsupportedOperationException("You can not thank yourself");
+                return result;
+            }
+        }
+
         if (userFromAndToListToday.isEmpty()) {
             Achievement firstThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
             result.add(achievementRepository.addAchievement(firstThanks));
             return result;
-        } else if (countThanks >= TWO_THANKS) {
+        } else if (userFromAndToListToday.size() >= TWO_THANKS) {
             new UnsupportedOperationException("You cannot give more than two thanks for day");
-            return result;
-        } else if (userToId.equals(userFromAndToListToday.equals("userToId"))) {
-            new UnsupportedOperationException("You cannot give more than one thanks for day one person");
             return result;
         } else {
             Achievement secondThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
