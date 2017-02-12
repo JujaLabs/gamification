@@ -45,12 +45,14 @@ public class AchievementService {
         List<Achievement> userFromAndToListToday = achievementRepository
             .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
 
+        if (userFromId.equalsIgnoreCase(userToId)) {
+            new UnsupportedOperationException("You cannot thank yourself");
+            return result;
+        }
+
         for (Achievement achievement : userFromAndToListToday) {
             if (achievement.getUserToId().equals(userToId)) {
                 new UnsupportedOperationException("You cannot give more than one thanks for day one person");
-                return result;
-            } else if (achievement.getUserFromId().equals(userFromId)) {
-                new UnsupportedOperationException("You can not thank yourself");
                 return result;
             }
         }
