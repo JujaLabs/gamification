@@ -1,17 +1,18 @@
 package juja.microservices.gamification.service;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import java.util.List;
+import javax.inject.Inject;
 import juja.microservices.gamification.BaseIntegrationTest;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
+import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.inject.Inject;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -19,6 +20,9 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(SpringRunner.class)
 public class AchievementServiceTest extends BaseIntegrationTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Inject
     private AchievementRepository achievementRepository;
@@ -93,33 +97,79 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String expectedUserFrom = "sasha";
         String expectedUserTo = "max";
         String expectedDescription = "For helping with...";
+        String expectedType = "THANKS";
 
         achievementService.addThanks(expectedUserFrom, expectedUserTo, expectedDescription);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("max");
         String actualUserFrom = achievementList.get(0).getUserFromId();
         String actualUserTo = achievementList.get(0).getUserToId();
         String actualDescription = achievementList.get(0).getDescription();
+        String actualType = String.valueOf(achievementList.get(0).getType());
 
         assertEquals(expectedUserFrom, actualUserFrom);
         assertEquals(expectedUserTo, actualUserTo);
         assertEquals(expectedDescription, actualDescription);
+        assertEquals(expectedType, actualType);
     }
 
     @Test
-    @UsingDataSet(locations = "/datasets/addThanksAchievement.json")
-    public void shouldAddThirdThanksAchievement() {
-        String expectedUserFrom = "sasha";
-        String expectedUserTo = "sasha";
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldCorrectAddThirdThanksAchievement() {
+        String userFrom = "sasha";
+        String firstUserTo = "peter";
+        String secondUserTo = "max";
+        String description = "For helping with...";
+        achievementService.addThanks(userFrom, firstUserTo, description);
+        achievementService.addThanks(userFrom, secondUserTo, description);
+
         String expectedDescription = "Issued two thanks";
-
-        achievementService.addThanks(expectedUserFrom, expectedUserTo, expectedDescription);
-        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(expectedUserFrom, AchievementType.THANKS);
-        String actualUserFrom = achievementList.get(0).getUserFromId();
-        String actualUserTo = achievementList.get(0).getUserToId();
+        String expectedType = "THANKS";
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
         String actualDescription = achievementList.get(0).getDescription();
+        String actualType = String.valueOf(achievementList.get(0).getType());
 
-        assertEquals(expectedUserFrom, actualUserFrom);
-        assertEquals(expectedUserTo, actualUserTo);
         assertEquals(expectedDescription, actualDescription);
+        assertEquals(expectedType, actualType);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldThrowExceptionAddThanksAchievementYourself() {
+        expectedException.expect(UnsupportedOperationException.class);
+        expectedException.expectMessage("You cannot thank yourself");
+        String userFrom = "sasha";
+        String userTo = "sasha";
+        String description = "For helping with...";
+        achievementService.addThanks(userFrom, userTo, description);
+        Assert.fail();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldThrowExceptionAddTwoThanksAchievementOnePerson() {
+        expectedException.expect(UnsupportedOperationException.class);
+        expectedException.expectMessage("You cannot give more than one thanks for day one person");
+        String userFrom = "sasha";
+        String userTo = "max";
+        String description = "For helping with...";
+        achievementService.addThanks(userFrom, userTo, description);
+        achievementService.addThanks(userFrom, userTo, description);
+        Assert.fail();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldThrowExceptionAddMoreThanTwoThanksAchievement() {
+        expectedException.expect(UnsupportedOperationException.class);
+        expectedException.expectMessage("You cannot give more than two thanks for day");
+        String userFrom = "sasha";
+        String firstUserTo = "ira";
+        String secondUserTo = "max";
+        String thirdUserTo = "jon";
+        String description = "For helping with...";
+        achievementService.addThanks(userFrom, firstUserTo, description);
+        achievementService.addThanks(userFrom, secondUserTo, description);
+        achievementService.addThanks(userFrom, thirdUserTo, description);
+        Assert.fail();
     }
 }
