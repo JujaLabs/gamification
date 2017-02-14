@@ -4,6 +4,8 @@ package juja.microservices.gamification.controller;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.UserAchievementDetails;
 import juja.microservices.gamification.entity.UserPointsSum;
+import juja.microservices.gamification.exceptions.GamificationException;
+import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,5 +40,16 @@ public class UserController {
         List<UserAchievementDetails> result =
                 achievementRepository.getUserAchievementsDetails();
         return ResponseEntity.ok(result);
+    }
+
+
+    @RequestMapping(value = "/user/resolvestrandart")
+    public void testUnsupportedAchievementException(){
+        throw  new UnsupportedAchievementException("This exception handled standart spring's resolver");
+    }
+
+    @RequestMapping(value = "/user/resolvecustom")
+    public void testGamificationException(){
+        throw  new GamificationException("This exception  handled custom handler");
     }
 }
