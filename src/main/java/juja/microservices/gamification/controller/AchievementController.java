@@ -1,6 +1,7 @@
 package juja.microservices.gamification.controller;
 
 import java.util.List;
+import juja.microservices.gamification.entity.ThanksRequest;
 import juja.microservices.gamification.service.AchievementService;
 import net.minidev.json.JSONObject;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +30,8 @@ public class AchievementController {
 
     @RequestMapping(value = "/achieve/thanks", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<?> addThanks(@RequestParam String userFromId, String userToId, String report) {
-        List<String> achievementId = achievementService.addThanks(userFromId, userToId, report);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", achievementId);
-        return ResponseEntity.ok(jsonObject);
+    public ResponseEntity<?> addThanks(@RequestBody ThanksRequest request) {
+        List<String> ids = achievementService.addThanks(request.getFrom(), request.getTo(), request.getDescription());
+        return ResponseEntity.ok(ids);
     }
 }
