@@ -2,15 +2,22 @@ package juja.microservices.gamification.controller;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import juja.microservices.gamification.BaseIntegrationTest;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
+import static org.junit.Assert.assertEquals;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,27 +29,125 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
     private MockMvc mockMvc;
 
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
     @Before
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
-
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
     public void getAllUsersWithAchievementAndReturnJson() throws Exception {
         mockMvc.perform(get("/user/achieveSum")
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .contentType(APPLICATION_JSON_UTF8))
+            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
     }
 
     @Test
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")
     public void getUsersAchievementDetailsAndReturnJson() throws Exception {
         mockMvc.perform(get("/user/achieveDetails")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addThanksShouldReturnValidJson() throws Exception {
+        String expectedJson =
+            "[{\"userToId\":\"ira\",\"pointCount\":1}]";
+        String jsonContentRequest =
+            "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"good work\"}";
+
+        addThanks(jsonContentRequest);
+
+        MvcResult result = getMvcResultUserAchieveSum();
+
+        String content = result.getResponse().getContentAsString();
+        assertEquals(expectedJson, content);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addThanksShouldReturnExceptionCannotThankYourself() throws Exception {
+        String jsonContentRequest =
+            "{\"userFromId\":\"sasha\",\"userToId\":\"sasha\",\"description\":\"thanks\"}";
+
+        exception.expect(Exception.class);
+        exception.expectMessage("You cannot thank yourself");
+        addThanks(jsonContentRequest);
+        Assert.fail();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addThanksShouldReturnExceptionOneThanksOnePersonInDay() throws Exception {
+        String firstContentRequest =
+            "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"thanks\"}";
+        String secondContentRequest =
+            "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"thanks\"}";
+
+        exception.expect(Exception.class);
+        exception.expectMessage("You cannot give more than one thanks for day one person");
+        addThanks(firstContentRequest);
+        addThanks(secondContentRequest);
+        Assert.fail();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addNewThanksShouldReturnExceptionNotMoreTwoThanks() throws Exception {
+        String firstContentRequest =
+            "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"thanks\"}";
+        String secondContentRequest =
+            "{\"userFromId\":\"sasha\",\"userToId\":\"max\",\"description\":\"thanks\"}";
+        String thirdContentRequest =
+            "{\"userFromId\":\"sasha\",\"userToId\":\"peter\",\"description\":\"thanks\"}";
+
+        exception.expect(Exception.class);
+        exception.expectMessage("You cannot give more than two thanks for day");
+        addThanks(firstContentRequest);
+        addThanks(secondContentRequest);
+        addThanks(thirdContentRequest);
+        Assert.fail();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addNewTwoThanksShouldReturnOneForMe() throws Exception {
+        String expectedJson =
+            "[{\"userToId\":\"sasha\",\"pointCount\":1}," +
+                "{\"userToId\":\"max\",\"pointCount\":1}," +
+                "{\"userToId\":\"ira\",\"pointCount\":1}]";
+        String firstContentRequest =
+            "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"thanks\"}";
+        String secondContentRequest =
+            "{\"userFromId\":\"sasha\",\"userToId\":\"max\",\"description\":\"thanks\"}";
+
+        addThanks(firstContentRequest);
+        addThanks(secondContentRequest);
+
+        MvcResult result = getMvcResultUserAchieveSum();
+
+        String content = result.getResponse().getContentAsString();
+        assertEquals(expectedJson, content);
+    }
+
+    private void addThanks(String jsonContentRequest) throws Exception {
+        mockMvc.perform(post("/achieve/thanks")
+            .contentType(APPLICATION_JSON_UTF8)
+            .content(jsonContentRequest))
+            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
+    }
+
+    private MvcResult getMvcResultUserAchieveSum() throws Exception {
+        return mockMvc
+            .perform(MockMvcRequestBuilders.get("/user/achieveSum").contentType(APPLICATION_JSON_UTF8))
+            .andReturn();
     }
 }
