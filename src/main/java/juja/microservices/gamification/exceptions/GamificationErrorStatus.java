@@ -4,7 +4,7 @@ package juja.microservices.gamification.exceptions;
  * @author Danil Kuznetsov
  */
 public enum GamificationErrorStatus {
-    BASE_GAMIFICATION_EXCEPTION(0, "Oops something went wrong :(", "The exception is base in gamification");
+    GAMIFICATION_EXCEPTION(0, "Oops something went wrong :(", "The exception is general in gamification");
 
     private String developerMessage;
     private String clientMessage;
