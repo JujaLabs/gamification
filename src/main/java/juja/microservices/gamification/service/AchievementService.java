@@ -1,16 +1,18 @@
 package juja.microservices.gamification.service;
 
-
+import java.util.ArrayList;
+import java.util.Collections;
+import javax.inject.Inject;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
 import java.util.List;
 
 @Service
 public class AchievementService {
+
+    private static final int TWO_THANKS = 2;
 
     @Inject
     private AchievementRepository achievementRepository;
@@ -24,18 +26,48 @@ public class AchievementService {
     public String addDaily(String description, String userFromId) {
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.DAILY);
 
-        if (userFromIdList.size()==0){
+        if (userFromIdList.size() == 0) {
             Achievement newAchievement = new Achievement(userFromId, userFromId, 1, description, AchievementType.DAILY);
             return achievementRepository.addAchievement(newAchievement);
         } else {
             Achievement achievement = userFromIdList.get(0);
             String oldDescription = achievement.getDescription();
             description = oldDescription
-                    .concat(System.lineSeparator())
-                    .concat(description);
+                .concat(System.lineSeparator())
+                .concat(description);
             achievement.setDescription(description);
             return achievementRepository.addAchievement(achievement);
         }
     }
 
+    public List<String> addThanks(String userFromId, String userToId, String description) {
+        List<String> result = new ArrayList<>();
+        List<Achievement> userFromAndToListToday = achievementRepository
+            .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
+
+        if (userFromId.equalsIgnoreCase(userToId)) {
+            throw new UnsupportedOperationException("You cannot thank yourself");
+        }
+
+        for (Achievement achievement : userFromAndToListToday) {
+            if (achievement.getUserToId().equals(userToId)) {
+                throw new UnsupportedOperationException("You cannot give more than one thanks for day one person");
+            }
+        }
+
+        if (userFromAndToListToday.isEmpty()) {
+            Achievement firstThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
+            result.add(achievementRepository.addAchievement(firstThanks));
+            return result;
+        } else if (userFromAndToListToday.size() >= TWO_THANKS) {
+            throw new UnsupportedOperationException("You cannot give more than two thanks for day");
+        } else {
+            Achievement secondThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
+            result.add(achievementRepository.addAchievement(secondThanks));
+            String descriptionTwoThanks = "Issued two thanks";
+            Achievement thirdThanks = new Achievement(userFromId, userFromId, 1, descriptionTwoThanks, AchievementType.THANKS);
+            result.add(achievementRepository.addAchievement(thirdThanks));
+        }
+        return result;
+    }
 }
