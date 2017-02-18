@@ -4,13 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
+@Getter
 public class ThanksRequest {
 
-    @Getter
     private String from;
-    @Getter
     private String to;
-    @Getter
     private String description;
 
     @JsonCreator
