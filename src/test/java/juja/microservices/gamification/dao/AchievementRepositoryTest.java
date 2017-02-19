@@ -3,15 +3,13 @@ package juja.microservices.gamification.dao;
 import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import juja.microservices.gamification.BaseIntegrationTest;
-import juja.microservices.gamification.entity.Achievement;
-import juja.microservices.gamification.entity.AchievementType;
-import juja.microservices.gamification.entity.UserAchievementDetails;
-import juja.microservices.gamification.entity.UserPointsSum;
+import juja.microservices.gamification.entity.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,15 +39,15 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
-    public void shouldReturnSizeAllUsersWithAchievements() {
-        List<UserPointsSum> list = achievementRepository.getAllUsersWithAchievement();
+    public void shouldReturnSizeAllUsersWithPointSum() {
+        List<UserPointsSum> list = achievementRepository.getAllUsersWithPointSum();
         assertEquals(2, list.size());
     }
 
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
-    public void shouldReturnAllUsersNameAndSumAchievements() {
-        List<UserPointsSum> list = achievementRepository.getAllUsersWithAchievement();
+    public void shouldReturnAllUsersNameAndPointSum() {
+        List<UserPointsSum> list = achievementRepository.getAllUsersWithPointSum();
 
         String expectedFirstName = "peter";
         int expectedSumPointUserPeter = 6;
@@ -71,15 +69,12 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")
-    public void getAllUsersIdsTest() {
-        List<String> list = achievementRepository.getAllUserToIDs();
-        assertEquals(2, list.size());
-    }
-
-    @Test
-    @UsingDataSet(locations = "/datasets/selectAchievementById.json")
     public void getUserAchievementsDetailsTestForAllUsersList() {
-        List<UserAchievementDetails> list = achievementRepository.getUserAchievementsDetails();
+        List<String> ids = new ArrayList<>();
+        ids.add("sasha");
+        ids.add("ira");
+        UserIdsRequest request = new UserIdsRequest(ids);
+        List<UserAchievementDetails> list = achievementRepository.getUserAchievementsDetails(request);
         assertEquals(2, list.size());
     }
 
@@ -89,9 +84,12 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         String sendDate = achievementRepository.getFormattedCurrentDate();
         String lineSeparator = System.lineSeparator();
 
-        Achievement testAchievement = new Achievement("oleg","oleg",1,"Old daily report",AchievementType.DAILY);
-        Achievement testAchievementAnotherDate = new Achievement("oleg","oleg",1,"Old another date daily report",AchievementType.DAILY);
-        Achievement testAchievementNotADaily = new Achievement("oleg","olga",1,"Not a daily report",AchievementType.THANKS);
+        Achievement testAchievement =
+                new Achievement("oleg","oleg",1,"Old daily report", AchievementType.DAILY);
+        Achievement testAchievementAnotherDate =
+                new Achievement("oleg","oleg",1,"Old another date daily report", AchievementType.DAILY);
+        Achievement testAchievementNotADaily =
+                new Achievement("oleg","olga",1,"Not a daily report", AchievementType.THANKS);
 
         testAchievement.setSendDate(sendDate);
         testAchievementAnotherDate.setSendDate("1917-02-09");
@@ -100,7 +98,8 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         achievementRepository.addAchievement(testAchievementAnotherDate);
         achievementRepository.addAchievement(testAchievementNotADaily);
 
-        List<Achievement> list = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType("oleg", AchievementType.DAILY);
+        List<Achievement> list = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType("oleg",
+                AchievementType.DAILY);
 
         String shouldMuchRetrievedAchievement =
                 "Achievement:".concat(lineSeparator)

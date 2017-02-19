@@ -1,9 +1,6 @@
 package juja.microservices.gamification.dao;
 
-import juja.microservices.gamification.entity.Achievement;
-import juja.microservices.gamification.entity.AchievementType;
-import juja.microservices.gamification.entity.UserAchievementDetails;
-import juja.microservices.gamification.entity.UserPointsSum;
+import juja.microservices.gamification.entity.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -19,7 +16,6 @@ import java.util.List;
 
 @Repository
 public class AchievementRepository {
-    private static final String COLLECTION_NAME = "achievement";
 
     @Inject
     private MongoTemplate mongoTemplate;
@@ -38,10 +34,9 @@ public class AchievementRepository {
         return dateFormat.format(currentDate);
     }
 
-    public List<UserAchievementDetails> getUserAchievementsDetails() {
-        List<String> userIds = getAllUserToIDs();
+    public List<UserAchievementDetails> getUserAchievementsDetails(UserIdsRequest ids) {
         List<UserAchievementDetails> resultList = new ArrayList<>();
-        for (String userId : userIds) {
+        for (String userId : ids.getToIds()) {
             List<Achievement> details = getAllAchievementsByUserToId(userId);
             resultList.add(new UserAchievementDetails(userId, details));
         }
@@ -61,11 +56,7 @@ public class AchievementRepository {
                 .and("type").is(type.toString())), Achievement.class);
     }
 
-    public List<String> getAllUserToIDs() {
-        return mongoTemplate.getCollection(COLLECTION_NAME).distinct("userToId");
-    }
-
-    public List<UserPointsSum> getAllUsersWithAchievement() {
+    public List<UserPointsSum> getAllUsersWithPointSum() {
         Aggregation aggregation = Aggregation.newAggregation(
             Aggregation.group("userToId")
                 .first("userToId").as("userToId")
