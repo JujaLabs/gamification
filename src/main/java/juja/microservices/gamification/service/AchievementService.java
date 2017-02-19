@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
+import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -45,12 +46,12 @@ public class AchievementService {
             .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
 
         if (userFromId.equalsIgnoreCase(userToId)) {
-            throw new UnsupportedOperationException("You cannot thank yourself");
+            throw new UnsupportedAchievementException("You cannot thank yourself");
         }
 
         for (Achievement achievement : userFromAndToListToday) {
             if (achievement.getUserToId().equals(userToId)) {
-                throw new UnsupportedOperationException("You cannot give more than one thanks for day one person");
+                throw new UnsupportedAchievementException("You cannot give more than one thanks for day one person");
             }
         }
 
@@ -59,7 +60,7 @@ public class AchievementService {
             result.add(achievementRepository.addAchievement(firstThanks));
             return result;
         } else if (userFromAndToListToday.size() >= TWO_THANKS) {
-            throw new UnsupportedOperationException("You cannot give more than two thanks for day");
+            throw new UnsupportedAchievementException("You cannot give more than two thanks for day");
         } else {
             Achievement secondThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
             result.add(achievementRepository.addAchievement(secondThanks));

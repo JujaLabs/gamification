@@ -7,6 +7,7 @@ import juja.microservices.gamification.BaseIntegrationTest;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
+import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -157,7 +158,7 @@ public class AchievementServiceTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void shouldThrowExceptionAddThanksAchievementYourself() {
-        expectedException.expect(UnsupportedOperationException.class);
+        expectedException.expect(UnsupportedAchievementException.class);
         expectedException.expectMessage("You cannot thank yourself");
         String userFrom = "sasha";
         String userTo = "sasha";
@@ -169,7 +170,7 @@ public class AchievementServiceTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void shouldThrowExceptionAddTwoThanksAchievementOnePerson() {
-        expectedException.expect(UnsupportedOperationException.class);
+        expectedException.expect(UnsupportedAchievementException.class);
         expectedException.expectMessage("You cannot give more than one thanks for day one person");
         String userFrom = "sasha";
         String userTo = "max";
@@ -182,7 +183,7 @@ public class AchievementServiceTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void shouldThrowExceptionAddMoreThanTwoThanksAchievement() {
-        expectedException.expect(UnsupportedOperationException.class);
+        expectedException.expect(UnsupportedAchievementException.class);
         expectedException.expectMessage("You cannot give more than two thanks for day");
         String userFrom = "sasha";
         String firstUserTo = "ira";
