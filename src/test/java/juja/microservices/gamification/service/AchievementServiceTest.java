@@ -92,6 +92,28 @@ public class AchievementServiceTest extends BaseIntegrationTest {
     }
 
     @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldUpdateDescriptionAddThreeDailyAchievement() {
+        String userFrom = "sasha";
+        String firstDescription = "Daily report first";
+        String secondDescription = "Daily report second";
+        String thirdDescription = "Daily report third";
+        achievementService.addDaily(firstDescription, userFrom);
+        achievementService.addDaily(secondDescription, userFrom);
+        achievementService.addDaily(thirdDescription, userFrom);
+
+        String expectedDescription = "Daily report first\r\nDaily report second\r\nDaily report third";
+        String expectedType = "DAILY";
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
+        String actualDescription = achievementList.get(0).getDescription();
+        String actualType = String.valueOf(achievementList.get(0).getType());
+
+        Assert.assertTrue(achievementList.size() == 1);
+        assertEquals(expectedDescription, actualDescription);
+        assertEquals(expectedType, actualType);
+    }
+
+    @Test
     @UsingDataSet(locations = "/datasets/addThanksAchievement.json")
     public void shouldAddNewThanksAchievement() {
         String expectedUserFrom = "sasha";

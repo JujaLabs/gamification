@@ -22,7 +22,6 @@ public class AchievementService {
      * If the DAILY achievement already exists in the database and user wants to add another DAILY
      * achievement at the same day, the only field description will be updated.
      */
-    //TODO в системе может существовать только 1 дейлик за один конкретный день. Иначе -?
     public String addDaily(String description, String userFromId) {
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.DAILY);
 
