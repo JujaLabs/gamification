@@ -39,7 +39,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
     public void getAllUsersWithAchievementAndReturnJson() throws Exception {
-        mockMvc.perform(get("/user/achieveSum")
+        mockMvc.perform(get("/user/pointSum")
             .contentType(APPLICATION_JSON_UTF8))
             .andExpect(content().contentType(APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
@@ -48,8 +48,10 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")
     public void getUsersAchievementDetailsAndReturnJson() throws Exception {
-        mockMvc.perform(get("/user/achieveDetails")
-            .contentType(MediaType.APPLICATION_JSON))
+        String json = "{\"toIds\":[\"sasha\", \"ira\"]}";
+        mockMvc.perform(post("/user/achieveDetails")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json))
             .andExpect(content().contentType(APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
     }
@@ -145,7 +147,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
     private MvcResult getMvcResultUserAchieveSum() throws Exception {
         return mockMvc
-            .perform(MockMvcRequestBuilders.get("/user/achieveSum").contentType(APPLICATION_JSON_UTF8))
+            .perform(MockMvcRequestBuilders.get("/user/pointSum").contentType(APPLICATION_JSON_UTF8))
             .andReturn();
     }
 }

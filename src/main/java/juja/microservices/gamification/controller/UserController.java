@@ -1,11 +1,11 @@
 package juja.microservices.gamification.controller;
 
-
-import juja.microservices.gamification.dao.AchievementRepository;
+import juja.microservices.gamification.entity.UserIdsRequest;
 import juja.microservices.gamification.entity.UserAchievementDetails;
 import juja.microservices.gamification.entity.UserPointsSum;
-import org.springframework.http.HttpStatus;
+import juja.microservices.gamification.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,22 +18,20 @@ import java.util.List;
 public class UserController {
 
     @Inject
-    private AchievementRepository achievementRepository;
+    private UserService userService;
 
-    @RequestMapping(value = "/achieveSum", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllUsersWithAchievement() {
-        List<UserPointsSum> users = achievementRepository.getAllUsersWithAchievement();
+    @RequestMapping(value = "/pointSum", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllUsersWithPointSum() {
+        List<UserPointsSum> users = userService.getAllUsersWithPointSum();
 
-        if (users.isEmpty()) {
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return ResponseEntity.ok(users);
     }
 
-    @RequestMapping(value = "/achieveDetails", method = RequestMethod.GET)
-    public ResponseEntity<?> getUsersWithAchievementDetails() {
+    @RequestMapping(value = "/achieveDetails", method = RequestMethod.POST)
+    public ResponseEntity<?> getUsersWithAchievementDetails(@RequestBody UserIdsRequest toIds) {
         List<UserAchievementDetails> result =
-                achievementRepository.getUserAchievementsDetails();
+                userService.getUserAchievementsDetails(toIds);
+
         return ResponseEntity.ok(result);
     }
 }

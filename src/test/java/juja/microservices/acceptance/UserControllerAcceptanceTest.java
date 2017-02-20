@@ -21,7 +21,7 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInC
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
- * Created by danil.kuznetsov on 05/02/17.
+ * @author danil.kuznetsov
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = {Gamification.class})
@@ -47,36 +47,20 @@ public class UserControllerAcceptanceTest {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-    @UsingDataSet(locations = "/datasets/selectAchievementById.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    @Test
-    public void testUrlAchieveDetails() {
-        Response result = given()
-                .contentType("application/json")
-                .when()
-                .get("/user/achieveDetails")
-                .then()
-                .statusCode(200)
-                .assertThat().body(matchesJsonSchemaInClasspath("jsonSchema/responseAchieveDetails.json"))
-                .extract()
-                .response();
-        System.out.println("\n\nResponse for /user/achieveDetails");
-        System.out.println("\n\n"+result.asString()+"\n\n");
-    }
-
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
     public void testUrlAchieveSum() {
         Response result = given()
                 .contentType("application/json")
                 .when()
-                .get("/user/achieveSum")
+                .get("/user/pointSum")
                 .then()
                 .statusCode(200)
-                .assertThat().body(matchesJsonSchemaInClasspath("jsonSchema/responseAchieveSum.json"))
+                .assertThat().body(matchesJsonSchemaInClasspath("jsonSchema/responsePointSum.json"))
                 .extract()
                 .response();
 
-        System.out.println("\n\nResponse for /user/achieveSum");
+        System.out.println("\n\nResponse for /user/pointSum");
         System.out.println("\n\n"+result.asString()+"\n\n");
     }
 }
