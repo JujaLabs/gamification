@@ -2,8 +2,11 @@ package juja.microservices.gamification.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 
+@Getter
 public class Achievement {
 
     @Id
@@ -11,8 +14,10 @@ public class Achievement {
 
     private String userFromId;
     private String userToId;
+    @Setter
     private String sendDate;
     private int pointCount;
+    @Setter
     private String description;
     private AchievementType type;
 
@@ -25,42 +30,6 @@ public class Achievement {
         this.pointCount = pointCount;
         this.description = description;
         this.type = type;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getUserToId() {
-        return userToId;
-    }
-
-    public int getPointCount() {
-        return pointCount;
-    }
-
-    public String getUserFromId() {
-        return userFromId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getSendDate() {
-        return sendDate;
-    }
-
-    public void setSendDate(String sendDate) {
-        this.sendDate = sendDate;
-    }
-
-    public AchievementType getType() {
-        return type;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override

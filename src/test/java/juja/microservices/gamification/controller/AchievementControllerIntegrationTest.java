@@ -2,7 +2,6 @@ package juja.microservices.gamification.controller;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import juja.microservices.gamification.BaseIntegrationTest;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,7 +64,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String jsonContentRequest =
             "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"good work\"}";
 
-        addThanks(jsonContentRequest);
+        addThanksIsOk(jsonContentRequest);
 
         MvcResult result = getMvcResultUserAchieveSum();
 
@@ -79,10 +78,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String jsonContentRequest =
             "{\"userFromId\":\"sasha\",\"userToId\":\"sasha\",\"description\":\"thanks\"}";
 
-        exception.expect(Exception.class);
-        exception.expectMessage("You cannot thank yourself");
-        addThanks(jsonContentRequest);
-        Assert.fail();
+        addThanksFailed(jsonContentRequest);
     }
 
     @Test
@@ -93,11 +89,8 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String secondContentRequest =
             "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"thanks\"}";
 
-        exception.expect(Exception.class);
-        exception.expectMessage("You cannot give more than one thanks for day one person");
-        addThanks(firstContentRequest);
-        addThanks(secondContentRequest);
-        Assert.fail();
+        addThanksIsOk(firstContentRequest);
+        addThanksFailed(secondContentRequest);
     }
 
     @Test
@@ -110,12 +103,9 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String thirdContentRequest =
             "{\"userFromId\":\"sasha\",\"userToId\":\"peter\",\"description\":\"thanks\"}";
 
-        exception.expect(Exception.class);
-        exception.expectMessage("You cannot give more than two thanks for day");
-        addThanks(firstContentRequest);
-        addThanks(secondContentRequest);
-        addThanks(thirdContentRequest);
-        Assert.fail();
+        addThanksIsOk(firstContentRequest);
+        addThanksIsOk(secondContentRequest);
+        addThanksFailed(thirdContentRequest);
     }
 
     @Test
@@ -130,8 +120,8 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String secondContentRequest =
             "{\"userFromId\":\"sasha\",\"userToId\":\"max\",\"description\":\"thanks\"}";
 
-        addThanks(firstContentRequest);
-        addThanks(secondContentRequest);
+        addThanksIsOk(firstContentRequest);
+        addThanksIsOk(secondContentRequest);
 
         MvcResult result = getMvcResultUserAchieveSum();
 
@@ -139,12 +129,20 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         assertEquals(expectedJson, content);
     }
 
-    private void addThanks(String jsonContentRequest) throws Exception {
+    private void addThanksIsOk(String jsonContentRequest) throws Exception {
         mockMvc.perform(post("/achieve/thanks")
             .contentType(APPLICATION_JSON_UTF8)
             .content(jsonContentRequest))
             .andExpect(content().contentType(APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
+    }
+
+    private void addThanksFailed(String jsonContentRequest) throws Exception {
+        mockMvc.perform(post("/achieve/thanks")
+            .contentType(APPLICATION_JSON_UTF8)
+            .content(jsonContentRequest))
+            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+            .andExpect(status().isBadRequest());
     }
 
     private MvcResult getMvcResultUserAchieveSum() throws Exception {
