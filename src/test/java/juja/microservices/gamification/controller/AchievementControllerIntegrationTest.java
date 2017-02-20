@@ -78,7 +78,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String jsonContentRequest =
             "{\"userFromId\":\"sasha\",\"userToId\":\"sasha\",\"description\":\"thanks\"}";
 
-        addThanksIsBad(jsonContentRequest);
+        addThanksFailed(jsonContentRequest);
     }
 
     @Test
@@ -90,7 +90,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
             "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"thanks\"}";
 
         addThanksIsOk(firstContentRequest);
-        addThanksIsBad(secondContentRequest);
+        addThanksFailed(secondContentRequest);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
         addThanksIsOk(firstContentRequest);
         addThanksIsOk(secondContentRequest);
-        addThanksIsBad(thirdContentRequest);
+        addThanksFailed(thirdContentRequest);
     }
 
     @Test
@@ -137,7 +137,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
             .andExpect(status().isOk());
     }
 
-    private void addThanksIsBad(String jsonContentRequest) throws Exception {
+    private void addThanksFailed(String jsonContentRequest) throws Exception {
         mockMvc.perform(post("/achieve/thanks")
             .contentType(APPLICATION_JSON_UTF8)
             .content(jsonContentRequest))
