@@ -4,7 +4,8 @@ package juja.microservices.gamification.exceptions;
  * @author Danil Kuznetsov
  */
 public enum GamificationErrorStatus {
-    GAMIFICATION_EXCEPTION(0, "Oops something went wrong :(", "The exception is general in gamification");
+    GAMIFICATION_EXCEPTION(0, "Oops something went wrong :(", "The exception is general in gamification"),
+    STANDARD_SPRING_EXCEPTION(1, "Oops something went wrong :(", "The exception is  standard Spring exceptions");
 
     private String developerMessage;
     private String clientMessage;
