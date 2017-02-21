@@ -2,65 +2,44 @@ package juja.microservices.acceptance;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
-import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import juja.microservices.gamification.Gamification;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder.mongoDb;
+import java.io.IOException;
+
 import static io.restassured.RestAssured.given;
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 
 /**
- * @author danil.kuznetsov
+ * @author Danil Kuznetsov
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = {Gamification.class})
-@DirtiesContext
-public class UserControllerAcceptanceTest {
-
-    @LocalServerPort
-    int localPort;
-
-    @Rule
-    public MongoDbRule mongoDbRule = new MongoDbRule(
-            mongoDb()
-                    .databaseName("gamification")
-                    .host("127.0.0.1")
-                    .port(27017)
-                    .build()
-    );
-
-    @Before
-    public void setup() {
-        RestAssured.port = localPort;
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
+public class UserControllerAcceptanceTest extends BaseAcceptanceTest {
 
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
-    public void testUrlAchieveSum() {
-        Response result = given()
-                .contentType("application/json")
-                .when()
-                .get("/user/pointSum")
-                .then()
-                .statusCode(200)
-                .assertThat().body(matchesJsonSchemaInClasspath("jsonSchema/responsePointSum.json"))
-                .extract()
-                .response();
+    public void testUrlAchieveSum() throws IOException {
 
-        System.out.println("\n\nResponse for /user/pointSum");
-        System.out.println("\n\n"+result.asString()+"\n\n");
+        String url = "/user/pointSum";
+        String expectedResponse = convertToString(resource("expectedJson/responsePointSum.json"));
+
+        Response actualResponse =
+                given()
+                        .contentType("application/json")
+                        .when()
+                        .get(url)
+                        .then()
+                        .statusCode(200)
+                        .extract()
+                        .response();
+
+        assertJsonEquals(actualResponse.asString(), expectedResponse);
+
+        printConsoleReport(url, expectedResponse, actualResponse.body());
     }
+
+
 }
