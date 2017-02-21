@@ -23,7 +23,7 @@ public class AchievementService {
      * If the DAILY achievement already exists in the database and user wants to add another DAILY
      * achievement at the same day, the only field description will be updated.
      */
-    public String addDaily(String description, String userFromId) {
+    public String addDaily(String userFromId, String description) {
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.DAILY);
 
         if (userFromIdList.size() == 0) {
@@ -50,7 +50,7 @@ public class AchievementService {
         }
 
         for (Achievement achievement : userFromAndToListToday) {
-            if (achievement.getUserToId().equals(userToId)) {
+            if (achievement.getTo().equals(userToId)) {
                 throw new UnsupportedAchievementException("You cannot give more than one thanks for day one person");
             }
         }

@@ -1,39 +1,39 @@
 {
   "achievement" : [
     {
-      "userFromId" : "sasha",
-      "userToId" : "peter",
-      "pointCount" : 1,
+      "from" : "sasha",
+      "to" : "peter",
+      "point" : 1,
       "description" : "good work"
     },
     {
-      "userFromId" : "sasha",
-      "userToId" : "peter",
-      "pointCount" : 2,
+      "from" : "sasha",
+      "to" : "peter",
+      "point" : 2,
       "description" : "good work"
     },
     {
-      "userFromId" : "sasha",
-      "userToId" : "peter",
-      "pointCount" : 3,
+      "from" : "sasha",
+      "to" : "peter",
+      "point" : 3,
       "description" : "good work"
     },
     {
-      "userFromId" : "sasha",
-      "userToId" : "max",
-      "pointCount" : 1,
+      "from" : "sasha",
+      "to" : "max",
+      "point" : 1,
       "description" : "good work"
     },
     {
-      "userFromId" : "sasha",
-      "userToId" : "max",
-      "pointCount" : 1,
+      "from" : "sasha",
+      "to" : "max",
+      "point" : 1,
       "description" : "good work"
     },
     {
-      "userFromId": "sasha",
-      "userToId": "max",
-      "pointCount": 2,
+      "from": "sasha",
+      "to": "max",
+      "point": 2,
       "description": "good work"
     }
   ]

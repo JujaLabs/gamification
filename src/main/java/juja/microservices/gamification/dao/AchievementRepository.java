@@ -43,24 +43,24 @@ public class AchievementRepository {
         return resultList;
     }
 
-    public List<Achievement> getAllAchievementsByUserToId(String userToId) {
-        return mongoTemplate.find(new Query(Criteria.where("userToId").is(userToId)), Achievement.class);
+    public List<Achievement> getAllAchievementsByUserToId(String to) {
+        return mongoTemplate.find(new Query(Criteria.where("to").is(to)), Achievement.class);
     }
 
-    public List<Achievement> getAllAchievementsByUserFromIdCurrentDateType(String userFromId, AchievementType type) {
+    public List<Achievement> getAllAchievementsByUserFromIdCurrentDateType(String from, AchievementType type) {
         String sendDate = getFormattedCurrentDate();
 
         return mongoTemplate.find(new Query(
-            Criteria.where("userFromId").is(userFromId)
+            Criteria.where("from").is(from)
                 .and("sendDate").is(sendDate)
                 .and("type").is(type.toString())), Achievement.class);
     }
 
     public List<UserPointsSum> getAllUsersWithPointSum() {
         Aggregation aggregation = Aggregation.newAggregation(
-            Aggregation.group("userToId")
-                .first("userToId").as("userToId")
-                .sum("pointCount").as("pointCount")
+            Aggregation.group("to")
+                .first("to").as("to")
+                .sum("point").as("point")
         );
         AggregationResults<UserPointsSum> result =
             mongoTemplate.aggregate(aggregation, Achievement.class, UserPointsSum.class);

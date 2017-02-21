@@ -44,20 +44,21 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         assertEquals(2, list.size());
     }
 
+    //TODO This test can't be accurate because an order of objects in list of result can be unpredictable
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
     public void shouldReturnAllUsersNameAndPointSum() {
         List<UserPointsSum> list = achievementRepository.getAllUsersWithPointSum();
 
-        String expectedFirstName = "peter";
-        int expectedSumPointUserPeter = 6;
-        assertEquals(expectedFirstName, list.get(0).getUserToId());
-        assertEquals(expectedSumPointUserPeter, list.get(0).getPointCount());
+        String expectedFirstName = "max";
+        int expectedSumPointUserPeter = 4;
+        assertEquals(expectedFirstName, list.get(0).getTo());
+        assertEquals(expectedSumPointUserPeter, list.get(0).getPoint());
 
-        String expectedSecondName = "max";
-        int expectedSumPointUserMax = 4;
-        assertEquals(expectedSecondName, list.get(1).getUserToId());
-        assertEquals(expectedSumPointUserMax, list.get(1).getPointCount());
+        String expectedSecondName = "peter";
+        int expectedSumPointUserMax = 6;
+        assertEquals(expectedSecondName, list.get(1).getTo());
+        assertEquals(expectedSumPointUserMax, list.get(1).getPoint());
     }
 
     @Test
@@ -104,10 +105,10 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         String shouldMuchRetrievedAchievement =
                 "Achievement:".concat(lineSeparator)
                 .concat("id = ").concat(id).concat(lineSeparator)
-                .concat("userFromId = ").concat("oleg").concat(lineSeparator)
-                .concat("userToId = ").concat("oleg").concat(lineSeparator)
+                .concat("from = ").concat("oleg").concat(lineSeparator)
+                .concat("to = ").concat("oleg").concat(lineSeparator)
                 .concat("sendDate = ").concat(sendDate).concat(lineSeparator)
-                .concat("pointCount = ").concat("1").concat(lineSeparator)
+                .concat("point = ").concat("1").concat(lineSeparator)
                 .concat("description = ").concat("Old daily report").concat(lineSeparator)
                 .concat("type = ").concat("DAILY").concat(lineSeparator);
 

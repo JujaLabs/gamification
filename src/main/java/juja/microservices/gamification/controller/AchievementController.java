@@ -1,6 +1,8 @@
 package juja.microservices.gamification.controller;
 
 import java.util.List;
+
+import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.ThanksRequest;
 import juja.microservices.gamification.service.AchievementService;
 import net.minidev.json.JSONObject;
@@ -21,11 +23,9 @@ public class AchievementController {
 
     @RequestMapping(value = "/achieve/daily", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<?> addDaily(@RequestParam String report, String userFromId) {
-        String achievementId = achievementService.addDaily(report, userFromId);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", achievementId);
-        return ResponseEntity.ok(jsonObject);
+    public ResponseEntity<?> addDaily(@RequestBody DailyRequest request) {
+        String achievementId = achievementService.addDaily(request.getFrom(), request.getDescription());
+        return ResponseEntity.ok(achievementId);
     }
 
     @RequestMapping(value = "/achieve/thanks", method = RequestMethod.POST)

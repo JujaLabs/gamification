@@ -60,9 +60,9 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addThanksShouldReturnValidJson() throws Exception {
         String expectedJson =
-            "[{\"userToId\":\"ira\",\"pointCount\":1}]";
+            "[{\"to\":\"ira\",\"point\":1}]";
         String jsonContentRequest =
-            "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"good work\"}";
+            "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"good work\"}";
 
         addThanksIsOk(jsonContentRequest);
 
@@ -76,7 +76,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addThanksShouldReturnExceptionCannotThankYourself() throws Exception {
         String jsonContentRequest =
-            "{\"userFromId\":\"sasha\",\"userToId\":\"sasha\",\"description\":\"thanks\"}";
+            "{\"from\":\"sasha\",\"to\":\"sasha\",\"description\":\"thanks\"}";
 
         addThanksFailed(jsonContentRequest);
     }
@@ -85,9 +85,9 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addThanksShouldReturnExceptionOneThanksOnePersonInDay() throws Exception {
         String firstContentRequest =
-            "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"thanks\"}";
+            "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
         String secondContentRequest =
-            "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"thanks\"}";
+            "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
 
         addThanksIsOk(firstContentRequest);
         addThanksFailed(secondContentRequest);
@@ -97,28 +97,29 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addNewThanksShouldReturnExceptionNotMoreTwoThanks() throws Exception {
         String firstContentRequest =
-            "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"thanks\"}";
+            "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
         String secondContentRequest =
-            "{\"userFromId\":\"sasha\",\"userToId\":\"max\",\"description\":\"thanks\"}";
+            "{\"from\":\"sasha\",\"to\":\"max\",\"description\":\"thanks\"}";
         String thirdContentRequest =
-            "{\"userFromId\":\"sasha\",\"userToId\":\"peter\",\"description\":\"thanks\"}";
+            "{\"from\":\"sasha\",\"to\":\"peter\",\"description\":\"thanks\"}";
 
         addThanksIsOk(firstContentRequest);
         addThanksIsOk(secondContentRequest);
         addThanksFailed(thirdContentRequest);
     }
 
+    //TODO This test can't be accurate because an order of objects in array of result can be unpredictable
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addNewTwoThanksShouldReturnOneForMe() throws Exception {
         String expectedJson =
-            "[{\"userToId\":\"sasha\",\"pointCount\":1}," +
-                "{\"userToId\":\"max\",\"pointCount\":1}," +
-                "{\"userToId\":\"ira\",\"pointCount\":1}]";
+            "[{\"to\":\"max\",\"point\":1}," +
+                "{\"to\":\"sasha\",\"point\":1}," +
+                "{\"to\":\"ira\",\"point\":1}]";
         String firstContentRequest =
-            "{\"userFromId\":\"sasha\",\"userToId\":\"ira\",\"description\":\"thanks\"}";
+            "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
         String secondContentRequest =
-            "{\"userFromId\":\"sasha\",\"userToId\":\"max\",\"description\":\"thanks\"}";
+            "{\"from\":\"sasha\",\"to\":\"max\",\"description\":\"thanks\"}";
 
         addThanksIsOk(firstContentRequest);
         addThanksIsOk(secondContentRequest);

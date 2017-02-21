@@ -15,7 +15,7 @@ public class UserIdsRequest {
     }
 
     @JsonCreator
-    public UserIdsRequest(@JsonProperty List<String> toIds) {
+    public UserIdsRequest(@JsonProperty("toIds") List<String> toIds) {
         this.toIds = toIds;
     }
 }

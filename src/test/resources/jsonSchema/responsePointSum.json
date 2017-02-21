@@ -5,10 +5,10 @@
     "title": "achieve sum for user",
     "type": "object",
     "properties":{
-      "userToId":{
+      "to":{
         "type":"string"
       },
-      "pointCount":{
+      "point":{
         "type":"integer"
       }
     }

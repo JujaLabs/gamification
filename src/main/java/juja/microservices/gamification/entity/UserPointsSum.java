@@ -7,13 +7,13 @@ import lombok.Getter;
 @Getter
 public class UserPointsSum {
 
-    private String userToId;
-    private int pointCount;
+    private String to;
+    private int point;
 
     @JsonCreator
-    public UserPointsSum(@JsonProperty("userToId") String userToId,
-                         @JsonProperty("pointCount") int pointCount) {
-        this.userToId = userToId;
-        this.pointCount = pointCount;
+    public UserPointsSum(@JsonProperty("to") String to,
+                         @JsonProperty("point") int point) {
+        this.to = to;
+        this.point = point;
     }
 }

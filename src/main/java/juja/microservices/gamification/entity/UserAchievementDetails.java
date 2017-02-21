@@ -11,13 +11,13 @@ import lombok.Getter;
  */
 @Getter
 public class UserAchievementDetails {
-    private final String userId;
+    private final String user;
     private List<Achievement> details;
 
     @JsonCreator
-    public UserAchievementDetails(@JsonProperty("userId") String userId,
+    public UserAchievementDetails(@JsonProperty("user") String user,
                                   @JsonProperty("details") List<Achievement> details) {
-        this.userId = userId;
+        this.user = user;
         this.details = details;
     }
 }

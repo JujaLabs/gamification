@@ -5,7 +5,7 @@
     "title": "user with achieve",
     "type": "object",
     "properties": {
-      "userId": {
+      "user": {
         "type": "string"
       },
       "details": {
@@ -14,13 +14,13 @@
           "title": "all achieve details by user",
           "type": "object",
           "properties": {
-            "userFromId": {
+            "from": {
               "type": "string"
             },
-            "userToId": {
+            "to": {
               "type": "string"
             },
-            "pointCount": {
+            "point": {
               "type": "integer"
             },
             "description": {

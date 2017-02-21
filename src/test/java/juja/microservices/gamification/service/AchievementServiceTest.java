@@ -37,7 +37,7 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String shouldMuchDescription = "This is a daily report";
         String userToId = "oleg";
 
-        achievementService.addDaily(shouldMuchDescription, userToId);
+        achievementService.addDaily(userToId, shouldMuchDescription);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("oleg");
         String actualDescription = achievementList.get(0).getDescription();
 
@@ -58,7 +58,7 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         Achievement testAchievement = new Achievement(userFromId, userToId, 1, firstDescription, AchievementType.DAILY);
         achievementRepository.addAchievement(testAchievement);
 
-        achievementService.addDaily(updateForDescription, userToId);
+        achievementService.addDaily(userToId, updateForDescription);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("oleg");
         String actualDescription = achievementList.get(0).getDescription();
 
@@ -84,7 +84,7 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         shouldMuchAchievement.setDescription(shouldMuchDescription);
         String shouldMuchAchievementToString = shouldMuchAchievement.toString();
 
-        achievementService.addDaily(updateForDescription, userToId);
+        achievementService.addDaily(userToId, updateForDescription);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("oleg");
 
         String updatedAchievement = achievementList.get(0).toString();
@@ -99,9 +99,9 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String firstDescription = "Daily report first";
         String secondDescription = "Daily report second";
         String thirdDescription = "Daily report third";
-        achievementService.addDaily(firstDescription, userFrom);
-        achievementService.addDaily(secondDescription, userFrom);
-        achievementService.addDaily(thirdDescription, userFrom);
+        achievementService.addDaily(userFrom, firstDescription);
+        achievementService.addDaily(userFrom, secondDescription);
+        achievementService.addDaily(userFrom, thirdDescription);
 
         String expectedDescription = "Daily report first\r\nDaily report second\r\nDaily report third";
         String expectedType = "DAILY";
@@ -124,8 +124,8 @@ public class AchievementServiceTest extends BaseIntegrationTest {
 
         achievementService.addThanks(expectedUserFrom, expectedUserTo, expectedDescription);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("max");
-        String actualUserFrom = achievementList.get(0).getUserFromId();
-        String actualUserTo = achievementList.get(0).getUserToId();
+        String actualUserFrom = achievementList.get(0).getFrom();
+        String actualUserTo = achievementList.get(0).getTo();
         String actualDescription = achievementList.get(0).getDescription();
         String actualType = String.valueOf(achievementList.get(0).getType());
 
