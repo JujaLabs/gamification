@@ -1,0 +1,12 @@
+{
+  "achievement": [
+    {
+      "userFromId":"sasha",
+      "userToId":"ira",
+      "pointCount":2,
+      "description":"good work",
+      "sendDate":"1917-02-09",
+      "type":"DAILY"
+    }
+  ]
+}

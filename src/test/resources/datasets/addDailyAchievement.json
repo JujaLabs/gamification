@@ -1,0 +1,19 @@
+{
+  "achievement": [
+    {
+      "userFromId":"ira",
+      "userToId":"ira",
+      "pointCount":1,
+      "description":"Old daily report",
+      "sendDate":"2017-02-07",
+      "type":"DAILY"
+    },
+    {
+      "userFromId":"misha",
+      "userToId":"sasha",
+      "pointCount":1,
+      "description":"good work",
+      "type":"THANKS"
+    }
+  ]
+}
