@@ -1,4 +1,4 @@
- **For using MongoDB in local machine**
+**For using MongoDB in local machine**
  1. Install MongoDB
  2. Set up the MongoDB environment.
     MongoDB requires a data directory to store all data. MongoDB’s 
@@ -34,8 +34,17 @@
             roles: [{role: "dbAdmin", db: "gamification"}]
         }
         )
+
+**Using MongoDB for Linux users (local machine install)**
+
+ 1. Install MongoDB using your distro package manager. For example, in Fedora: sudo dnf install mongodb-org
+ 2. Start mongodb: sudo systemctl start mongod
+ 3. Check status (should be "active"): sudo systemctl status mongod
+ 4. If you want to start mongodb every time with system: sudo systemctl enable mongod
+ 5. Run mongo shell in console with: mongo
+ 6. Do steps 8-10 from section above
         
- **For building and launching application**
+**For building and launching application**
  1. In the terminal window go to the project folder,
     use gradle wrapper script to start build process.
     
@@ -55,7 +64,7 @@
  7. Follow the API. Important: the first - to add something,
     then - you can get it.
     
- **API**
+**API**
 
 | url         | /achieve                              |
 |-------------|---------------------------------------|
