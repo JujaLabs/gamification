@@ -14,6 +14,9 @@ import java.util.List;
 public class AchievementService {
 
     private static final int TWO_THANKS = 2;
+    private static final int CODENJOY_FIRST_PLACE = 5;
+    private static final int CODENJOY_SECOND_PLACE = 3;
+    private static final int CODENJOY_THIRD_PLACE = 1;
 
     @Inject
     private AchievementRepository achievementRepository;
@@ -66,6 +69,43 @@ public class AchievementService {
             result.add(achievementRepository.addAchievement(secondThanks));
             String descriptionTwoThanks = "Issued two thanks";
             Achievement thirdThanks = new Achievement(userFromId, userFromId, 1, descriptionTwoThanks, AchievementType.THANKS);
+            result.add(achievementRepository.addAchievement(thirdThanks));
+        }
+        return result;
+    }
+
+    public List<String> addCodenjoy(String  userFromId, String firstUserToId, String secondUserToId,
+            String thirdUserToId) {
+        List<String> result = new ArrayList<>();
+
+
+        List<Achievement> codenjoyUsersToday = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
+        if (!codenjoyUsersToday.isEmpty()) {
+            throw new UnsupportedAchievementException("Codenjoy achievments already exists");
+        } else if (!"".equals(secondUserToId) && "".equals(firstUserToId)) {
+            throw new UnsupportedAchievementException("First user cannot be empty");
+        } else if (!"".equals(thirdUserToId) &&  "".equals(secondUserToId)) {
+            throw new UnsupportedAchievementException("Second user cannot be empty");
+        } else if (!"".equals(secondUserToId) && firstUserToId.equalsIgnoreCase(secondUserToId)) {
+            throw new UnsupportedAchievementException("First and second users must be different");
+        } else if (!"".equals(thirdUserToId) && firstUserToId.equalsIgnoreCase(thirdUserToId)) {
+            throw new UnsupportedAchievementException("First and third users must be different");
+        } else if (!"".equals(secondUserToId) && !"".equals(thirdUserToId)
+                && secondUserToId.equalsIgnoreCase(thirdUserToId)) {
+            throw new UnsupportedAchievementException("Second and third users must be different");
+        }
+
+        Achievement firstThanks = new Achievement(userFromId, firstUserToId, CODENJOY_FIRST_PLACE,
+                "Codenjoy first place", AchievementType.CODENJOY);
+        result.add(achievementRepository.addAchievement(firstThanks));
+        if (!"".equals(secondUserToId)) {
+            Achievement secondThanks = new Achievement(userFromId, secondUserToId, CODENJOY_SECOND_PLACE,
+                "Codenjoy second place", AchievementType.CODENJOY);
+            result.add(achievementRepository.addAchievement(secondThanks));
+        }
+        if (!"".equals(thirdUserToId)) {
+            Achievement thirdThanks = new Achievement(userFromId, thirdUserToId, CODENJOY_THIRD_PLACE,
+                "Codenjoy third place", AchievementType.CODENJOY);
             result.add(achievementRepository.addAchievement(thirdThanks));
         }
         return result;

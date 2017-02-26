@@ -1,0 +1,28 @@
+{
+  "achievement": [
+    {
+      "from":"max",
+      "to":"alex",
+      "point":5,
+      "description":"Codenjoy first place",
+      "sendDate":"2017-02-26",
+      "type":"CODENJOY"
+    },
+    {
+      "from":"max",
+      "to":"jack",
+      "point":3,
+      "description":"Codenjoy second place",
+      "sendDate":"2017-02-26",
+      "type":"CODENJOY"
+    },
+    {
+      "from":"max",
+      "to":"tomas",
+      "point":1,
+      "description":"Codenjoy third place",
+      "sendDate":"2017-02-26",
+      "type":"CODENJOY"
+    }
+  ]
+}
