@@ -77,11 +77,11 @@ public class AchievementService {
     public List<String> addCodenjoy(String  userFromId, String firstUserToId, String secondUserToId,
             String thirdUserToId) {
         List<String> result = new ArrayList<>();
-
-
         List<Achievement> codenjoyUsersToday = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
         if (!codenjoyUsersToday.isEmpty()) {
-            throw new UnsupportedAchievementException("Codenjoy achievments already exists");
+            throw new UnsupportedAchievementException("You cannot give codenjoy points twice a day");
+        } else if ("".equals(userFromId)) {
+            throw new UnsupportedAchievementException("User from cannot be empty");
         } else if (!"".equals(secondUserToId) && "".equals(firstUserToId)) {
             throw new UnsupportedAchievementException("First user cannot be empty");
         } else if (!"".equals(thirdUserToId) &&  "".equals(secondUserToId)) {
@@ -94,7 +94,6 @@ public class AchievementService {
                 && secondUserToId.equalsIgnoreCase(thirdUserToId)) {
             throw new UnsupportedAchievementException("Second and third users must be different");
         }
-
         Achievement firstThanks = new Achievement(userFromId, firstUserToId, CODENJOY_FIRST_PLACE,
                 "Codenjoy first place", AchievementType.CODENJOY);
         result.add(achievementRepository.addAchievement(firstThanks));
