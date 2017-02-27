@@ -13,17 +13,14 @@ public class CodenjoyRequestTest {
         String expectedFirstPlaceUser = "alex";
         String expectedSecondPlaceUser = "jack";
         String expectedThirdPlaceUser = "tomas";
-        String expectedDescription = "Codenjoy";
 
-        CodenjoyRequest codenjoyRequest = new CodenjoyRequest("max", "alex", "jack",
-                "tomas", "Codenjoy");
+        CodenjoyRequest codenjoyRequest = new CodenjoyRequest("max", "alex", "jack", "tomas");
 
         assertNotNull(codenjoyRequest);
         assertEquals(expectedUserFrom, codenjoyRequest.getFrom());
         assertEquals(expectedFirstPlaceUser, codenjoyRequest.getFirstPlace());
         assertEquals(expectedSecondPlaceUser, codenjoyRequest.getSecondPlace());
         assertEquals(expectedThirdPlaceUser, codenjoyRequest.getThirdPlace());
-        assertEquals(expectedDescription, codenjoyRequest.getDescription());
     }
 
 }
