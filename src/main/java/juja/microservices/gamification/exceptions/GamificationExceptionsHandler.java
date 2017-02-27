@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
-import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -46,7 +45,7 @@ public class GamificationExceptionsHandler extends ResponseEntityExceptionHandle
 
     /**
      * Scenarios of a client send an invalid request to API
-     * Handle:
+     * Handler:
      * BindException
      * MethodArgumentNotValidException
      */
@@ -64,25 +63,56 @@ public class GamificationExceptionsHandler extends ResponseEntityExceptionHandle
         }
 
         StringBuilder builder = new StringBuilder();
-        builder.append(GamificationErrorStatus.SPRING_NOTVALID_REQUEST_EXCEPTION.developerMessage());
+        builder.append(GamificationErrorStatus.SPRING_NOT_VALID_REQUEST_EXCEPTION.developerMessage());
         builder.append("Exception message:");
         builder.append(ex.getMessage());
 
         RestErrorMessage errorMessage = new RestErrorMessage(
-                HttpStatus.BAD_REQUEST.value(), GamificationErrorStatus.SPRING_NOTVALID_REQUEST_EXCEPTION.internalCode(),
-                GamificationErrorStatus.SPRING_NOTVALID_REQUEST_EXCEPTION.clientMessage(),
-                builder.toString()
-                , errors
+                HttpStatus.BAD_REQUEST.value(),
+                GamificationErrorStatus.SPRING_NOT_VALID_REQUEST_EXCEPTION.internalCode(),
+                GamificationErrorStatus.SPRING_NOT_VALID_REQUEST_EXCEPTION.clientMessage(),
+                builder.toString(),
+                errors
         );
+
         return handleExceptionInternal(ex, errorMessage, headers, HttpStatus.valueOf(errorMessage.getStatus()), request);
     }
 
+    /**
+     * Scenarios when part of multipart request not found or when request missing parameter
+     * Handler:
+     * MissingServletRequestPartException
+     * MissingServletRequestParameterException
+     */
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
+                                                                          HttpHeaders headers, HttpStatus status,
+                                                                          WebRequest request) {
+
+        String error = ex.getParameterName() + " parameter is missing";
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(GamificationErrorStatus.SPRING_REQUEST_PARAMETER_NOT_FOUND_EXCEPTION.developerMessage());
+        builder.append("Exception message:");
+        builder.append(ex.getMessage());
+
+        RestErrorMessage errorMessage = new RestErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                GamificationErrorStatus.SPRING_REQUEST_PARAMETER_NOT_FOUND_EXCEPTION.internalCode(),
+                GamificationErrorStatus.SPRING_REQUEST_PARAMETER_NOT_FOUND_EXCEPTION.clientMessage(),
+                builder.toString(),
+                error
+        );
+
+        return handleExceptionInternal(ex, errorMessage, headers, HttpStatus.valueOf(errorMessage.getStatus()), request);
+    }
+
+
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class, HttpMediaTypeNotSupportedException.class,
             HttpMediaTypeNotAcceptableException.class, MissingPathVariableException.class,
-            MissingServletRequestParameterException.class, ServletRequestBindingException.class,
-            ConversionNotSupportedException.class, TypeMismatchException.class, HttpMessageNotReadableException.class,
-            HttpMessageNotWritableException.class, MethodArgumentNotValidException.class,
-            MissingServletRequestPartException.class, NoHandlerFoundException.class,
+            ServletRequestBindingException.class, ConversionNotSupportedException.class,
+            TypeMismatchException.class, HttpMessageNotReadableException.class,
+            HttpMessageNotWritableException.class, MethodArgumentNotValidException.class, NoHandlerFoundException.class,
             AsyncRequestTimeoutException.class
     })
     public ResponseEntity<RestErrorMessage> handleStandardSpringException(Exception exception) {

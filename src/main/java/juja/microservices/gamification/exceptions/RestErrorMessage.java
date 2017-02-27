@@ -3,6 +3,8 @@ package juja.microservices.gamification.exceptions;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,5 +42,13 @@ class RestErrorMessage {
         this.code = code;
         this.message = message;
         this.developerMessage = developerMessage;
+    }
+
+    RestErrorMessage(int status, int code, String message, String developerMessage, String error) {
+        this.status = status;
+        this.code = code;
+        this.message = message;
+        this.developerMessage = developerMessage;
+        this.errors = new ArrayList<>(Arrays.asList(error));
     }
 }
