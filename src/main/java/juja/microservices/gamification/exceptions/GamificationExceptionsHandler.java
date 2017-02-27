@@ -64,12 +64,13 @@ public class GamificationExceptionsHandler extends ResponseEntityExceptionHandle
         }
 
         StringBuilder builder = new StringBuilder();
-        builder.append(GamificationErrorStatus.STANDARD_SPRING_EXCEPTION.developerMessage());
+        builder.append(GamificationErrorStatus.SPRING_NOTVALID_REQUEST_EXCEPTION.developerMessage());
+        builder.append("Exception message:");
         builder.append(ex.getMessage());
 
         RestErrorMessage errorMessage = new RestErrorMessage(
-                HttpStatus.BAD_REQUEST.value(), GamificationErrorStatus.STANDARD_SPRING_EXCEPTION.internalCode(),
-                GamificationErrorStatus.STANDARD_SPRING_EXCEPTION.clientMessage(),
+                HttpStatus.BAD_REQUEST.value(), GamificationErrorStatus.SPRING_NOTVALID_REQUEST_EXCEPTION.internalCode(),
+                GamificationErrorStatus.SPRING_NOTVALID_REQUEST_EXCEPTION.clientMessage(),
                 builder.toString()
                 , errors
         );
