@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
+import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -74,8 +75,11 @@ public class AchievementService {
         return result;
     }
 
-    public List<String> addCodenjoy(String  userFromId, String firstUserToId, String secondUserToId,
-            String thirdUserToId) {
+    public List<String> addCodenjoy(CodenjoyRequest request) {
+        String userFromId = request.getFrom();
+        String firstUserToId = request.getFirstPlace();
+        String secondUserToId = request.getSecondPlace();
+        String thirdUserToId = request.getThirdPlace();
         List<String> result = new ArrayList<>();
         List<Achievement> codenjoyUsersToday = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
         if (!codenjoyUsersToday.isEmpty()) {
@@ -94,18 +98,18 @@ public class AchievementService {
                 && secondUserToId.equalsIgnoreCase(thirdUserToId)) {
             throw new UnsupportedAchievementException("Second and third users must be different");
         }
-        Achievement firstThanks = new Achievement(userFromId, firstUserToId, CODENJOY_FIRST_PLACE,
+        Achievement firstPlace = new Achievement(userFromId, firstUserToId, CODENJOY_FIRST_PLACE,
                 "Codenjoy first place", AchievementType.CODENJOY);
-        result.add(achievementRepository.addAchievement(firstThanks));
+        result.add(achievementRepository.addAchievement(firstPlace));
         if (!"".equals(secondUserToId)) {
-            Achievement secondThanks = new Achievement(userFromId, secondUserToId, CODENJOY_SECOND_PLACE,
+            Achievement secondPlace = new Achievement(userFromId, secondUserToId, CODENJOY_SECOND_PLACE,
                 "Codenjoy second place", AchievementType.CODENJOY);
-            result.add(achievementRepository.addAchievement(secondThanks));
+            result.add(achievementRepository.addAchievement(secondPlace));
         }
         if (!"".equals(thirdUserToId)) {
-            Achievement thirdThanks = new Achievement(userFromId, thirdUserToId, CODENJOY_THIRD_PLACE,
+            Achievement thirdPlace = new Achievement(userFromId, thirdUserToId, CODENJOY_THIRD_PLACE,
                 "Codenjoy third place", AchievementType.CODENJOY);
-            result.add(achievementRepository.addAchievement(thirdThanks));
+            result.add(achievementRepository.addAchievement(thirdPlace));
         }
         return result;
     }

@@ -39,8 +39,7 @@ public class AchievementController {
     @RequestMapping(value = "/achieve/codenjoy", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<?> addCodenjoy(@RequestBody CodenjoyRequest request) {
-        List<String> ids = achievementService.addCodenjoy(request.getFrom(), request.getFirstPlace(),
-                request.getSecondPlace(), request.getThirdPlace());
+        List<String> ids = achievementService.addCodenjoy(request);
         return ResponseEntity.ok(ids);
     }
 }

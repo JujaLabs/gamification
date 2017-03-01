@@ -10,6 +10,7 @@ import juja.microservices.gamification.BaseIntegrationTest;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
+import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -212,7 +213,8 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String thirdDescription = "Codenjoy third place";
         String expectedType = "CODENJOY";
         String expectedDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
-        achievementService.addCodenjoy(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
         List<Achievement> achievementList = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
         Assert.assertTrue(achievementList.size() == 3);
         achievementList.forEach(achievement -> {
@@ -245,8 +247,9 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String firstUserTo = "john";
         String secondUserTo = "bob";
         String thirdUserTo = "alex";
-        achievementService.addCodenjoy(userFrom, firstUserTo, secondUserTo, thirdUserTo);
-        achievementService.addCodenjoy(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
+        achievementService.addCodenjoy(request);
         Assert.fail();
     }
 
@@ -259,7 +262,8 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String firstUserTo = "max";
         String secondUserTo = "bob";
         String thirdUserTo = "alex";
-        achievementService.addCodenjoy(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
         Assert.fail();
     }
 
@@ -272,7 +276,8 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String firstUserTo = "";
         String secondUserTo = "bob";
         String thirdUserTo = "alex";
-        achievementService.addCodenjoy(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
         Assert.fail();
     }
 
@@ -285,7 +290,8 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String firstUserTo = "john";
         String secondUserTo = "";
         String thirdUserTo = "alex";
-        achievementService.addCodenjoy(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
         Assert.fail();
     }
 
@@ -298,7 +304,8 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String firstUserTo = "john";
         String secondUserTo = "john";
         String thirdUserTo = "alex";
-        achievementService.addCodenjoy(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
         Assert.fail();
     }
 
@@ -311,7 +318,8 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String firstUserTo = "john";
         String secondUserTo = "alex";
         String thirdUserTo = "john";
-        achievementService.addCodenjoy(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
         Assert.fail();
     }
 
@@ -324,8 +332,8 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String firstUserTo = "alex";
         String secondUserTo = "john";
         String thirdUserTo = "john";
-        achievementService.addCodenjoy(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
         Assert.fail();
     }
-
 }
