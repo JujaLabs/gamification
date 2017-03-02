@@ -146,6 +146,44 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
             .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    //TODO fix order of objects in expectedJson
+    public void addCodenjoyReturnValidJson() throws Exception {
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
+        String expectedJson =
+                "[{\"to\":\"tomas\",\"point\":1},{\"to\":\"alex\",\"point\":5},{\"to\":\"jack\",\"point\":3}]";
+        addCodenjoyIsOk(jsonContentRequest);
+        MvcResult result = getMvcResultUserAchieveSum();
+        String content = result.getResponse().getContentAsString();
+        assertEquals(expectedJson, content);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addCodenjoyShouldReturnExceptionFromMissed() throws Exception {
+        String jsonContentRequest =
+                "{\"from\":\"\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
+        addCodenjoyFailed(jsonContentRequest);
+    }
+
+    private void addCodenjoyIsOk(String jsonContentRequest) throws Exception {
+        mockMvc.perform(post("/achieve/codenjoy")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+    }
+
+    private void addCodenjoyFailed(String jsonContentRequest) throws Exception {
+        mockMvc.perform(post("/achieve/codenjoy")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
+
     private MvcResult getMvcResultUserAchieveSum() throws Exception {
         return mockMvc
             .perform(MockMvcRequestBuilders.get("/user/pointSum").contentType(APPLICATION_JSON_UTF8))

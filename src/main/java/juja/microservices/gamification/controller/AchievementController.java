@@ -2,6 +2,7 @@ package juja.microservices.gamification.controller;
 
 import java.util.List;
 
+import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.ThanksRequest;
 import juja.microservices.gamification.service.AchievementService;
@@ -32,6 +33,13 @@ public class AchievementController {
     @ResponseBody
     public ResponseEntity<?> addThanks(@RequestBody ThanksRequest request) {
         List<String> ids = achievementService.addThanks(request.getFrom(), request.getTo(), request.getDescription());
+        return ResponseEntity.ok(ids);
+    }
+
+    @RequestMapping(value = "/achieve/codenjoy", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<?> addCodenjoy(@RequestBody CodenjoyRequest request) {
+        List<String> ids = achievementService.addCodenjoy(request);
         return ResponseEntity.ok(ids);
     }
 }
