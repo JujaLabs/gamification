@@ -70,4 +70,11 @@ public class AchievementService {
         }
         return result;
     }
+
+
+    public String addInterview(String description, String userFromId) {
+        return achievementRepository
+                .addAchievement(new Achievement(userFromId, userFromId,10, description, AchievementType.INTERVIEW));
+
+    }
 }

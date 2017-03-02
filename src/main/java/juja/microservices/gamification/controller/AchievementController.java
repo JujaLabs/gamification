@@ -4,6 +4,7 @@ import java.util.List;
 
 import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.ThanksRequest;
+import juja.microservices.gamification.entity.InterviewRequest;
 import juja.microservices.gamification.service.AchievementService;
 import net.minidev.json.JSONObject;
 import org.springframework.http.ResponseEntity;
@@ -33,5 +34,14 @@ public class AchievementController {
     public ResponseEntity<?> addThanks(@RequestBody ThanksRequest request) {
         List<String> ids = achievementService.addThanks(request.getFrom(), request.getTo(), request.getDescription());
         return ResponseEntity.ok(ids);
+    }
+
+    @RequestMapping(value = "/achieve/interview", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<?> addInterview(@RequestBody InterviewRequest request) {
+        String achivementId = achievementService.addInterview(request.getFrom(), request.getDescription());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", achivementId);
+        return ResponseEntity.ok(jsonObject);
     }
 }
