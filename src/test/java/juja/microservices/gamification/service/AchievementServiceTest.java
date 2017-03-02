@@ -1,12 +1,16 @@
 package juja.microservices.gamification.service;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import juja.microservices.gamification.BaseIntegrationTest;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
+import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -15,6 +19,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author BaHo
@@ -195,6 +200,143 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         achievementService.addThanks(userFrom, thirdUserTo, description);
         Assert.fail();
     }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addCodenjoy() {
+        String userFrom = "max";
+        String firstUserTo = "john";
+        String secondUserTo = "bob";
+        String thirdUserTo = "alex";
+        String firstDescription = "Codenjoy first place";
+        String secondDescription = "Codenjoy second place";
+        String thirdDescription = "Codenjoy third place";
+        String expectedType = "CODENJOY";
+        String expectedDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
+        List<Achievement> achievementList = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
+        Assert.assertTrue(achievementList.size() == 3);
+        achievementList.forEach(achievement -> {
+            assertEquals(userFrom, achievement.getFrom());
+            assertEquals(expectedType, achievement.getType().toString());
+            assertEquals(expectedDate, achievement.getSendDate());
+            int point = achievement.getPoint();
+            String actualDescription = achievement.getDescription();
+            if (point == 5) {
+                assertEquals(firstUserTo, achievement.getTo());
+                assertEquals(firstDescription, actualDescription);
+            } else if (point == 3) {
+                assertEquals(secondUserTo, achievement.getTo());
+                assertEquals(secondDescription, actualDescription);
+            } else if (point == 1) {
+                assertEquals(thirdUserTo, achievement.getTo());
+                assertEquals(thirdDescription, actualDescription);
+            } else {
+                fail("Incorrect number of points");
+            }
+        });
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void throwExceptionTodayCodenjoyExist() {
+        expectedException.expect(UnsupportedAchievementException.class);
+        expectedException.expectMessage("You cannot give codenjoy points twice a day");
+        String userFrom = "max";
+        String firstUserTo = "john";
+        String secondUserTo = "bob";
+        String thirdUserTo = "alex";
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
+        achievementService.addCodenjoy(request);
+        Assert.fail();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void throwExceptionEmptyFromUser() {
+        expectedException.expect(UnsupportedAchievementException.class);
+        expectedException.expectMessage("User from cannot be empty");
+        String userFrom = "";
+        String firstUserTo = "max";
+        String secondUserTo = "bob";
+        String thirdUserTo = "alex";
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
+        Assert.fail();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void throwExceptionEmptyFirstUser() {
+        expectedException.expect(UnsupportedAchievementException.class);
+        expectedException.expectMessage("First user cannot be empty");
+        String userFrom = "max";
+        String firstUserTo = "";
+        String secondUserTo = "bob";
+        String thirdUserTo = "alex";
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
+        Assert.fail();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void throwExceptionEmptySecondUserThirdUserExist() {
+        expectedException.expect(UnsupportedAchievementException.class);
+        expectedException.expectMessage("Second user cannot be empty");
+        String userFrom = "max";
+        String firstUserTo = "john";
+        String secondUserTo = "";
+        String thirdUserTo = "alex";
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
+        Assert.fail();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void throwExceptionFirstAndSecondUsersEquals() {
+        expectedException.expect(UnsupportedAchievementException.class);
+        expectedException.expectMessage("First and second users must be different");
+        String userFrom = "max";
+        String firstUserTo = "john";
+        String secondUserTo = "john";
+        String thirdUserTo = "alex";
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
+        Assert.fail();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void throwExceptionFirstAndThirdUsersEquals() {
+        expectedException.expect(UnsupportedAchievementException.class);
+        expectedException.expectMessage("First and third users must be different");
+        String userFrom = "max";
+        String firstUserTo = "john";
+        String secondUserTo = "alex";
+        String thirdUserTo = "john";
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
+        Assert.fail();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void throwExceptionSecondAndThirdUsersEquals() {
+        expectedException.expect(UnsupportedAchievementException.class);
+        expectedException.expectMessage("Second and third users must be different");
+        String userFrom = "max";
+        String firstUserTo = "alex";
+        String secondUserTo = "john";
+        String thirdUserTo = "john";
+        CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
+        achievementService.addCodenjoy(request);
+        Assert.fail();
+    }
+
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")

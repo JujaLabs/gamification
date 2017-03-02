@@ -66,4 +66,11 @@ public class AchievementRepository {
             mongoTemplate.aggregate(aggregation, Achievement.class, UserPointsSum.class);
         return result.getMappedResults();
     }
+
+    public List<Achievement> getAllCodenjoyAchievementsCurrentDate() {
+        String sendDate = getFormattedCurrentDate();
+        return mongoTemplate.find(new Query(
+                Criteria.where("sendDate").is(sendDate)
+                        .and("type").is(AchievementType.CODENJOY)), Achievement.class);
+    }
 }
