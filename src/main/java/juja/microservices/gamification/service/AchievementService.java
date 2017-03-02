@@ -73,8 +73,19 @@ public class AchievementService {
 
 
     public String addInterview(String description, String userFromId) {
-        return achievementRepository
-                .addAchievement(new Achievement(userFromId, userFromId,10, description, AchievementType.INTERVIEW));
+        List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.INTERVIEW);
 
+        if (userFromIdList.size() == 0) {
+            Achievement newAchievement = new Achievement(userFromId, userFromId, 10, description, AchievementType.INTERVIEW);
+            return achievementRepository.addAchievement(newAchievement);
+        } else {
+            Achievement achievement = userFromIdList.get(0);
+            String oldDescription = achievement.getDescription();
+            description = oldDescription
+                    .concat(System.lineSeparator())
+                    .concat(description);
+            achievement.setDescription(description);
+            return achievementRepository.addAchievement(achievement);
+        }
     }
 }
