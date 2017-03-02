@@ -30,12 +30,7 @@ public class AchievementService {
             Achievement newAchievement = new Achievement(userFromId, userFromId, 1, description, AchievementType.DAILY);
             return achievementRepository.addAchievement(newAchievement);
         } else {
-            Achievement achievement = userFromIdList.get(0);
-            String oldDescription = achievement.getDescription();
-            description = oldDescription
-                .concat(System.lineSeparator())
-                .concat(description);
-            achievement.setDescription(description);
+            Achievement achievement = getAchievementWithAddedDescription(description, userFromIdList);
             return achievementRepository.addAchievement(achievement);
         }
     }
@@ -71,21 +66,25 @@ public class AchievementService {
         return result;
     }
 
-
-    public String addInterview(String description, String userFromId) {
+    public String addInterview(String userFromId, String description) {
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.INTERVIEW);
 
         if (userFromIdList.size() == 0) {
             Achievement newAchievement = new Achievement(userFromId, userFromId, 10, description, AchievementType.INTERVIEW);
             return achievementRepository.addAchievement(newAchievement);
         } else {
-            Achievement achievement = userFromIdList.get(0);
-            String oldDescription = achievement.getDescription();
-            description = oldDescription
-                    .concat(System.lineSeparator())
-                    .concat(description);
-            achievement.setDescription(description);
+            Achievement achievement = getAchievementWithAddedDescription(description, userFromIdList);
             return achievementRepository.addAchievement(achievement);
         }
+    }
+
+    private Achievement getAchievementWithAddedDescription(String description, List<Achievement> userFromIdList) {
+        Achievement achievement = userFromIdList.get(0);
+        String oldDescription = achievement.getDescription();
+        description = oldDescription
+                .concat(System.lineSeparator())
+                .concat(description);
+        achievement.setDescription(description);
+        return achievement;
     }
 }

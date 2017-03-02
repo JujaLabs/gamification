@@ -195,4 +195,38 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         achievementService.addThanks(userFrom, thirdUserTo, description);
         Assert.fail();
     }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldAddNewInterviewAchievement() {
+        String shouldMuchDescription = "This is an interview report";
+        String userToId = "sasha";
+
+        achievementService.addInterview(userToId, shouldMuchDescription);
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
+        String actualDescription = achievementList.get(0).getDescription();
+
+        assertEquals(shouldMuchDescription, actualDescription);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldUpdateDescriptionFieldInterviewAchievement() {
+        String userToId = "sasha";
+        String userFromId = userToId;
+        String firstDescription = "This is an interview report";
+        String updateForDescription = "Some update for the interview report";
+        String shouldMuchDescription = firstDescription
+                .concat(System.lineSeparator())
+                .concat(updateForDescription);
+
+        Achievement testAchievement = new Achievement(userFromId, userToId, 10, firstDescription, AchievementType.INTERVIEW);
+        achievementRepository.addAchievement(testAchievement);
+
+        achievementService.addInterview(userToId, updateForDescription);
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
+        String actualDescription = achievementList.get(0).getDescription();
+
+        assertEquals(shouldMuchDescription, actualDescription);
+    }
 }
