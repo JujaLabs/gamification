@@ -7,6 +7,7 @@ import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
 import juja.microservices.gamification.entity.CodenjoyRequest;
+import juja.microservices.gamification.entity.InterviewRequest;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -98,18 +99,20 @@ public class AchievementService {
         result.add(achievementRepository.addAchievement(firstPlace));
         if (!"".equals(secondUserToId)) {
             Achievement secondPlace = new Achievement(userFromId, secondUserToId, CODENJOY_SECOND_PLACE,
-                "Codenjoy second place", AchievementType.CODENJOY);
+                    "Codenjoy second place", AchievementType.CODENJOY);
             result.add(achievementRepository.addAchievement(secondPlace));
         }
         if (!"".equals(thirdUserToId)) {
             Achievement thirdPlace = new Achievement(userFromId, thirdUserToId, CODENJOY_THIRD_PLACE,
-                "Codenjoy third place", AchievementType.CODENJOY);
+                    "Codenjoy third place", AchievementType.CODENJOY);
             result.add(achievementRepository.addAchievement(thirdPlace));
         }
         return result;
     }
 
-    public String addInterview(String userFromId, String description) {
+    public String addInterview(InterviewRequest request) {
+        String userFromId = request.getFrom();
+        String description = request.getDescription();
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.INTERVIEW);
 
         if (userFromIdList.size() == 0) {

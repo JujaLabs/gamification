@@ -47,7 +47,7 @@ public class AchievementController {
     @RequestMapping(value = "/achieve/interview", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<?> addInterview(@RequestBody InterviewRequest request) {
-        String achivementId = achievementService.addInterview(request.getFrom(), request.getDescription());
+        String achivementId = achievementService.addInterview(request);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", achivementId);
         return ResponseEntity.ok(jsonObject);
