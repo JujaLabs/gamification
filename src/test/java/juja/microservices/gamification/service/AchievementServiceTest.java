@@ -140,7 +140,9 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String expectedDescription = "For helping with...";
         String expectedType = "THANKS";
 
-        achievementService.addThanks(expectedUserFrom, expectedUserTo, expectedDescription);
+        ThanksRequest request = new ThanksRequest(expectedUserFrom, expectedUserTo, expectedDescription);
+        achievementService.addThanks(request);
+
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("max");
         String actualUserFrom = achievementList.get(0).getFrom();
         String actualUserTo = achievementList.get(0).getTo();
@@ -160,8 +162,11 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String firstUserTo = "peter";
         String secondUserTo = "max";
         String description = "For helping with...";
-        achievementService.addThanks(userFrom, firstUserTo, description);
-        achievementService.addThanks(userFrom, secondUserTo, description);
+
+        ThanksRequest firstRequest = new ThanksRequest(userFrom, firstUserTo, description);
+        ThanksRequest secondRequest = new ThanksRequest(userFrom, secondUserTo, description);
+        achievementService.addThanks(firstRequest);
+        achievementService.addThanks(secondRequest);
 
         String expectedDescription = "Issued two thanks";
         String expectedType = "THANKS";
@@ -181,7 +186,9 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String userFrom = "sasha";
         String userTo = "sasha";
         String description = "For helping with...";
-        achievementService.addThanks(userFrom, userTo, description);
+
+        ThanksRequest request = new ThanksRequest(userFrom, userTo, description);
+        achievementService.addThanks(request);
         Assert.fail();
     }
 
@@ -193,8 +200,10 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String userFrom = "sasha";
         String userTo = "max";
         String description = "For helping with...";
-        achievementService.addThanks(userFrom, userTo, description);
-        achievementService.addThanks(userFrom, userTo, description);
+
+        ThanksRequest request = new ThanksRequest(userFrom, userTo, description);
+        achievementService.addThanks(request);
+        achievementService.addThanks(request);
         Assert.fail();
     }
 
@@ -208,9 +217,14 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String secondUserTo = "max";
         String thirdUserTo = "jon";
         String description = "For helping with...";
-        achievementService.addThanks(userFrom, firstUserTo, description);
-        achievementService.addThanks(userFrom, secondUserTo, description);
-        achievementService.addThanks(userFrom, thirdUserTo, description);
+
+        ThanksRequest firstRequest = new ThanksRequest(userFrom, firstUserTo, description);
+        ThanksRequest secondRequest = new ThanksRequest(userFrom, secondUserTo, description);
+        ThanksRequest thirdRequest = new ThanksRequest(userFrom, thirdUserTo, description);
+
+        achievementService.addThanks(firstRequest);
+        achievementService.addThanks(secondRequest);
+        achievementService.addThanks(thirdRequest);
         Assert.fail();
     }
 

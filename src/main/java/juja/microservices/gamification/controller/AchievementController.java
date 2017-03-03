@@ -33,7 +33,7 @@ public class AchievementController {
     @RequestMapping(value = "/achieve/thanks", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<?> addThanks(@RequestBody ThanksRequest request) {
-        List<String> ids = achievementService.addThanks(request.getFrom(), request.getTo(), request.getDescription());
+        List<String> ids = achievementService.addThanks(request);
         return ResponseEntity.ok(ids);
     }
 

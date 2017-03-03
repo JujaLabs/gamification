@@ -44,7 +44,10 @@ public class AchievementService {
         }
     }
 
-    public List<String> addThanks(String userFromId, String userToId, String description) {
+    public List<String> addThanks(ThanksRequest request) {
+        String userFromId = request.getFrom();
+        String userToId = request.getTo();
+        String description = request.getDescription();
         List<String> result = new ArrayList<>();
         List<Achievement> userFromAndToListToday = achievementRepository
             .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
