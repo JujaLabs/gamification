@@ -359,24 +359,15 @@ public class AchievementServiceTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    public void shouldUpdateDescriptionFieldInterviewAchievement() {
+    public void throwExceptionDescriptionisEmpty() {
+        expectedException.expect(UnsupportedAchievementException.class);
+        expectedException.expectMessage("You must be enter interview report");
         String userToId = "sasha";
-        String userFromId = userToId;
-        String firstDescription = "This is an interview report";
-        String updateForDescription = "Some update for the interview report";
-        String shouldMuchDescription = firstDescription
-                .concat(System.lineSeparator())
-                .concat(updateForDescription);
+        String description = "";
 
-        InterviewRequest request = new InterviewRequest(userToId, updateForDescription);
-
-        Achievement testAchievement = new Achievement(userFromId, userToId, 10, firstDescription, AchievementType.INTERVIEW);
-        achievementRepository.addAchievement(testAchievement);
+        InterviewRequest request = new InterviewRequest(userToId, description);
 
         achievementService.addInterview(request);
-        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
-        String actualDescription = achievementList.get(0).getDescription();
-
-        assertEquals(shouldMuchDescription, actualDescription);
+        Assert.fail();
     }
 }

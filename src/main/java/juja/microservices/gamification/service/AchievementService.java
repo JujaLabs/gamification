@@ -35,7 +35,12 @@ public class AchievementService {
             Achievement newAchievement = new Achievement(userFromId, userFromId, 1, description, AchievementType.DAILY);
             return achievementRepository.addAchievement(newAchievement);
         } else {
-            Achievement achievement = getAchievementWithAddedDescription(description, userFromIdList);
+            Achievement achievement = userFromIdList.get(0);
+            String oldDescription = achievement.getDescription();
+            description = oldDescription
+                    .concat(System.lineSeparator())
+                    .concat(description);
+            achievement.setDescription(description);
             return achievementRepository.addAchievement(achievement);
         }
     }
@@ -84,7 +89,7 @@ public class AchievementService {
             throw new UnsupportedAchievementException("User from cannot be empty");
         } else if (!"".equals(secondUserToId) && "".equals(firstUserToId)) {
             throw new UnsupportedAchievementException("First user cannot be empty");
-        } else if (!"".equals(thirdUserToId) &&  "".equals(secondUserToId)) {
+        } else if (!"".equals(thirdUserToId) && "".equals(secondUserToId)) {
             throw new UnsupportedAchievementException("Second user cannot be empty");
         } else if (!"".equals(secondUserToId) && firstUserToId.equalsIgnoreCase(secondUserToId)) {
             throw new UnsupportedAchievementException("First and second users must be different");
@@ -113,24 +118,11 @@ public class AchievementService {
     public String addInterview(InterviewRequest request) {
         String userFromId = request.getFrom();
         String description = request.getDescription();
-        List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.INTERVIEW);
 
-        if (userFromIdList.size() == 0) {
-            Achievement newAchievement = new Achievement(userFromId, userFromId, 10, description, AchievementType.INTERVIEW);
-            return achievementRepository.addAchievement(newAchievement);
-        } else {
-            Achievement achievement = getAchievementWithAddedDescription(description, userFromIdList);
-            return achievementRepository.addAchievement(achievement);
-        }
-    }
+        if (description.isEmpty()) throw new UnsupportedAchievementException("You must be enter interview report");
 
-    private Achievement getAchievementWithAddedDescription(String description, List<Achievement> userFromIdList) {
-        Achievement achievement = userFromIdList.get(0);
-        String oldDescription = achievement.getDescription();
-        description = oldDescription
-                .concat(System.lineSeparator())
-                .concat(description);
-        achievement.setDescription(description);
-        return achievement;
+        Achievement newAchievement = new Achievement(userFromId, userFromId, 10, description, AchievementType.INTERVIEW);
+        return achievementRepository.addAchievement(newAchievement);
+
     }
 }
