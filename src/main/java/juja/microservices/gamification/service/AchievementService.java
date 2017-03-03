@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import javax.inject.Inject;
 import juja.microservices.gamification.dao.AchievementRepository;
-import juja.microservices.gamification.entity.Achievement;
-import juja.microservices.gamification.entity.AchievementType;
-import juja.microservices.gamification.entity.CodenjoyRequest;
-import juja.microservices.gamification.entity.InterviewRequest;
+import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -28,7 +25,9 @@ public class AchievementService {
      * If the DAILY achievement already exists in the database and user wants to add another DAILY
      * achievement at the same day, the only field description will be updated.
      */
-    public String addDaily(String userFromId, String description) {
+    public String addDaily(DailyRequest request) {
+        String userFromId = request.getFrom();
+        String description =request.getDescription();
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.DAILY);
 
         if (userFromIdList.size() == 0) {

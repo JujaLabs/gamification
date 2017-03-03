@@ -26,7 +26,7 @@ public class AchievementController {
     @RequestMapping(value = "/achieve/daily", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<?> addDaily(@RequestBody DailyRequest request) {
-        String achievementId = achievementService.addDaily(request.getFrom(), request.getDescription());
+        String achievementId = achievementService.addDaily(request);
         return ResponseEntity.ok(achievementId);
     }
 

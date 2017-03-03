@@ -8,10 +8,7 @@ import java.util.List;
 import javax.inject.Inject;
 import juja.microservices.gamification.BaseIntegrationTest;
 import juja.microservices.gamification.dao.AchievementRepository;
-import juja.microservices.gamification.entity.Achievement;
-import juja.microservices.gamification.entity.AchievementType;
-import juja.microservices.gamification.entity.CodenjoyRequest;
-import juja.microservices.gamification.entity.InterviewRequest;
+import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -43,7 +40,9 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String shouldMuchDescription = "This is a daily report";
         String userToId = "oleg";
 
-        achievementService.addDaily(userToId, shouldMuchDescription);
+        DailyRequest request = new DailyRequest(userToId, shouldMuchDescription);
+
+        achievementService.addDaily(request);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("oleg");
         String actualDescription = achievementList.get(0).getDescription();
 
@@ -61,10 +60,12 @@ public class AchievementServiceTest extends BaseIntegrationTest {
             .concat(System.lineSeparator())
             .concat(updateForDescription);
 
+        DailyRequest request = new DailyRequest(userToId, updateForDescription);
+
         Achievement testAchievement = new Achievement(userFromId, userToId, 1, firstDescription, AchievementType.DAILY);
         achievementRepository.addAchievement(testAchievement);
 
-        achievementService.addDaily(userToId, updateForDescription);
+        achievementService.addDaily(request);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("oleg");
         String actualDescription = achievementList.get(0).getDescription();
 
@@ -82,6 +83,8 @@ public class AchievementServiceTest extends BaseIntegrationTest {
             .concat(System.lineSeparator())
             .concat(updateForDescription);
 
+        DailyRequest request = new DailyRequest(userToId, updateForDescription);
+
         Achievement testAchievement = new Achievement(userFromId, userToId, 1, firstDescription, AchievementType.DAILY);
         achievementRepository.addAchievement(testAchievement);
 
@@ -90,7 +93,7 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         shouldMuchAchievement.setDescription(shouldMuchDescription);
         String shouldMuchAchievementToString = shouldMuchAchievement.toString();
 
-        achievementService.addDaily(userToId, updateForDescription);
+        achievementService.addDaily(request);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("oleg");
 
         String updatedAchievement = achievementList.get(0).toString();
@@ -105,9 +108,14 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String firstDescription = "Daily report first";
         String secondDescription = "Daily report second";
         String thirdDescription = "Daily report third";
-        achievementService.addDaily(userFrom, firstDescription);
-        achievementService.addDaily(userFrom, secondDescription);
-        achievementService.addDaily(userFrom, thirdDescription);
+
+        DailyRequest firstRequest = new DailyRequest(userFrom, firstDescription);
+        DailyRequest secondRequest = new DailyRequest(userFrom, secondDescription);
+        DailyRequest thirdRequest = new DailyRequest(userFrom, thirdDescription);
+
+        achievementService.addDaily(firstRequest);
+        achievementService.addDaily(secondRequest);
+        achievementService.addDaily(thirdRequest);
 
         String expectedDescription = firstDescription
                 .concat(System.lineSeparator())
