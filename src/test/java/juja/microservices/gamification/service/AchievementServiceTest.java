@@ -109,7 +109,11 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         achievementService.addDaily(userFrom, secondDescription);
         achievementService.addDaily(userFrom, thirdDescription);
 
-        String expectedDescription = "Daily report first\r\nDaily report second\r\nDaily report third";
+        String expectedDescription = firstDescription
+                .concat(System.lineSeparator())
+                .concat(secondDescription)
+                .concat(System.lineSeparator())
+                .concat(thirdDescription);
         String expectedType = "DAILY";
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
         String actualDescription = achievementList.get(0).getDescription();
