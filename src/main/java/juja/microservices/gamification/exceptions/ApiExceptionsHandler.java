@@ -22,17 +22,25 @@ import java.util.List;
 @RestControllerAdvice
 public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorMessage> handleAll(Exception ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.OTHER_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(GamificationException.class)
     public ResponseEntity<ApiErrorMessage> handleGamificationException(GamificationException ex) {
-
-        ApiErrorMessage.ApiErrorMessageBuilder errorBuilder = ApiErrorMessage
-                .builder(ApiErrorStatus.GAMIFICATION_EXCEPTION);
-
-        errorBuilder.httpStatus(HttpStatus.BAD_REQUEST.value())
-                .exceptionMessage(ex.getMessage())
-                .build();
-
-        return new ResponseEntity<>(errorBuilder.build(), HttpStatus.BAD_REQUEST);
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.GAMIFICATION_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
     }
 
     @Override

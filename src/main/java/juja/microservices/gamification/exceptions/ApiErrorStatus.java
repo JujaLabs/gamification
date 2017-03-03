@@ -6,7 +6,19 @@ package juja.microservices.gamification.exceptions;
 public enum ApiErrorStatus {
     GAMIFICATION_EXCEPTION(0, "Oops something went wrong :(", "The exception is general in gamification"),
 
-    SPRING_EXCEPTION(100, "Oops something went wrong :(", "The exception is internal Spring exceptions"),
+
+    OTHER_EXCEPTION(
+            2,
+            "Oops something went wrong :(",
+            "For this exception we have no comment :("
+    ),
+
+    SPRING_EXCEPTION(
+            100,
+            "Oops something went wrong :(",
+            "The exception is internal Spring exceptions"
+    ),
+
 
     SPRING_NOT_VALID_REQUEST_EXCEPTION (
             101,
