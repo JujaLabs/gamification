@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import javax.inject.Inject;
 import juja.microservices.gamification.dao.AchievementRepository;
-import juja.microservices.gamification.entity.Achievement;
-import juja.microservices.gamification.entity.AchievementType;
-import juja.microservices.gamification.entity.CodenjoyRequest;
+import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -27,7 +25,9 @@ public class AchievementService {
      * If the DAILY achievement already exists in the database and user wants to add another DAILY
      * achievement at the same day, the only field description will be updated.
      */
-    public String addDaily(String userFromId, String description) {
+    public String addDaily(DailyRequest request) {
+        String userFromId = request.getFrom();
+        String description =request.getDescription();
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.DAILY);
 
         if (userFromIdList.size() == 0) {
@@ -37,14 +37,17 @@ public class AchievementService {
             Achievement achievement = userFromIdList.get(0);
             String oldDescription = achievement.getDescription();
             description = oldDescription
-                .concat(System.lineSeparator())
-                .concat(description);
+                    .concat(System.lineSeparator())
+                    .concat(description);
             achievement.setDescription(description);
             return achievementRepository.addAchievement(achievement);
         }
     }
 
-    public List<String> addThanks(String userFromId, String userToId, String description) {
+    public List<String> addThanks(ThanksRequest request) {
+        String userFromId = request.getFrom();
+        String userToId = request.getTo();
+        String description = request.getDescription();
         List<String> result = new ArrayList<>();
         List<Achievement> userFromAndToListToday = achievementRepository
             .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
@@ -88,7 +91,7 @@ public class AchievementService {
             throw new UnsupportedAchievementException("User from cannot be empty");
         } else if (!"".equals(secondUserToId) && "".equals(firstUserToId)) {
             throw new UnsupportedAchievementException("First user cannot be empty");
-        } else if (!"".equals(thirdUserToId) &&  "".equals(secondUserToId)) {
+        } else if (!"".equals(thirdUserToId) && "".equals(secondUserToId)) {
             throw new UnsupportedAchievementException("Second user cannot be empty");
         } else if (!"".equals(secondUserToId) && firstUserToId.equalsIgnoreCase(secondUserToId)) {
             throw new UnsupportedAchievementException("First and second users must be different");
@@ -103,14 +106,25 @@ public class AchievementService {
         result.add(achievementRepository.addAchievement(firstPlace));
         if (!"".equals(secondUserToId)) {
             Achievement secondPlace = new Achievement(userFromId, secondUserToId, CODENJOY_SECOND_PLACE,
-                "Codenjoy second place", AchievementType.CODENJOY);
+                    "Codenjoy second place", AchievementType.CODENJOY);
             result.add(achievementRepository.addAchievement(secondPlace));
         }
         if (!"".equals(thirdUserToId)) {
             Achievement thirdPlace = new Achievement(userFromId, thirdUserToId, CODENJOY_THIRD_PLACE,
-                "Codenjoy third place", AchievementType.CODENJOY);
+                    "Codenjoy third place", AchievementType.CODENJOY);
             result.add(achievementRepository.addAchievement(thirdPlace));
         }
         return result;
+    }
+
+    public String addInterview(InterviewRequest request) {
+        String userFromId = request.getFrom();
+        String description = request.getDescription();
+
+        if (description.isEmpty()) throw new UnsupportedAchievementException("You must be enter interview report");
+
+        Achievement newAchievement = new Achievement(userFromId, userFromId, 10, description, AchievementType.INTERVIEW);
+        return achievementRepository.addAchievement(newAchievement);
+
     }
 }

@@ -8,9 +8,7 @@ import java.util.List;
 import javax.inject.Inject;
 import juja.microservices.gamification.BaseIntegrationTest;
 import juja.microservices.gamification.dao.AchievementRepository;
-import juja.microservices.gamification.entity.Achievement;
-import juja.microservices.gamification.entity.AchievementType;
-import juja.microservices.gamification.entity.CodenjoyRequest;
+import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -42,7 +40,9 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String shouldMuchDescription = "This is a daily report";
         String userToId = "oleg";
 
-        achievementService.addDaily(userToId, shouldMuchDescription);
+        DailyRequest request = new DailyRequest(userToId, shouldMuchDescription);
+
+        achievementService.addDaily(request);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("oleg");
         String actualDescription = achievementList.get(0).getDescription();
 
@@ -60,10 +60,12 @@ public class AchievementServiceTest extends BaseIntegrationTest {
             .concat(System.lineSeparator())
             .concat(updateForDescription);
 
+        DailyRequest request = new DailyRequest(userToId, updateForDescription);
+
         Achievement testAchievement = new Achievement(userFromId, userToId, 1, firstDescription, AchievementType.DAILY);
         achievementRepository.addAchievement(testAchievement);
 
-        achievementService.addDaily(userToId, updateForDescription);
+        achievementService.addDaily(request);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("oleg");
         String actualDescription = achievementList.get(0).getDescription();
 
@@ -81,6 +83,8 @@ public class AchievementServiceTest extends BaseIntegrationTest {
             .concat(System.lineSeparator())
             .concat(updateForDescription);
 
+        DailyRequest request = new DailyRequest(userToId, updateForDescription);
+
         Achievement testAchievement = new Achievement(userFromId, userToId, 1, firstDescription, AchievementType.DAILY);
         achievementRepository.addAchievement(testAchievement);
 
@@ -89,7 +93,7 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         shouldMuchAchievement.setDescription(shouldMuchDescription);
         String shouldMuchAchievementToString = shouldMuchAchievement.toString();
 
-        achievementService.addDaily(userToId, updateForDescription);
+        achievementService.addDaily(request);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("oleg");
 
         String updatedAchievement = achievementList.get(0).toString();
@@ -104,11 +108,20 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String firstDescription = "Daily report first";
         String secondDescription = "Daily report second";
         String thirdDescription = "Daily report third";
-        achievementService.addDaily(userFrom, firstDescription);
-        achievementService.addDaily(userFrom, secondDescription);
-        achievementService.addDaily(userFrom, thirdDescription);
 
-        String expectedDescription = "Daily report first\r\nDaily report second\r\nDaily report third";
+        DailyRequest firstRequest = new DailyRequest(userFrom, firstDescription);
+        DailyRequest secondRequest = new DailyRequest(userFrom, secondDescription);
+        DailyRequest thirdRequest = new DailyRequest(userFrom, thirdDescription);
+
+        achievementService.addDaily(firstRequest);
+        achievementService.addDaily(secondRequest);
+        achievementService.addDaily(thirdRequest);
+
+        String expectedDescription = firstDescription
+                .concat(System.lineSeparator())
+                .concat(secondDescription)
+                .concat(System.lineSeparator())
+                .concat(thirdDescription);
         String expectedType = "DAILY";
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
         String actualDescription = achievementList.get(0).getDescription();
@@ -127,7 +140,9 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String expectedDescription = "For helping with...";
         String expectedType = "THANKS";
 
-        achievementService.addThanks(expectedUserFrom, expectedUserTo, expectedDescription);
+        ThanksRequest request = new ThanksRequest(expectedUserFrom, expectedUserTo, expectedDescription);
+        achievementService.addThanks(request);
+
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("max");
         String actualUserFrom = achievementList.get(0).getFrom();
         String actualUserTo = achievementList.get(0).getTo();
@@ -147,8 +162,11 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String firstUserTo = "peter";
         String secondUserTo = "max";
         String description = "For helping with...";
-        achievementService.addThanks(userFrom, firstUserTo, description);
-        achievementService.addThanks(userFrom, secondUserTo, description);
+
+        ThanksRequest firstRequest = new ThanksRequest(userFrom, firstUserTo, description);
+        ThanksRequest secondRequest = new ThanksRequest(userFrom, secondUserTo, description);
+        achievementService.addThanks(firstRequest);
+        achievementService.addThanks(secondRequest);
 
         String expectedDescription = "Issued two thanks";
         String expectedType = "THANKS";
@@ -168,7 +186,9 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String userFrom = "sasha";
         String userTo = "sasha";
         String description = "For helping with...";
-        achievementService.addThanks(userFrom, userTo, description);
+
+        ThanksRequest request = new ThanksRequest(userFrom, userTo, description);
+        achievementService.addThanks(request);
         Assert.fail();
     }
 
@@ -180,8 +200,10 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String userFrom = "sasha";
         String userTo = "max";
         String description = "For helping with...";
-        achievementService.addThanks(userFrom, userTo, description);
-        achievementService.addThanks(userFrom, userTo, description);
+
+        ThanksRequest request = new ThanksRequest(userFrom, userTo, description);
+        achievementService.addThanks(request);
+        achievementService.addThanks(request);
         Assert.fail();
     }
 
@@ -195,9 +217,14 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String secondUserTo = "max";
         String thirdUserTo = "jon";
         String description = "For helping with...";
-        achievementService.addThanks(userFrom, firstUserTo, description);
-        achievementService.addThanks(userFrom, secondUserTo, description);
-        achievementService.addThanks(userFrom, thirdUserTo, description);
+
+        ThanksRequest firstRequest = new ThanksRequest(userFrom, firstUserTo, description);
+        ThanksRequest secondRequest = new ThanksRequest(userFrom, secondUserTo, description);
+        ThanksRequest thirdRequest = new ThanksRequest(userFrom, thirdUserTo, description);
+
+        achievementService.addThanks(firstRequest);
+        achievementService.addThanks(secondRequest);
+        achievementService.addThanks(thirdRequest);
         Assert.fail();
     }
 
@@ -334,6 +361,35 @@ public class AchievementServiceTest extends BaseIntegrationTest {
         String thirdUserTo = "john";
         CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
         achievementService.addCodenjoy(request);
+        Assert.fail();
+    }
+
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldAddNewInterviewAchievement() {
+        String shouldMuchDescription = "This is an interview report";
+        String userToId = "sasha";
+        InterviewRequest request = new InterviewRequest(userToId, shouldMuchDescription);
+
+        achievementService.addInterview(request);
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
+        String actualDescription = achievementList.get(0).getDescription();
+
+        assertEquals(shouldMuchDescription, actualDescription);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void throwExceptionDescriptionisEmpty() {
+        expectedException.expect(UnsupportedAchievementException.class);
+        expectedException.expectMessage("You must be enter interview report");
+        String userToId = "sasha";
+        String description = "";
+
+        InterviewRequest request = new InterviewRequest(userToId, description);
+
+        achievementService.addInterview(request);
         Assert.fail();
     }
 }

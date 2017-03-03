@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import static org.junit.Assert.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -188,5 +189,35 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         return mockMvc
             .perform(MockMvcRequestBuilders.get("/user/pointSum").contentType(APPLICATION_JSON_UTF8))
             .andReturn();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addInterviewReturnValidJson() throws Exception {
+        String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"interview report\"}";
+        String expectedJson = "[{\"to\":\"sasha\",\"point\":10}]";
+
+        mockMvc.perform(post("/achieve/interview")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+        MvcResult result = getMvcResultUserAchieveSum();
+        String content = result.getResponse().getContentAsString();
+
+        assertEquals(expectedJson, content);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addInterviewShouldReturnExceptionFromMissed() throws Exception {
+        String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
+
+        mockMvc.perform(post("/achieve/interview")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
     }
 }
