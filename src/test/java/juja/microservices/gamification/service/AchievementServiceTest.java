@@ -11,6 +11,7 @@ import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
 import juja.microservices.gamification.entity.CodenjoyRequest;
+import juja.microservices.gamification.entity.InterviewRequest;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -343,8 +344,9 @@ public class AchievementServiceTest extends BaseIntegrationTest {
     public void shouldAddNewInterviewAchievement() {
         String shouldMuchDescription = "This is an interview report";
         String userToId = "sasha";
+        InterviewRequest request = new InterviewRequest(userToId, shouldMuchDescription);
 
-        achievementService.addInterview(userToId, shouldMuchDescription);
+        achievementService.addInterview(request);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
         String actualDescription = achievementList.get(0).getDescription();
 
@@ -362,10 +364,12 @@ public class AchievementServiceTest extends BaseIntegrationTest {
                 .concat(System.lineSeparator())
                 .concat(updateForDescription);
 
+        InterviewRequest request = new InterviewRequest(userToId, updateForDescription);
+
         Achievement testAchievement = new Achievement(userFromId, userToId, 10, firstDescription, AchievementType.INTERVIEW);
         achievementRepository.addAchievement(testAchievement);
 
-        achievementService.addInterview(userToId, updateForDescription);
+        achievementService.addInterview(request);
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
         String actualDescription = achievementList.get(0).getDescription();
 
