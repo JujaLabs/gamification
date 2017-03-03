@@ -48,8 +48,6 @@ public class AchievementController {
     @ResponseBody
     public ResponseEntity<?> addInterview(@RequestBody InterviewRequest request) {
         String achivementId = achievementService.addInterview(request);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", achivementId);
-        return ResponseEntity.ok(jsonObject);
+        return ResponseEntity.ok(achivementId);
     }
 }
