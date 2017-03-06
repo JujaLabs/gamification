@@ -115,7 +115,7 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
     private ApiErrorMessage messageHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex, HttpStatus httpStatus) {
         StringBuilder builder = new StringBuilder();
         builder.append(" Media type is not acceptable. Acceptable media types are ");
-        ex.getSupportedMediaTypes().forEach(t -> builder.append(t + ", "));
+        ex.getSupportedMediaTypes().forEach(t -> builder.append(t).append(", "));
 
         return ApiErrorMessage
                 .builder(ApiErrorStatus.SPRING_HTTP_MEDIA_TYPE_NOT_ACCEPTABLE)
@@ -129,7 +129,7 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getContentType());
         builder.append(" media type is not supported. Supported media types are ");
-        ex.getSupportedMediaTypes().forEach(t -> builder.append(t + ", "));
+        ex.getSupportedMediaTypes().forEach(t -> builder.append(t).append(", "));
 
         return ApiErrorMessage
                 .builder(ApiErrorStatus.SPRING_HTTP_MEDIA_TYPE_NOT_SUPPORTED)
@@ -143,7 +143,7 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getMethod());
         builder.append(" method is not supported for this request. Supported methods are ");
-        ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
+        ex.getSupportedHttpMethods().forEach(t -> builder.append(t).append(" "));
 
         return ApiErrorMessage
                 .builder(ApiErrorStatus.SPRING_HTTP_REQUEST_METHOD_NOT_SUPPORTED)
