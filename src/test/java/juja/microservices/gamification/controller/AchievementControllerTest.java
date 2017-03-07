@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import javax.inject.Inject;
 
@@ -33,6 +32,9 @@ public class AchievementControllerTest {
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
     private static final String THIRD_ACHIEVEMENT_ID = "3";
+    private static final String ONE_ID = "[\"1\"]";
+    private static final String TWO_ID = "[\"1\",\"2\"]";
+    private static final String THREE_ID = "[\"1\",\"2\",\"3\"]";
 
     @Inject
     private MockMvc mockMvc;
@@ -45,8 +47,8 @@ public class AchievementControllerTest {
         when(service.addDaily(any(DailyRequest.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         String jsonContentRequest =
                 "{\"from\":\"max\",\"description\":\"Daily report\"}";
-        String content = getResult("/achieve/daily", jsonContentRequest);
-        assertEquals(FIRST_ACHIEVEMENT_ID, content);
+        String result = getResult("/achieve/daily", jsonContentRequest);
+        assertEquals(FIRST_ACHIEVEMENT_ID, result);
     }
 
     @Test
@@ -55,9 +57,9 @@ public class AchievementControllerTest {
         ids.add(FIRST_ACHIEVEMENT_ID);
         when(service.addThanks(any(ThanksRequest.class))).thenReturn(ids);
         String jsonContentRequest =
-                "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
-        String content = getResult("/achieve/thanks", jsonContentRequest);
-        assertEquals("[\"1\"]", content);
+                "{\"from\":\"max\",\"to\":\"john\",\"description\":\"thanks\"}";
+        String result = getResult("/achieve/thanks", jsonContentRequest);
+        assertEquals(ONE_ID, result);
     }
 
     @Test
@@ -67,10 +69,9 @@ public class AchievementControllerTest {
         ids.add(SECOND_ACHIEVEMENT_ID);
         when(service.addThanks(any(ThanksRequest.class))).thenReturn(ids);
         String jsonContentRequest =
-                "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
-        String content = getResult("/achieve/thanks", jsonContentRequest);
-        assertEquals("[\"".concat(FIRST_ACHIEVEMENT_ID).concat("\",\"").concat(SECOND_ACHIEVEMENT_ID).
-                concat("\"]"), content);
+                "{\"from\":\"max\",\"to\":\"john\",\"description\":\"thanks\"}";
+        String result = getResult("/achieve/thanks", jsonContentRequest);
+        assertEquals(TWO_ID, result);
     }
 
     @Test
@@ -82,9 +83,8 @@ public class AchievementControllerTest {
         when(service.addCodenjoy(any(CodenjoyRequest.class))).thenReturn(ids);
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
-        String content = getResult("/achieve/codenjoy", jsonContentRequest);
-        assertEquals("[\"".concat(FIRST_ACHIEVEMENT_ID).concat("\",\"").concat(SECOND_ACHIEVEMENT_ID).
-                concat("\",\"").concat(THIRD_ACHIEVEMENT_ID).concat("\"]"), content);
+        String result = getResult("/achieve/codenjoy", jsonContentRequest);
+        assertEquals(THREE_ID, result);
     }
 
     @Test
@@ -92,17 +92,16 @@ public class AchievementControllerTest {
         when(service.addInterview((any(InterviewRequest.class)))).thenReturn(FIRST_ACHIEVEMENT_ID);
         String jsonContentRequest =
                 "{\"from\":\"max\",\"description\":\"Interview report\"}";
-        String content = getResult("/achieve/interview", jsonContentRequest);
-        assertEquals(FIRST_ACHIEVEMENT_ID, content);
+        String result = getResult("/achieve/interview", jsonContentRequest);
+        assertEquals(FIRST_ACHIEVEMENT_ID, result);
     }
 
     private String getResult(String uri, String jsonContentRequest) throws Exception {
-        MvcResult result = mockMvc.perform(post(uri)
+        return mockMvc.perform(post(uri)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
-                .andReturn();
-        return result.getResponse().getContentAsString();
+                .andReturn().getResponse().getContentAsString();
     }
 }
