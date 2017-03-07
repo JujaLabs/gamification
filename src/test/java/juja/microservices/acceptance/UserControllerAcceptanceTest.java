@@ -23,9 +23,11 @@ public class UserControllerAcceptanceTest extends BaseAcceptanceTest {
     @Test
     public void testUrlAchieveSum() throws IOException {
 
+        //given
         String url = "/user/pointSum";
         String expectedResponse = convertToString(resource("expectedJson/responsePointSum.json"));
 
+        //when
         Response actualResponse =
                 given()
                         .contentType("application/json")
@@ -36,9 +38,12 @@ public class UserControllerAcceptanceTest extends BaseAcceptanceTest {
                         .extract()
                         .response();
 
+        printConsoleReport(url, expectedResponse, actualResponse.body());
+
+        //then
         assertJsonEquals(actualResponse.asString(), expectedResponse);
 
-        printConsoleReport(url, expectedResponse, actualResponse.body());
+
     }
 
 

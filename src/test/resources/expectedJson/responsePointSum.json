@@ -1,10 +1,10 @@
 [
   {
-    "userToId": "max",
-    "pointCount": 4
+    "to": "max",
+    "point": 4
   },
   {
-    "userToId": "peter",
-    "pointCount": 6
+    "to": "peter",
+    "point": 6
   }
 ]
