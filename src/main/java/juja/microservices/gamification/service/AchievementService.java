@@ -1,7 +1,6 @@
 package juja.microservices.gamification.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import javax.inject.Inject;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
