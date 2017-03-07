@@ -19,6 +19,7 @@ import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 @RunWith(SpringRunner.class)
 public class UserControllerAcceptanceTest extends BaseAcceptanceTest {
 
+    //TODO This test can't be accurate because an order of objects in array of result can be unpredictable
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
     public void testUrlAchieveSum() throws IOException {
@@ -42,9 +43,5 @@ public class UserControllerAcceptanceTest extends BaseAcceptanceTest {
 
         //then
         assertJsonEquals(actualResponse.asString(), expectedResponse);
-
-
     }
-
-
 }
