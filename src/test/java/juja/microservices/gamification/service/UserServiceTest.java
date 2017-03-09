@@ -36,27 +36,27 @@ public class UserServiceTest {
 
     @Test
     public void getUserAchievementsDetails() throws Exception {
-        List<UserAchievementDetails> detailsList = new ArrayList<>();
-        detailsList.add(mock(UserAchievementDetails.class));
-        when(repository.getUserAchievementsDetails(any(UserIdsRequest.class))).thenReturn(detailsList);
+        List<UserAchievementDetails> expectedList = new ArrayList<>();
+        expectedList.add(mock(UserAchievementDetails.class));
+        when(repository.getUserAchievementsDetails(any(UserIdsRequest.class))).thenReturn(expectedList);
         UserIdsRequest request = new UserIdsRequest();
-        List<UserAchievementDetails> details = service.getUserAchievementsDetails(request);
-        assertEquals(detailsList, details);
+        List<UserAchievementDetails> actualList = service.getUserAchievementsDetails(request);
+        assertEquals(expectedList, actualList);
     }
 
     @Test
     public void getAllUsersWithPointSum() throws Exception {
-        List<UserPointsSum> pointsSumList = new ArrayList<>();
-        pointsSumList.add(mock(UserPointsSum.class));
-        when(repository.getAllUsersWithPointSum()).thenReturn(pointsSumList);
-        List<UserPointsSum> points = service.getAllUsersWithPointSum();
-        assertEquals(pointsSumList, points);
+        List<UserPointsSum> expectedList = new ArrayList<>();
+        expectedList.add(mock(UserPointsSum.class));
+        when(repository.getAllUsersWithPointSum()).thenReturn(expectedList);
+        List<UserPointsSum> actualList = service.getAllUsersWithPointSum();
+        assertEquals(expectedList, actualList);
     }
 
     @Test(expected = IllegalStateException.class)
     public void getEmptyAllUsersWithPointSum() throws Exception {
-        List<UserPointsSum> pointsSumList = new ArrayList<>();
-        when(repository.getAllUsersWithPointSum()).thenReturn(pointsSumList);
+        List<UserPointsSum> expectedList = new ArrayList<>();
+        when(repository.getAllUsersWithPointSum()).thenReturn(expectedList);
         service.getAllUsersWithPointSum();
         fail();
     }

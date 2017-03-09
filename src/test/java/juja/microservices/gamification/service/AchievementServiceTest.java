@@ -26,6 +26,10 @@ public class AchievementServiceTest {
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
     private static final String THIRD_ACHIEVEMENT_ID = "3";
+    private static final int CODENJOY_FIRST_PLACE = 5;
+    private static final int CODENJOY_SECOND_PLACE = 3;
+    private static final int CODENJOY_THIRD_PLACE = 1;
+    private static final int ONE_POINT = 1;
 
     @Inject
     private MockMvc mockMvc;
@@ -50,7 +54,7 @@ public class AchievementServiceTest {
     @Test
     public void addSecondDaily() throws Exception {
         List<Achievement> userFromIdList = new ArrayList<>();
-        Achievement achievement = new Achievement("max", "max", 1, "Daily",
+        Achievement achievement = new Achievement("max", "max", ONE_POINT, "Daily",
                 AchievementType.DAILY );
         userFromIdList.add(achievement);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.DAILY))
@@ -68,10 +72,10 @@ public class AchievementServiceTest {
                 .thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         ThanksRequest request = new ThanksRequest("max", "john", "Thanks");
-        List<String> ids = service.addThanks(request);
-        List<String> thanks = new ArrayList<>();
-        thanks.add(FIRST_ACHIEVEMENT_ID);
-        assertEquals(thanks, ids);
+        List<String> actualList = service.addThanks(request);
+        List<String> expectedlist = new ArrayList<>();
+        expectedlist.add(FIRST_ACHIEVEMENT_ID);
+        assertEquals(expectedlist, actualList);
     }
 
     @Test(expected = UnsupportedAchievementException.class)
@@ -84,7 +88,7 @@ public class AchievementServiceTest {
     @Test(expected = UnsupportedAchievementException.class)
     public void addSecondThanksToOneUser() throws Exception {
         List<Achievement> userFromIdList = new ArrayList<>();
-        Achievement achievement = new Achievement("max", "john", 1, "Thanks",
+        Achievement achievement = new Achievement("max", "john", ONE_POINT, "Thanks",
                 AchievementType.THANKS);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS))
                 .thenReturn(userFromIdList);
@@ -97,26 +101,26 @@ public class AchievementServiceTest {
     @Test
     public void addSecondThanks() throws Exception {
         List<Achievement> userFromIdList = new ArrayList<>();
-        Achievement achievement = new Achievement("max", "john", 1, "Thanks",
+        Achievement achievement = new Achievement("max", "john", ONE_POINT, "Thanks",
                 AchievementType.THANKS);
         userFromIdList.add(achievement);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS))
                 .thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(SECOND_ACHIEVEMENT_ID)
                 .thenReturn(THIRD_ACHIEVEMENT_ID);
-        List<String> thanks = new ArrayList<>();
-        thanks.add(SECOND_ACHIEVEMENT_ID);
-        thanks.add(THIRD_ACHIEVEMENT_ID);
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(SECOND_ACHIEVEMENT_ID);
+        expectedList.add(THIRD_ACHIEVEMENT_ID);
         ThanksRequest request = new ThanksRequest("max", "bill","Second thanks");
-        List<String> ids = service.addThanks(request);
-        assertEquals(thanks, ids);
+        List<String> actualList = service.addThanks(request);
+        assertEquals(expectedList, actualList);
     }
 
     @Test(expected = UnsupportedAchievementException.class)
     public void addThirdThanks() throws Exception {
-        Achievement firstAchievement = new Achievement("max", "john", 1, "Thanks",
+        Achievement firstAchievement = new Achievement("max", "john", ONE_POINT, "Thanks",
                 AchievementType.THANKS );
-        Achievement secondAchievement = new Achievement("max", "bob", 1, "Thanks",
+        Achievement secondAchievement = new Achievement("max", "bob", ONE_POINT, "Thanks",
                 AchievementType.THANKS );
         List<Achievement> userFromIdList = new ArrayList<>();
         userFromIdList.add(firstAchievement);
@@ -129,7 +133,6 @@ public class AchievementServiceTest {
         fail();
     }
 
-
     @Test
     public void addCodenjoy() throws Exception {
         List<Achievement> userFromIdList = new ArrayList<>();
@@ -137,21 +140,21 @@ public class AchievementServiceTest {
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID).
                 thenReturn(SECOND_ACHIEVEMENT_ID).thenReturn(THIRD_ACHIEVEMENT_ID);
         CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "bob");
-        List<String> ids = service.addCodenjoy(request);
-        List<String> codenjoy = new ArrayList<>();
-        codenjoy.add(FIRST_ACHIEVEMENT_ID);
-        codenjoy.add(SECOND_ACHIEVEMENT_ID);
-        codenjoy.add(THIRD_ACHIEVEMENT_ID);
-        assertEquals(codenjoy, ids);
+        List<String> actualList = service.addCodenjoy(request);
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        expectedList.add(SECOND_ACHIEVEMENT_ID);
+        expectedList.add(THIRD_ACHIEVEMENT_ID);
+        assertEquals(expectedList, actualList);
     }
 
     @Test(expected = UnsupportedAchievementException.class)
     public void addSecondCodenjoy() throws Exception {
-        Achievement firstAchievement = new Achievement("max", "john", 5, "First place codenjoy",
+        Achievement firstAchievement = new Achievement("max", "john", CODENJOY_FIRST_PLACE, "First place codenjoy",
                 AchievementType.CODENJOY );
-        Achievement secondAchievement = new Achievement("max", "bill", 3, "Second place codenjoy",
+        Achievement secondAchievement = new Achievement("max", "bill", CODENJOY_SECOND_PLACE, "Second place codenjoy",
                 AchievementType.CODENJOY );
-        Achievement thirdAchievement = new Achievement("max", "bob", 1, "Third place codenjoy",
+        Achievement thirdAchievement = new Achievement("max", "bob", CODENJOY_THIRD_PLACE, "Third place codenjoy",
                 AchievementType.CODENJOY );
         List<Achievement> userFromIdList = new ArrayList<>();
         userFromIdList.add(firstAchievement);
