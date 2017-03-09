@@ -7,7 +7,6 @@ import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.ThanksRequest;
 import juja.microservices.gamification.entity.InterviewRequest;
 import juja.microservices.gamification.service.AchievementService;
-import net.minidev.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

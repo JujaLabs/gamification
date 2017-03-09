@@ -2,10 +2,9 @@ package juja.microservices.gamification.service;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
+import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -68,62 +67,142 @@ public class AchievementServiceTest {
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS))
                 .thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
-        ThanksRequest request = new ThanksRequest("max", "john","Thanks");
+        ThanksRequest request = new ThanksRequest("max", "john", "Thanks");
         List<String> ids = service.addThanks(request);
         List<String> thanks = new ArrayList<>();
         thanks.add(FIRST_ACHIEVEMENT_ID);
         assertEquals(thanks, ids);
     }
 
-    @Test
-    public void addSecondThanks() throws Exception {
-        int id = 2;
+    @Test(expected = UnsupportedAchievementException.class)
+    public void addThanksToYourself() throws Exception {
+        ThanksRequest request = new ThanksRequest("max", "max", "Thanks");
+        service.addThanks(request);
+        fail();
+    }
+
+    @Test(expected = UnsupportedAchievementException.class)
+    public void addSecondThanksToOneUser() throws Exception {
         List<Achievement> userFromIdList = new ArrayList<>();
         Achievement achievement = new Achievement("max", "john", 1, "Thanks",
-                AchievementType.DAILY );
+                AchievementType.THANKS);
+        when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS))
+                .thenReturn(userFromIdList);
+        userFromIdList.add(achievement);
+        ThanksRequest request = new ThanksRequest("max", "john", "Thanks");
+        service.addThanks(request);
+        fail();
+    }
+
+    @Test
+    public void addSecondThanks() throws Exception {
+        List<Achievement> userFromIdList = new ArrayList<>();
+        Achievement achievement = new Achievement("max", "john", 1, "Thanks",
+                AchievementType.THANKS);
         userFromIdList.add(achievement);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS))
                 .thenReturn(userFromIdList);
-        when(repository.addAchievement(any(Achievement.class))).thenReturn(""+id);
-//        when(repository.addAchievement(any(Achievement.class))).thenReturn(THIRD_ACHIEVEMENT_ID);
-//        when(repository.addAchievement(any(Achievement.class))).thenReturn(
-//                        THIRD_ACHIEVEMENT_ID
-//        );
-
-//        Achievement achievement1 = Mockito.mock(Achievement.class);
-//        achievement1.
-//        when(repository.addAchievement(achievement1, new Mock )).thenReturn(SECOND_ACHIEVEMENT_ID);
-//
-//
-//        when(repository.addAchievement(any(Achievement.class))).thenAnswer(
-//                invocation -> {
-//                    Object[] args = invocation.getArguments();
-//                    System.out.println("zzzz"+args[0]);
-//                    return args[0];
-//                });
-
-//        when(repository.addAchievement(any(Achievement.class))).thenAnswer(
-//                invocation -> invocation.getArgumentAt(0, String.class));
-
-
+        when(repository.addAchievement(any(Achievement.class))).thenReturn(SECOND_ACHIEVEMENT_ID)
+                .thenReturn(THIRD_ACHIEVEMENT_ID);
+        List<String> thanks = new ArrayList<>();
+        thanks.add(SECOND_ACHIEVEMENT_ID);
+        thanks.add(THIRD_ACHIEVEMENT_ID);
         ThanksRequest request = new ThanksRequest("max", "bill","Second thanks");
         List<String> ids = service.addThanks(request);
-        List<String> thanks = new ArrayList<>();
-        id = 2;
-        thanks.add(SECOND_ACHIEVEMENT_ID);
-        id = 3;
-        thanks.add(THIRD_ACHIEVEMENT_ID);
         assertEquals(thanks, ids);
     }
 
-    @Test
-    public void addCodenjoy() throws Exception {
-
+    @Test(expected = UnsupportedAchievementException.class)
+    public void addThirdThanks() throws Exception {
+        Achievement firstAchievement = new Achievement("max", "john", 1, "Thanks",
+                AchievementType.THANKS );
+        Achievement secondAchievement = new Achievement("max", "bob", 1, "Thanks",
+                AchievementType.THANKS );
+        List<Achievement> userFromIdList = new ArrayList<>();
+        userFromIdList.add(firstAchievement);
+        userFromIdList.add(secondAchievement);
+        when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS))
+                .thenReturn(userFromIdList);
+        when(repository.addAchievement(any(Achievement.class))).thenThrow(UnsupportedAchievementException.class);
+        ThanksRequest request = new ThanksRequest("max", "bill","Third thanks");
+        service.addThanks(request);
+        fail();
     }
 
-    @Test
-    public void addSecondCodenjoy() throws Exception {
 
+    @Test
+    public void addCodenjoy() throws Exception {
+        List<Achievement> userFromIdList = new ArrayList<>();
+        when(repository.getAllCodenjoyAchievementsCurrentDate()).thenReturn(userFromIdList);
+        when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID).
+                thenReturn(SECOND_ACHIEVEMENT_ID).thenReturn(THIRD_ACHIEVEMENT_ID);
+        CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "bob");
+        List<String> ids = service.addCodenjoy(request);
+        List<String> codenjoy = new ArrayList<>();
+        codenjoy.add(FIRST_ACHIEVEMENT_ID);
+        codenjoy.add(SECOND_ACHIEVEMENT_ID);
+        codenjoy.add(THIRD_ACHIEVEMENT_ID);
+        assertEquals(codenjoy, ids);
+    }
+
+    @Test(expected = UnsupportedAchievementException.class)
+    public void addSecondCodenjoy() throws Exception {
+        Achievement firstAchievement = new Achievement("max", "john", 5, "First place codenjoy",
+                AchievementType.CODENJOY );
+        Achievement secondAchievement = new Achievement("max", "bill", 3, "Second place codenjoy",
+                AchievementType.CODENJOY );
+        Achievement thirdAchievement = new Achievement("max", "bob", 1, "Third place codenjoy",
+                AchievementType.CODENJOY );
+        List<Achievement> userFromIdList = new ArrayList<>();
+        userFromIdList.add(firstAchievement);
+        userFromIdList.add(secondAchievement);
+        userFromIdList.add(thirdAchievement);
+        when(repository.getAllCodenjoyAchievementsCurrentDate()).thenReturn(userFromIdList);
+        CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "bob");
+        service.addCodenjoy(request);
+        fail();
+    }
+
+    @Test(expected = UnsupportedAchievementException.class)
+    public void CodenjoyEmptyFrom() throws Exception {
+        CodenjoyRequest request = new CodenjoyRequest("", "john", "bill", "bob");
+        service.addCodenjoy(request);
+        fail();
+    }
+
+    @Test(expected = UnsupportedAchievementException.class)
+    public void CodenjoyEmptyFirstUserNotEmptySecondUser() throws Exception {
+        CodenjoyRequest request = new CodenjoyRequest("max", "", "bill", "bob");
+        service.addCodenjoy(request);
+        fail();
+    }
+
+    @Test(expected = UnsupportedAchievementException.class)
+    public void CodenjoyEmptySecondUserNotEmptyThirdUser() throws Exception {
+        CodenjoyRequest request = new CodenjoyRequest("max", "john", "", "bob");
+        service.addCodenjoy(request);
+        fail();
+    }
+
+    @Test(expected = UnsupportedAchievementException.class)
+    public void CodenjoyFirstUserEqualsSecondUser() throws Exception {
+        CodenjoyRequest request = new CodenjoyRequest("max", "john", "john", "bob");
+        service.addCodenjoy(request);
+        fail();
+    }
+
+    @Test(expected = UnsupportedAchievementException.class)
+    public void CodenjoyFirstUserEqualsThirdUser() throws Exception {
+        CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "john");
+        service.addCodenjoy(request);
+        fail();
+    }
+
+    @Test(expected = UnsupportedAchievementException.class)
+    public void CodenjoySecondUserEqualsThirdUser() throws Exception {
+        CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "bill");
+        service.addCodenjoy(request);
+        fail();
     }
 
     @Test
