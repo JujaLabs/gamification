@@ -3,7 +3,7 @@ package juja.microservices.gamification.dao;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
-import juja.microservices.BaseIntegrationTest;
+import juja.microservices.integration.BaseIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

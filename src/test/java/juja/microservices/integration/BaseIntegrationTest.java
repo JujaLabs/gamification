@@ -1,4 +1,4 @@
-package juja.microservices;
+package juja.microservices.integration;
 
 import com.github.fakemongo.Fongo;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbConfiguration;
@@ -13,7 +13,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.inject.Inject;
 
-import static juja.microservices.GamificationTestConfig.TEST_DATABASE_NAME;
+import static juja.microservices.integration.GamificationTestConfig.TEST_DATABASE_NAME;
 
 /**
  * @author danil.kuznetsov

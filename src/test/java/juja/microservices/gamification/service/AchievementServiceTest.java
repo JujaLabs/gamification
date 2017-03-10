@@ -3,7 +3,7 @@ package juja.microservices.gamification.service;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 
 import javax.inject.Inject;
-import juja.microservices.BaseIntegrationTest;
+import juja.microservices.integration.BaseIntegrationTest;
 import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Assert;
