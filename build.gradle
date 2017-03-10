@@ -57,13 +57,12 @@ dependencies {
     compile 'commons-lang:commons-lang:2.6'
     compile 'javax.inject:javax.inject:1'
     compile 'org.projectlombok:lombok:1.16.10'
-    compile 'net.minidev:json-smart:2.2.1'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'com.github.fakemongo:fongo:2.0.10'
     testCompile 'com.lordofthejars:nosqlunit-mongodb:0.8.1'
     testCompile 'io.rest-assured:rest-assured:3.0.2'
-    testCompile 'net.javacrumbs.json-unit:json-unit:1.19.0'
+    testCompile 'net.javacrumbs.json-unit:json-unit-fluent:1.19.0'
 }
 
 task wrapper(type: Wrapper) {

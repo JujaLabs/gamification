@@ -1,0 +1,66 @@
+[
+  {
+    "user": "max",
+    "details": [
+      {
+        "from": "sasha",
+        "to": "max",
+        "point": 1,
+        "description": "good work",
+        "type": "THANKS",
+        "id": "${json-unit.any-string}",
+        "sendDate": "2016-04-09"
+      },
+      {
+        "from": "sasha",
+        "to": "max",
+        "point": 1,
+        "description": "good work",
+        "type": "CODENJOY",
+        "id": "${json-unit.any-string}",
+        "sendDate": "2016-04-09"
+      },
+      {
+        "from": "max",
+        "to": "max",
+        "point": 2,
+        "description": "good work",
+        "type": "DAILY",
+        "id": "${json-unit.any-string}",
+        "sendDate": "2016-04-09"
+      }
+    ]
+  },
+  {
+    "user": "peter",
+    "details": [
+      {
+        "from": "sasha",
+        "to": "peter",
+        "point": 1,
+        "description": "good work",
+        "type": "THANKS",
+        "id": "${json-unit.any-string}",
+        "sendDate": "2016-04-09"
+      },
+      {
+        "from": "sasha",
+        "to": "peter",
+        "point": 2,
+        "description": "good work",
+        "type": "CODENJOY",
+        "id": "${json-unit.any-string}",
+        "sendDate": "2016-03-09"
+      },
+      {
+        "from": "peter",
+        "to": "peter",
+        "point": 3,
+        "description": "good work",
+        "type": "DAILY",
+        "id": "${json-unit.any-string}",
+        "sendDate": "2016-04-09"
+      }
+    ]
+  }
+]
