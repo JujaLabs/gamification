@@ -5,6 +5,8 @@ import javax.inject.Inject;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -16,6 +18,8 @@ public class AchievementService {
     private static final int CODENJOY_SECOND_PLACE = 3;
     private static final int CODENJOY_THIRD_PLACE = 1;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Inject
     private AchievementRepository achievementRepository;
 
@@ -25,20 +29,31 @@ public class AchievementService {
      * achievement at the same day, the only field description will be updated.
      */
     public String addDaily(DailyRequest request) {
+        logger.debug("Entered to 'addDaily' method");
         String userFromId = request.getFrom();
         String description =request.getDescription();
+        logger.debug("Received data userFromId: '{}', description: '{}'", userFromId, description.substring(0, 15).concat("..."));
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.DAILY);
 
         if (userFromIdList.size() == 0) {
+            logger.debug("Entered to 'if' block in addDaily method");
             Achievement newAchievement = new Achievement(userFromId, userFromId, 1, description, AchievementType.DAILY);
+            logger.info("Added new daily achievement from user '{}'", userFromId);
             return achievementRepository.addAchievement(newAchievement);
         } else {
+            logger.debug("Entered to 'else' block in addDaily method");
             Achievement achievement = userFromIdList.get(0);
+            logger.debug("Received achivement {}", achievement.getId());
             String oldDescription = achievement.getDescription();
+            logger.debug("Recieved old description '{}'", oldDescription.substring(0, 15).concat("..."));
             description = oldDescription
                     .concat(System.lineSeparator())
                     .concat(description);
+            logger.debug("Added new description to old description");
             achievement.setDescription(description);
+            logger.debug("Description is set to achievement {}", achievement.getId());
+            logger.info("Added description to daily achivement from user '{}'", userFromId);
+            logger.debug("Left the method addDaily");
             return achievementRepository.addAchievement(achievement);
         }
     }
