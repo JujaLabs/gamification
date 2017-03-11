@@ -16,6 +16,7 @@ import java.util.List;
 public class AchievementService {
 
     private static final int TWO_THANKS = 2;
+    private static final int INTERVIEW_POINTS = 10;
     private static final int CODENJOY_FIRST_PLACE = 5;
     private static final int CODENJOY_SECOND_PLACE = 3;
     private static final int CODENJOY_THIRD_PLACE = 1;
@@ -119,7 +120,7 @@ public class AchievementService {
             throw new UnsupportedAchievementException("You cannot give codenjoy points twice a day");
         }
         if ("".equals(userFromId)) {
-            logger.warn("User 'userFromId' in codenjoy request is empty");
+            logger.warn("Field 'userFromId' in codenjoy request is empty");
             throw new UnsupportedAchievementException("User from cannot be empty");
         }
         if ("".equals(firstUserToId) || "".equals(secondUserToId)) {
@@ -166,10 +167,13 @@ public class AchievementService {
         String userFromId = request.getFrom();
         String description = request.getDescription();
 
-        if (description.isEmpty()) throw new UnsupportedAchievementException("You must be enter interview report");
-
-        Achievement newAchievement = new Achievement(userFromId, userFromId, 10, description, AchievementType.INTERVIEW);
-        return achievementRepository.addAchievement(newAchievement);
-
+        if (description.isEmpty()) {
+            logger.warn("Interview request from user '{}' rejected: description is empty", userFromId);
+            throw new UnsupportedAchievementException("You must be enter interview report");
+        } else {
+            Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description, AchievementType.INTERVIEW);
+            logger.info("Added interview achievement from user '{}'", userFromId);
+            return achievementRepository.addAchievement(newAchievement);
+        }
     }
 }

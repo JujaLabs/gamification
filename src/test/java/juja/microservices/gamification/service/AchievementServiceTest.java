@@ -229,4 +229,13 @@ public class AchievementServiceTest {
         String id = service.addInterview(request);
         assertEquals(FIRST_ACHIEVEMENT_ID, id);
     }
+
+    @Test (expected = UnsupportedAchievementException.class)
+    public void addEmptyInterview() throws Exception {
+        when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
+        InterviewRequest request = new InterviewRequest("max", "");
+        service.addInterview(request);
+        fail();
+    }
+
 }
