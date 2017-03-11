@@ -103,40 +103,61 @@ public class AchievementService {
     }
 
     public List<String> addCodenjoy(CodenjoyRequest request) {
+        checkRequestData(request);
+        return addCodenjoyAchievement(request);
+    }
+
+    private void checkRequestData(CodenjoyRequest request) {
         String userFromId = request.getFrom();
         String firstUserToId = request.getFirstPlace();
         String secondUserToId = request.getSecondPlace();
         String thirdUserToId = request.getThirdPlace();
-        List<String> result = new ArrayList<>();
         List<Achievement> codenjoyUsersToday = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
+
         if (!codenjoyUsersToday.isEmpty()) {
+            logger.warn("User '{}' tried to give codenjoy points twice a day", userFromId);
             throw new UnsupportedAchievementException("You cannot give codenjoy points twice a day");
-        } else if ("".equals(userFromId)) {
+        }
+        if ("".equals(userFromId)) {
+            logger.warn("User 'userFromId' in codenjoy request is empty");
             throw new UnsupportedAchievementException("User from cannot be empty");
-        } else if (!"".equals(secondUserToId) && "".equals(firstUserToId)) {
-            throw new UnsupportedAchievementException("First user cannot be empty");
-        } else if (!"".equals(thirdUserToId) && "".equals(secondUserToId)) {
-            throw new UnsupportedAchievementException("Second user cannot be empty");
-        } else if (!"".equals(secondUserToId) && firstUserToId.equalsIgnoreCase(secondUserToId)) {
+        }
+        if ("".equals(firstUserToId) || "".equals(secondUserToId)) {
+            logger.warn("Codenjoy request rejected: first or second user is empty");
+            throw new UnsupportedAchievementException("First or second place user cannot be empty");
+        }
+        if (firstUserToId.equalsIgnoreCase(secondUserToId)) {
+            logger.warn("Codenjoy request rejected: first and second places users is same");
             throw new UnsupportedAchievementException("First and second users must be different");
-        } else if (!"".equals(thirdUserToId) && firstUserToId.equalsIgnoreCase(thirdUserToId)) {
+        }
+        if (firstUserToId.equalsIgnoreCase(thirdUserToId)) {
+            logger.warn("Codenjoy request rejected: first and third places users is same");
             throw new UnsupportedAchievementException("First and third users must be different");
-        } else if (!"".equals(secondUserToId) && !"".equals(thirdUserToId)
-                && secondUserToId.equalsIgnoreCase(thirdUserToId)) {
+        }
+        if (secondUserToId.equalsIgnoreCase(thirdUserToId)) {
+            logger.warn("Codenjoy request rejected: second and third places users is same");
             throw new UnsupportedAchievementException("Second and third users must be different");
         }
-        Achievement firstPlace = new Achievement(userFromId, firstUserToId, CODENJOY_FIRST_PLACE,
+    }
+
+    private List<String> addCodenjoyAchievement(CodenjoyRequest request) {
+
+        List<String> result = new ArrayList<>();
+        Achievement firstPlace = new Achievement(request.getFrom(), request.getFirstPlace(), CODENJOY_FIRST_PLACE,
                 "Codenjoy first place", AchievementType.CODENJOY);
+        Achievement secondPlace = new Achievement(request.getFrom(), request.getSecondPlace(), CODENJOY_SECOND_PLACE,
+                "Codenjoy second place", AchievementType.CODENJOY);
+
         result.add(achievementRepository.addAchievement(firstPlace));
-        if (!"".equals(secondUserToId)) {
-            Achievement secondPlace = new Achievement(userFromId, secondUserToId, CODENJOY_SECOND_PLACE,
-                    "Codenjoy second place", AchievementType.CODENJOY);
-            result.add(achievementRepository.addAchievement(secondPlace));
-        }
-        if (!"".equals(thirdUserToId)) {
-            Achievement thirdPlace = new Achievement(userFromId, thirdUserToId, CODENJOY_THIRD_PLACE,
+        logger.info("Added fist place Codenjoy achievement from user '{}' to '{}'", request.getFrom(), request.getFirstPlace());
+        result.add(achievementRepository.addAchievement(secondPlace));
+        logger.info("Added second place Codenjoy achievement from user '{}' to '{}'", request.getFrom(), request.getSecondPlace());
+
+        if (!"".equals(request.getThirdPlace())) {
+            Achievement thirdPlace = new Achievement(request.getFrom(), request.getThirdPlace(), CODENJOY_THIRD_PLACE,
                     "Codenjoy third place", AchievementType.CODENJOY);
             result.add(achievementRepository.addAchievement(thirdPlace));
+            logger.info("Added third place Codenjoy achievement from user '{}' to '{}'", request.getFrom(), request.getThirdPlace());
         }
         return result;
     }

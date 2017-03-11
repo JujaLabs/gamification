@@ -148,6 +148,20 @@ public class AchievementServiceTest {
         assertEquals(expectedList, actualList);
     }
 
+    @Test
+    public void addCodenjoyTwoPlaces() throws Exception {
+        List<Achievement> userFromIdList = new ArrayList<>();
+        when(repository.getAllCodenjoyAchievementsCurrentDate()).thenReturn(userFromIdList);
+        when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID).
+                thenReturn(SECOND_ACHIEVEMENT_ID).thenReturn(THIRD_ACHIEVEMENT_ID);
+        CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "");
+        List<String> actualList = service.addCodenjoy(request);
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        expectedList.add(SECOND_ACHIEVEMENT_ID);
+        assertEquals(expectedList, actualList);
+    }
+
     @Test(expected = UnsupportedAchievementException.class)
     public void addSecondCodenjoy() throws Exception {
         Achievement firstAchievement = new Achievement("max", "john", CODENJOY_FIRST_PLACE, "First place codenjoy",
