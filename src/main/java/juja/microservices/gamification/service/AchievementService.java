@@ -2,12 +2,14 @@ package juja.microservices.gamification.service;
 
 import java.util.ArrayList;
 import javax.inject.Inject;
+
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -31,8 +33,8 @@ public class AchievementService {
     public String addDaily(DailyRequest request) {
         logger.debug("Entered to 'addDaily' method");
         String userFromId = request.getFrom();
-        String description =request.getDescription();
-        logger.debug("Received data userFromId: '{}', description: '{}'", userFromId, description.substring(0, 15).concat("..."));
+        String description = request.getDescription();
+        logger.debug("Received data userFromId: '{}', description: '{}'", userFromId, description);
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.DAILY);
 
         if (userFromIdList.size() == 0) {
@@ -45,7 +47,7 @@ public class AchievementService {
             Achievement achievement = userFromIdList.get(0);
             logger.debug("Received achivement {}", achievement.getId());
             String oldDescription = achievement.getDescription();
-            logger.debug("Recieved old description '{}'", oldDescription.substring(0, 15).concat("..."));
+            logger.debug("Recieved old description '{}'", oldDescription);
             description = oldDescription
                     .concat(System.lineSeparator())
                     .concat(description);
@@ -64,14 +66,16 @@ public class AchievementService {
         String description = request.getDescription();
         List<String> result = new ArrayList<>();
         List<Achievement> userFromAndToListToday = achievementRepository
-            .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
+                .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
 
         if (userFromId.equalsIgnoreCase(userToId)) {
+            logger.warn("User '{}' trying to put thanks to yourself", userFromId);
             throw new UnsupportedAchievementException("You cannot thank yourself");
         }
 
         for (Achievement achievement : userFromAndToListToday) {
             if (achievement.getTo().equals(userToId)) {
+                logger.warn("User '{}' tried to give thanks more than one times to person '{}'", userFromId, userToId);
                 throw new UnsupportedAchievementException("You cannot give more than one thanks for day one person");
             }
         }
@@ -79,15 +83,21 @@ public class AchievementService {
         if (userFromAndToListToday.isEmpty()) {
             Achievement firstThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
             result.add(achievementRepository.addAchievement(firstThanks));
+            logger.info("Added first thanks from user '{}' to user '{}'");
             return result;
+
         } else if (userFromAndToListToday.size() >= TWO_THANKS) {
+            logger.warn("User '{}' tried to give thanks more than two times per day", userFromId);
             throw new UnsupportedAchievementException("You cannot give more than two thanks for day");
+
         } else {
             Achievement secondThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
             result.add(achievementRepository.addAchievement(secondThanks));
+            logger.info("Added second thanks from user '{}' to user '{}'", userFromId, userToId);
             String descriptionTwoThanks = "Issued two thanks";
             Achievement thirdThanks = new Achievement(userFromId, userFromId, 1, descriptionTwoThanks, AchievementType.THANKS);
             result.add(achievementRepository.addAchievement(thirdThanks));
+            logger.info("Added thanks achievement to user '{}' for the distributed two thanks to other users", userFromId);
         }
         return result;
     }
