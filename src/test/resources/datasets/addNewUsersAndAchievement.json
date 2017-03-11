@@ -1,0 +1,52 @@
+{
+  "achievement" : [
+    {
+      "from" : "sasha",
+      "to" : "peter",
+      "point" : 1,
+      "description" : "good work",
+      "sendDate":"2016-04-09",
+      "type":"THANKS"
+    },
+    {
+      "from" : "sasha",
+      "to" : "peter",
+      "point" : 2,
+      "description" : "good work",
+      "sendDate":"2016-03-09",
+      "type":"CODENJOY"
+    },
+    {
+      "from" : "peter",
+      "to" : "peter",
+      "point" : 3,
+      "description" : "good work",
+      "sendDate":"2016-04-09",
+      "type":"DAILY"
+    },
+    {
+      "from" : "sasha",
+      "to" : "max",
+      "point" : 1,
+      "description" : "good work",
+      "sendDate":"2016-04-09",
+      "type":"THANKS"
+    },
+    {
+      "from" : "sasha",
+      "to" : "max",
+      "point" : 1,
+      "description" : "good work",
+      "sendDate":"2016-04-09",
+      "type":"CODENJOY"
+    },
+    {
+      "from": "max",
+      "to": "max",
+      "point": 2,
+      "description": "good work",
+      "sendDate":"2016-04-09",
+      "type":"DAILY"
+    }
+  ]
+}

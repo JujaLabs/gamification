@@ -37,13 +37,18 @@
         
  **For building and launching application**
  1. In the terminal window go to the project folder,
-    use command _gradle clean build_. "BUILD SUCCESSFUL" means that
-    build is successful :)
+    use gradle wrapper script to start build process.
+    
+    On Unix-like (Linux or  MacOS) using the gradlew shell script  - `sh gradlew clean build` 
+    
+    On Windows using the gradlew.bat batch file  - `gradlew clean build`
+    
+    Wait for message "BUILD SUCCESSFUL" means that  build is successful :)
  2. You can find the built jar-file in gamification/build/libs,
     go to that folder
- 3. Use command _java -jar gamification-1.jar_
+ 3. Use command `java -jar gamification-1.jar`
  4. The string "Started Gamification" means the successful start. 
-    Default port – 8080.
+    Default port – `8080`.
  5. Open one of the helper programs to create and test custom HTTP
     requests-responses, e.g. "Advanced REST client"
  6. Choose the tab "Request", content-type - application/json.

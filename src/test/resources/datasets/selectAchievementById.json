@@ -1,0 +1,22 @@
+{
+  "achievement": [
+    {
+      "from":"sasha",
+      "to":"ira",
+      "point":2,
+      "description":"good work"
+    },
+    {
+      "from":"misha",
+      "to":"ira",
+      "point":1,
+      "description":"good work"
+    },
+    {
+      "from":"misha",
+      "to":"sasha",
+      "point":1,
+      "description":"good work"
+    }
+  ]
+}
