@@ -1,10 +1,10 @@
 [
   {
-    "to": "max",
-    "point": 4
-  },
-  {
     "to": "peter",
     "point": 6
+  },
+  {
+    "to": "max",
+    "point": 4
   }
 ]

@@ -1,7 +1,6 @@
-package juja.microservices.gamification.controller;
+package juja.microservices.integration;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import juja.microservices.gamification.BaseIntegrationTest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

@@ -2,7 +2,7 @@ package juja.microservices.gamification.dao;
 
 import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import juja.microservices.gamification.BaseIntegrationTest;
+import juja.microservices.integration.BaseIntegrationTest;
 import juja.microservices.gamification.entity.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
