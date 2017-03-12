@@ -84,7 +84,7 @@ public class AchievementService {
         if (userFromAndToListToday.isEmpty()) {
             Achievement firstThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
             result.add(achievementRepository.addAchievement(firstThanks));
-            logger.info("Added first thanks from user '{}' to user '{}'");
+            logger.info("Added first thanks from user '{}' to user '{}'",userFromId, userToId);
             return result;
 
         } else if (userFromAndToListToday.size() >= TWO_THANKS) {
