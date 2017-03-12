@@ -6,6 +6,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -40,9 +41,9 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
     public void getAllUsersWithAchievementAndReturnJson() throws Exception {
         mockMvc.perform(get("/user/pointSum")
-            .contentType(APPLICATION_JSON_UTF8))
-            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk());
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -50,19 +51,19 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     public void getUsersAchievementDetailsAndReturnJson() throws Exception {
         String json = "{\"toIds\":[\"sasha\", \"ira\"]}";
         mockMvc.perform(post("/user/achieveDetails")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(json))
-            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
     }
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addThanksShouldReturnValidJson() throws Exception {
         String expectedJson =
-            "[{\"to\":\"ira\",\"point\":1}]";
+                "[{\"to\":\"ira\",\"point\":1}]";
         String jsonContentRequest =
-            "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"good work\"}";
+                "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"good work\"}";
 
         addThanksIsOk(jsonContentRequest);
 
@@ -76,7 +77,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addThanksShouldReturnExceptionCannotThankYourself() throws Exception {
         String jsonContentRequest =
-            "{\"from\":\"sasha\",\"to\":\"sasha\",\"description\":\"thanks\"}";
+                "{\"from\":\"sasha\",\"to\":\"sasha\",\"description\":\"thanks\"}";
 
         addThanksFailed(jsonContentRequest);
     }
@@ -85,9 +86,9 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addThanksShouldReturnExceptionOneThanksOnePersonInDay() throws Exception {
         String firstContentRequest =
-            "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
+                "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
         String secondContentRequest =
-            "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
+                "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
 
         addThanksIsOk(firstContentRequest);
         addThanksFailed(secondContentRequest);
@@ -97,29 +98,28 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addNewThanksShouldReturnExceptionNotMoreTwoThanks() throws Exception {
         String firstContentRequest =
-            "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
+                "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
         String secondContentRequest =
-            "{\"from\":\"sasha\",\"to\":\"max\",\"description\":\"thanks\"}";
+                "{\"from\":\"sasha\",\"to\":\"max\",\"description\":\"thanks\"}";
         String thirdContentRequest =
-            "{\"from\":\"sasha\",\"to\":\"peter\",\"description\":\"thanks\"}";
+                "{\"from\":\"sasha\",\"to\":\"peter\",\"description\":\"thanks\"}";
 
         addThanksIsOk(firstContentRequest);
         addThanksIsOk(secondContentRequest);
         addThanksFailed(thirdContentRequest);
     }
 
-    //TODO This test can't be accurate because an order of objects in array of result can be unpredictable
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addNewTwoThanksShouldReturnOneForMe() throws Exception {
         String expectedJson =
-            "[{\"to\":\"max\",\"point\":1}," +
-                "{\"to\":\"sasha\",\"point\":1}," +
-                "{\"to\":\"ira\",\"point\":1}]";
+                "[{\"to\":\"max\",\"point\":1}," +
+                        "{\"to\":\"sasha\",\"point\":1}," +
+                        "{\"to\":\"ira\",\"point\":1}]";
         String firstContentRequest =
-            "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
+                "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
         String secondContentRequest =
-            "{\"from\":\"sasha\",\"to\":\"max\",\"description\":\"thanks\"}";
+                "{\"from\":\"sasha\",\"to\":\"max\",\"description\":\"thanks\"}";
 
         addThanksIsOk(firstContentRequest);
         addThanksIsOk(secondContentRequest);
@@ -127,37 +127,36 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         MvcResult result = getMvcResultUserAchieveSum();
 
         String content = result.getResponse().getContentAsString();
-        assertEquals(expectedJson, content);
+        JSONAssert.assertEquals(expectedJson, content, false);
     }
 
     private void addThanksIsOk(String jsonContentRequest) throws Exception {
         mockMvc.perform(post("/achieve/thanks")
-            .contentType(APPLICATION_JSON_UTF8)
-            .content(jsonContentRequest))
-            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk());
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
     }
 
     private void addThanksFailed(String jsonContentRequest) throws Exception {
         mockMvc.perform(post("/achieve/thanks")
-            .contentType(APPLICATION_JSON_UTF8)
-            .content(jsonContentRequest))
-            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-            .andExpect(status().isBadRequest());
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    //TODO fix order of objects in expectedJson
     public void addCodenjoyReturnValidJson() throws Exception {
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
         String expectedJson =
-                "[{\"to\":\"tomas\",\"point\":1},{\"to\":\"alex\",\"point\":5},{\"to\":\"jack\",\"point\":3}]";
+                "[{\"to\":\"alex\",\"point\":5},{\"to\":\"jack\",\"point\":3},{\"to\":\"tomas\",\"point\":1}]";
         addCodenjoyIsOk(jsonContentRequest);
         MvcResult result = getMvcResultUserAchieveSum();
         String content = result.getResponse().getContentAsString();
-        assertEquals(expectedJson, content);
+        JSONAssert.assertEquals(expectedJson, content, false);
     }
 
     @Test
@@ -186,8 +185,8 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
     private MvcResult getMvcResultUserAchieveSum() throws Exception {
         return mockMvc
-            .perform(MockMvcRequestBuilders.get("/user/pointSum").contentType(APPLICATION_JSON_UTF8))
-            .andReturn();
+                .perform(MockMvcRequestBuilders.get("/user/pointSum").contentType(APPLICATION_JSON_UTF8))
+                .andReturn();
     }
 
     @Test

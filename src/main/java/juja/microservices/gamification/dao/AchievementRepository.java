@@ -1,6 +1,7 @@
 package juja.microservices.gamification.dao;
 
 import juja.microservices.gamification.entity.*;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -13,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Repository
 public class AchievementRepository {
@@ -51,19 +54,20 @@ public class AchievementRepository {
         String sendDate = getFormattedCurrentDate();
 
         return mongoTemplate.find(new Query(
-            Criteria.where("from").is(from)
-                .and("sendDate").is(sendDate)
-                .and("type").is(type.toString())), Achievement.class);
+                Criteria.where("from").is(from)
+                        .and("sendDate").is(sendDate)
+                        .and("type").is(type.toString())), Achievement.class);
     }
 
     public List<UserPointsSum> getAllUsersWithPointSum() {
-        Aggregation aggregation = Aggregation.newAggregation(
-            Aggregation.group("to")
-                .first("to").as("to")
-                .sum("point").as("point")
+        Aggregation aggregation = newAggregation(
+                group("to")
+                        .first("to").as("to")
+                        .sum("point").as("point"),
+                sort(Sort.Direction.ASC, "to")
         );
         AggregationResults<UserPointsSum> result =
-            mongoTemplate.aggregate(aggregation, Achievement.class, UserPointsSum.class);
+                mongoTemplate.aggregate(aggregation, Achievement.class, UserPointsSum.class);
         return result.getMappedResults();
     }
 
