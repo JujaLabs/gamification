@@ -6,15 +6,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.inject.Inject;
 
@@ -23,11 +16,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_ATOM_XML;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
-import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -113,56 +104,48 @@ public class UserControllerTest {
     }
 
     //TODO test
-    @Test()
-    public void getHttpMediaTypeNotAcceptableException() throws Exception {
-    }
+//    @Test()
+//    public void getHttpMediaTypeNotAcceptableException() throws Exception {
+//    }
 
     //TODO impossible to test in this application
     //URI template does not match the path variable name declared on the method parameter
-    @Test()
-    public void getMissingPathVariableException() throws Exception {
-    }
+//    @Test()
+//    public void getMissingPathVariableException() throws Exception {
+//    }
 
     //TODO test
-    @Test()
-    public void getMissingServletRequestParameterException() throws Exception {
-    }
+//    @Test()
+//    public void getMissingServletRequestParameterException() throws Exception {
+//    }
 
     //TODO test
-    @Test()
-    public void getConversionNotSupportedException() throws Exception {
-    }
+//    @Test()
+//    public void getConversionNotSupportedException() throws Exception {
+//    }
 
     //TODO test
-    @Test()
-    public void getTypeMismatchException() throws Exception {
-    }
+//    @Test()
+//    public void getTypeMismatchException() throws Exception {
+//    }
 
     //TODO test
-    @Test()
-    public void getMethodArgumentNotValidException() throws Exception {
-    }
+//    @Test()
+//    public void getMethodArgumentNotValidException() throws Exception {
+//    }
 
     //TODO test
-    @Test()
-    public void getMissingServletRequestPartException() throws Exception {
-    }
+//    @Test()
+//    public void getMissingServletRequestPartException() throws Exception {
+//    }
 
     //TODO test
-    @Test()
-    public void getBindException() throws Exception {
-//        when(mockMvc.perform(get("/user/pointSum")
-//                .contentType(APPLICATION_JSON_UTF8))).thenThrow(new BindException(mock(BindingResult.class )));
-//        mockMvc.perform(get("/user/pointSum")
-//                .contentType(APPLICATION_JSON_UTF8));
-    }
+//    @Test()
+//    public void getBindException() throws Exception {
+//    }
 
     //TODO test
-    @Test(expected = NoHandlerFoundException.class)
-    public void getNoHandlerFoundException() throws Exception {
-//        when(mockMvc.perform(get("/user/pointSum")
-//                .contentType(APPLICATION_JSON_UTF8))).thenThrow(new NoHandlerFoundException("get","/user/pointSum",new HttpHeaders()));
-//        mockMvc.perform(get("/user/pointSum")
-//                .contentType(APPLICATION_JSON_UTF8));
-    }
+//    @Test
+//    public void getNoHandlerFoundException() throws Exception {
+//    }
 }
