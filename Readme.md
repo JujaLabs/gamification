@@ -37,11 +37,11 @@
 
 **Using MongoDB for Linux users (local machine install)**
 
- 1. Install MongoDB using your distro package manager. For example, in Fedora: sudo dnf install mongodb-org
- 2. Start mongodb: sudo systemctl start mongod
- 3. Check status (should be "active"): sudo systemctl status mongod
- 4. If you want to start mongodb every time with system: sudo systemctl enable mongod
- 5. Run mongo shell in console with: mongo
+ 1. Install MongoDB using your distro package manager. For example, in Fedora: `sudo dnf install mongodb-org`
+ 2. Start mongodb: `sudo systemctl start mongod`
+ 3. Check status (should be "active"): `sudo systemctl status mongod`
+ 4. If you want to start mongodb every time with system: `sudo systemctl enable mongod`
+ 5. Run mongo shell in console with: `mongo`
  6. Do steps 8-10 from section above
         
 **For building and launching application**
@@ -63,19 +63,7 @@
  6. Choose the tab "Request", content-type - application/json.
  7. Follow the API. Important: the first - to add something,
     then - you can get it.
-    
-**API**
 
-| url         | /achieve                              |
-|-------------|---------------------------------------|
-| method      | post                                  |
-| ------------|---------------------------------------|
-| body        | {                                     |
-|             |   "userFromId": "sasha",              |
-|             |   "userToId": "ira",                  |
-|             |   "pointCount": 2,                    |
-|             |   "description": "good work"          |
-|             | }                                     |
-|-------------|---------------------------------------|
-| description | to add an achievement and receive the |
-|             | response with the achievement id      |
+ **API**
+
+[REST APIs](https://github.com/JuniorsJava/gamification/wiki/REST-APIs)
