@@ -1,40 +1,52 @@
 {
   "achievement" : [
     {
-      "userFromId" : "sasha",
-      "userToId" : "peter",
-      "pointCount" : 1,
-      "description" : "good work"
+      "from" : "sasha",
+      "to" : "peter",
+      "point" : 1,
+      "description" : "good work",
+      "sendDate":"2016-04-09",
+      "type":"THANKS"
     },
     {
-      "userFromId" : "sasha",
-      "userToId" : "peter",
-      "pointCount" : 2,
-      "description" : "good work"
+      "from" : "sasha",
+      "to" : "peter",
+      "point" : 2,
+      "description" : "good work",
+      "sendDate":"2016-03-09",
+      "type":"CODENJOY"
     },
     {
-      "userFromId" : "sasha",
-      "userToId" : "peter",
-      "pointCount" : 3,
-      "description" : "good work"
+      "from" : "peter",
+      "to" : "peter",
+      "point" : 3,
+      "description" : "good work",
+      "sendDate":"2016-04-09",
+      "type":"DAILY"
     },
     {
-      "userFromId" : "sasha",
-      "userToId" : "max",
-      "pointCount" : 1,
-      "description" : "good work"
+      "from" : "sasha",
+      "to" : "max",
+      "point" : 1,
+      "description" : "good work",
+      "sendDate":"2016-04-09",
+      "type":"THANKS"
     },
     {
-      "userFromId" : "sasha",
-      "userToId" : "max",
-      "pointCount" : 1,
-      "description" : "good work"
+      "from" : "sasha",
+      "to" : "max",
+      "point" : 1,
+      "description" : "good work",
+      "sendDate":"2016-04-09",
+      "type":"CODENJOY"
     },
     {
-      "userFromId": "sasha",
-      "userToId": "max",
-      "pointCount": 2,
-      "description": "good work"
+      "from": "max",
+      "to": "max",
+      "point": 2,
+      "description": "good work",
+      "sendDate":"2016-04-09",
+      "type":"DAILY"
     }
   ]
 }

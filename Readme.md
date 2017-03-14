@@ -65,5 +65,5 @@
     then - you can get it.
 
  **API**
-
+ 
 [REST APIs](https://github.com/JuniorsJava/gamification/wiki/REST-APIs)

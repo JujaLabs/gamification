@@ -1,33 +1,28 @@
 package juja.microservices.acceptance;
 
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import io.restassured.RestAssured;
-import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
 import juja.microservices.gamification.Gamification;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
+
+import java.io.IOException;
+import java.io.Reader;
 
 import static com.lordofthejars.nosqlunit.mongodb.MongoDbConfigurationBuilder.mongoDb;
-import static io.restassured.RestAssured.given;
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
- * @author danil.kuznetsov
+ * @author Danil Kuznetsov
  */
-@RunWith(SpringRunner.class)
+
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = {Gamification.class})
 @DirtiesContext
-public class UserControllerAcceptanceTest {
-
+public class BaseAcceptanceTest {
     @LocalServerPort
     int localPort;
 
@@ -47,20 +42,24 @@ public class UserControllerAcceptanceTest {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-    @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    @Test
-    public void testUrlAchieveSum() {
-        Response result = given()
-                .contentType("application/json")
-                .when()
-                .get("/user/pointSum")
-                .then()
-                .statusCode(200)
-                .assertThat().body(matchesJsonSchemaInClasspath("jsonSchema/responsePointSum.json"))
-                .extract()
-                .response();
+    String convertToString(Reader reader) throws IOException {
+        char[] arr = new char[8 * 1024];
+        StringBuilder buffer = new StringBuilder();
+        int numCharsRead;
+        while ((numCharsRead = reader.read(arr, 0, arr.length)) != -1) {
+            buffer.append(arr, 0, numCharsRead);
+        }
+        return buffer.toString();
+    }
 
-        System.out.println("\n\nResponse for /user/pointSum");
-        System.out.println("\n\n"+result.asString()+"\n\n");
+    void printConsoleReport(String url, String expectedResponse, ResponseBody actualResponse) throws IOException {
+
+        System.out.println("\n\n URL  - " + url);
+
+        System.out.println("\n Actual Response :\n");
+        actualResponse.prettyPrint();
+
+        System.out.println("\nExpected Response :");
+        System.out.println("\n" + expectedResponse + "\n\n");
     }
 }

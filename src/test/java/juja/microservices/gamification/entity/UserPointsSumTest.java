@@ -15,7 +15,7 @@ public class UserPointsSumTest {
         UserPointsSum userPointsSum = new UserPointsSum("johnny", 10);
 
         assertNotNull(userPointsSum);
-        assertEquals(name, userPointsSum.getUserToId());
-        assertEquals(pointSum, userPointsSum.getPointCount());
+        assertEquals(name, userPointsSum.getTo());
+        assertEquals(pointSum, userPointsSum.getPoint());
     }
 }
