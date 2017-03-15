@@ -28,15 +28,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @DirtiesContext
 public class BaseAcceptanceTest {
 
-    static final String ACHIEVE_DAILY_URL = "/achieve/daily";
-    static final String ACHIEVE_THANKS_URL = "/achieve/thanks";
-    static final String ACHIEVE_CODENJOY_URL = "/achieve/codenjoy";
-    static final String ACHIEVE_INTERVIEW_URL = "/achieve/interview";
-    static final String USER_POINT_SUM_URL = "/user/pointSum";
-    static final String USER_ACHIEVE_DETAILS_URL = "/user/achieveDetails";
-    static final String EMPTY_JSON_CONTENT_REQUEST = "";
-
-
     @LocalServerPort
     int localPort;
 
@@ -88,16 +79,12 @@ public class BaseAcceptanceTest {
         } else if (HttpMethod.GET == method) {
             responce = specification.get(url);
         } else {
-            throw new RuntimeException("Unsupported method in getResponse()");
+            throw new RuntimeException("Unsupported HttpMethod in getResponse()");
         }
         return responce
                 .then()
                 .statusCode(200)
                 .extract()
                 .response();
-    }
-
-    Response getControlResponse() {
-        return getResponse(USER_POINT_SUM_URL, EMPTY_JSON_CONTENT_REQUEST, HttpMethod.GET);
     }
 }

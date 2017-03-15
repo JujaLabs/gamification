@@ -11,7 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 
-import static io.restassured.RestAssured.given;
 import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
@@ -21,13 +20,17 @@ import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 @RunWith(SpringRunner.class)
 public class UserAcceptanceTest extends BaseAcceptanceTest {
 
+    private static final String USER_POINT_SUM_URL = "/user/pointSum";
+    private static final String USER_ACHIEVE_DETAILS_URL = "/user/achieveDetails";
+    private static final String EMPTY_JSON_CONTENT_REQUEST = "";
+
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
     public void testUrlPointSum() throws IOException {
 
         //given
         String url = USER_POINT_SUM_URL;
-        String expectedResponse = convertToString(resource("expectedJson/responseUserPointSum.json"));
+        String expectedResponse = convertToString(resource("acceptance/responce/responseUserPointSum.json"));
 
         //when
         Response actualResponse = getResponse(url, EMPTY_JSON_CONTENT_REQUEST, HttpMethod.GET);
@@ -45,8 +48,8 @@ public class UserAcceptanceTest extends BaseAcceptanceTest {
 
         //given
         String url = USER_ACHIEVE_DETAILS_URL;
-        String jsonContentRequest = convertToString(resource("datasets/selectAchieveDetails.json"));
-        String expectedResponse = convertToString(resource("expectedJson/responseUserAchieveDetails.json"));
+        String jsonContentRequest = convertToString(resource("acceptance/request/selectAchieveDetails.json"));
+        String expectedResponse = convertToString(resource("acceptance/responce/responseUserAchieveDetails.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);

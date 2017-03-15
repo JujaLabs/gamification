@@ -17,6 +17,12 @@ import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 @RunWith(SpringRunner.class)
 public class AchievementAcceptanceTest extends BaseAcceptanceTest {
 
+    private static final String ACHIEVE_DAILY_URL = "/achieve/daily";
+    private static final String ACHIEVE_THANKS_URL = "/achieve/thanks";
+    private static final String ACHIEVE_CODENJOY_URL = "/achieve/codenjoy";
+    private static final String ACHIEVE_INTERVIEW_URL = "/achieve/interview";
+    private static final String USER_POINT_SUM_URL = "/user/pointSum";
+    private static final String EMPTY_JSON_CONTENT_REQUEST = "";
     private static final String ONE_ACHIEVEMENT_ID = "achievement id";
     private static final String TWO_ACHIEVEMENT_ID = "[achievement1 id, achievement2 id]";
     private static final String THREE_ACHIEVEMENT_ID = "[ achievement1 id, achievement2 id, achievement3 id]";
@@ -27,9 +33,9 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
 
         //given
         String url = ACHIEVE_DAILY_URL;
-        String jsonContentRequest = convertToString(resource("datasets/addDailyReport.json"));
+        String jsonContentRequest = convertToString(resource("acceptance/request/addDailyReport.json"));
         String jsonContentControlResponce = convertToString(
-                resource("expectedJson/responseUserPointSumDailyOrThanks.json"));
+                resource("acceptance/responce/responseUserPointSumOnePoint.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);
@@ -48,9 +54,9 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
 
         //given
         String url = ACHIEVE_THANKS_URL;
-        String jsonContentRequest = convertToString(resource("datasets/addFirstThanks.json"));
+        String jsonContentRequest = convertToString(resource("acceptance/request/addFirstThanks.json"));
         String jsonContentControlResponce = convertToString(resource(
-                "expectedJson/responseUserPointSumDailyOrThanks.json"));
+                "acceptance/responce/responseUserPointSumOnePoint.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);
@@ -69,10 +75,10 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
 
         //given
         String url = ACHIEVE_THANKS_URL;
-        String jsonFirstContentRequest = convertToString(resource("datasets/addFirstThanks.json"));
-        String jsonSecondContentRequest = convertToString(resource("datasets/addSecondThanks.json"));
+        String jsonFirstContentRequest = convertToString(resource("acceptance/request/addFirstThanks.json"));
+        String jsonSecondContentRequest = convertToString(resource("acceptance/request/addSecondThanks.json"));
         String jsonContentControlResponce = convertToString(resource(
-                "expectedJson/responseUserPointSumTwoThanks.json"));
+                "acceptance/responce/responseUserPointSumTwoThanks.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonFirstContentRequest, HttpMethod.POST);
@@ -93,8 +99,9 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
 
         //given
         String url = ACHIEVE_CODENJOY_URL;
-        String jsonContentRequest = convertToString(resource("datasets/addCodenjoy.json"));
-        String jsonContentControlResponce = convertToString(resource("expectedJson/responseUserPointSumCodenjoy.json"));
+        String jsonContentRequest = convertToString(resource("acceptance/request/addCodenjoy.json"));
+        String jsonContentControlResponce = convertToString(resource(
+                "acceptance/responce/responseUserPointSumCodenjoy.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);
@@ -113,9 +120,9 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
 
         //given
         String url = ACHIEVE_INTERVIEW_URL;
-        String jsonContentRequest = convertToString(resource("datasets/addInterview.json"));
+        String jsonContentRequest = convertToString(resource("acceptance/request/addInterview.json"));
         String jsonContentControlResponce = convertToString(resource(
-                "expectedJson/responseUserPointSumInterview.json"));
+                "acceptance/responce/responseUserPointSumTenPoints.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);
@@ -126,5 +133,9 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         assertThatJson(controlResponse.asString())
                 .when(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(jsonContentControlResponce);
+    }
+
+    Response getControlResponse() {
+        return getResponse(USER_POINT_SUM_URL, EMPTY_JSON_CONTENT_REQUEST, HttpMethod.GET);
     }
 }
