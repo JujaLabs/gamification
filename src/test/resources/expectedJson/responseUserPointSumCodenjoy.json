@@ -1,0 +1,13 @@
+[
+  {
+    "to":"bob",
+    "point":1
+  },
+  {"to":"john",
+  "point":3
+  },
+  {
+    "to":"max",
+    "point":5
+  }
+]
