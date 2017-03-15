@@ -30,7 +30,7 @@ public class UserAcceptanceTest extends BaseAcceptanceTest {
 
         //given
         String url = USER_POINT_SUM_URL;
-        String expectedResponse = convertToString(resource("acceptance/responce/responseUserPointSum.json"));
+        String expectedResponse = convertToString(resource("acceptance/response/responseUserPointSum.json"));
 
         //when
         Response actualResponse = getResponse(url, EMPTY_JSON_CONTENT_REQUEST, HttpMethod.GET);
@@ -49,7 +49,7 @@ public class UserAcceptanceTest extends BaseAcceptanceTest {
         //given
         String url = USER_ACHIEVE_DETAILS_URL;
         String jsonContentRequest = convertToString(resource("acceptance/request/selectAchieveDetails.json"));
-        String expectedResponse = convertToString(resource("acceptance/responce/responseUserAchieveDetails.json"));
+        String expectedResponse = convertToString(resource("acceptance/response/responseUserAchieveDetails.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);

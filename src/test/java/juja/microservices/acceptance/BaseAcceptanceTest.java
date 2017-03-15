@@ -73,15 +73,15 @@ public class BaseAcceptanceTest {
                 .contentType("application/json")
                 .body(jsonContentRequest)
                 .when();
-        Response responce;
+        Response response;
         if (HttpMethod.POST == method) {
-            responce = specification.post(url);
+            response = specification.post(url);
         } else if (HttpMethod.GET == method) {
-            responce = specification.get(url);
+            response = specification.get(url);
         } else {
             throw new RuntimeException("Unsupported HttpMethod in getResponse()");
         }
-        return responce
+        return response
                 .then()
                 .statusCode(200)
                 .extract()

@@ -34,8 +34,8 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         //given
         String url = ACHIEVE_DAILY_URL;
         String jsonContentRequest = convertToString(resource("acceptance/request/addDailyReport.json"));
-        String jsonContentControlResponce = convertToString(
-                resource("acceptance/responce/responseUserPointSumOnePoint.json"));
+        String jsonContentControlResponse = convertToString(
+                resource("acceptance/response/responseUserPointSumOnePoint.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);
@@ -45,7 +45,7 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         //then
         assertThatJson(controlResponse.asString())
                 .when(Option.IGNORING_ARRAY_ORDER)
-                .isEqualTo(jsonContentControlResponce);
+                .isEqualTo(jsonContentControlResponse);
     }
 
     @UsingDataSet(locations = "/datasets/initEmptyDb.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
@@ -55,8 +55,8 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         //given
         String url = ACHIEVE_THANKS_URL;
         String jsonContentRequest = convertToString(resource("acceptance/request/addFirstThanks.json"));
-        String jsonContentControlResponce = convertToString(resource(
-                "acceptance/responce/responseUserPointSumOnePoint.json"));
+        String jsonContentControlResponse = convertToString(resource(
+                "acceptance/response/responseUserPointSumOnePoint.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);
@@ -66,7 +66,7 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         //then
         assertThatJson(controlResponse.asString())
                 .when(Option.IGNORING_ARRAY_ORDER)
-                .isEqualTo(jsonContentControlResponce);
+                .isEqualTo(jsonContentControlResponse);
     }
 
     @UsingDataSet(locations = "/datasets/initEmptyDb.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
@@ -77,8 +77,8 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         String url = ACHIEVE_THANKS_URL;
         String jsonFirstContentRequest = convertToString(resource("acceptance/request/addFirstThanks.json"));
         String jsonSecondContentRequest = convertToString(resource("acceptance/request/addSecondThanks.json"));
-        String jsonContentControlResponce = convertToString(resource(
-                "acceptance/responce/responseUserPointSumTwoThanks.json"));
+        String jsonContentControlResponse = convertToString(resource(
+                "acceptance/response/responseUserPointSumTwoThanks.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonFirstContentRequest, HttpMethod.POST);
@@ -90,7 +90,7 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         //then
         assertThatJson(controlResponse.asString())
                 .when(Option.IGNORING_ARRAY_ORDER)
-                .isEqualTo(jsonContentControlResponce);
+                .isEqualTo(jsonContentControlResponse);
     }
 
     @UsingDataSet(locations = "/datasets/initEmptyDb.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
@@ -100,8 +100,8 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         //given
         String url = ACHIEVE_CODENJOY_URL;
         String jsonContentRequest = convertToString(resource("acceptance/request/addCodenjoy.json"));
-        String jsonContentControlResponce = convertToString(resource(
-                "acceptance/responce/responseUserPointSumCodenjoy.json"));
+        String jsonContentControlResponse = convertToString(resource(
+                "acceptance/response/responseUserPointSumCodenjoy.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);
@@ -111,7 +111,7 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         //then
         assertThatJson(controlResponse.asString())
                 .when(Option.IGNORING_ARRAY_ORDER)
-                .isEqualTo(jsonContentControlResponce);
+                .isEqualTo(jsonContentControlResponse);
     }
 
     @UsingDataSet(locations = "/datasets/initEmptyDb.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
@@ -121,8 +121,8 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         //given
         String url = ACHIEVE_INTERVIEW_URL;
         String jsonContentRequest = convertToString(resource("acceptance/request/addInterview.json"));
-        String jsonContentControlResponce = convertToString(resource(
-                "acceptance/responce/responseUserPointSumTenPoints.json"));
+        String jsonContentControlResponse = convertToString(resource(
+                "acceptance/response/responseUserPointSumTenPoints.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);
@@ -132,7 +132,7 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         //then
         assertThatJson(controlResponse.asString())
                 .when(Option.IGNORING_ARRAY_ORDER)
-                .isEqualTo(jsonContentControlResponce);
+                .isEqualTo(jsonContentControlResponse);
     }
 
     Response getControlResponse() {
