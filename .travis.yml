@@ -1,0 +1,17 @@
+language: java
+jdk:
+  - oraclejdk8
+services:
+  - mongodb
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+before_script:
+  - sleep 15
+  - mongo gamification --eval 'db.createUser({user:"root", pwd:"root", roles:[{role:"dbAdmin", db:"gamification"}]});'
+script:
+  - ./gradlew test
+  - ./gradlew test --tests "juja.microservices.integration.*"
+  - ./gradlew test --tests "juja.microservices.acceptance.*"
