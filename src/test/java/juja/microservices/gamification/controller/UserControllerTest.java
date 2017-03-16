@@ -17,6 +17,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_ATOM_XML;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -87,4 +88,64 @@ public class UserControllerTest {
                 .andReturn().getResponse().getContentAsString();
         assertEquals(ACHIEVEMENTS, result);
     }
+
+    @Test()
+    public void getHttpRequestMethodNotSupportedException() throws Exception {
+        mockMvc.perform(post("/user/pointSum")
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isMethodNotAllowed());
+    }
+
+    @Test()
+    public void getHttpMediaTypeNotSupportedException() throws Exception {
+        mockMvc.perform(get("/user/pointSum")
+                .contentType(APPLICATION_ATOM_XML))
+                .andExpect(status().isUnsupportedMediaType());
+    }
+
+    //TODO test
+//    @Test()
+//    public void getHttpMediaTypeNotAcceptableException() throws Exception {
+//    }
+
+    //TODO impossible to test in this application
+    //URI template does not match the path variable name declared on the method parameter
+//    @Test()
+//    public void getMissingPathVariableException() throws Exception {
+//    }
+
+    //TODO test
+//    @Test()
+//    public void getMissingServletRequestParameterException() throws Exception {
+//    }
+
+    //TODO test
+//    @Test()
+//    public void getConversionNotSupportedException() throws Exception {
+//    }
+
+    //TODO test
+//    @Test()
+//    public void getTypeMismatchException() throws Exception {
+//    }
+
+    //TODO test
+//    @Test()
+//    public void getMethodArgumentNotValidException() throws Exception {
+//    }
+
+    //TODO test
+//    @Test()
+//    public void getMissingServletRequestPartException() throws Exception {
+//    }
+
+    //TODO test
+//    @Test()
+//    public void getBindException() throws Exception {
+//    }
+
+    //TODO test
+//    @Test
+//    public void getNoHandlerFoundException() throws Exception {
+//    }
 }

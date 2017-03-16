@@ -4,13 +4,13 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import io.restassured.response.Response;
 import net.javacrumbs.jsonunit.core.Option;
+import org.eclipse.jetty.http.HttpMethod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 
-import static io.restassured.RestAssured.given;
 import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
@@ -20,25 +20,20 @@ import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 @RunWith(SpringRunner.class)
 public class UserAcceptanceTest extends BaseAcceptanceTest {
 
+    private static final String USER_POINT_SUM_URL = "/user/pointSum";
+    private static final String USER_ACHIEVE_DETAILS_URL = "/user/achieveDetails";
+    private static final String EMPTY_JSON_CONTENT_REQUEST = "";
+
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
     public void testUrlPointSum() throws IOException {
 
         //given
-        String url = "/user/pointSum";
-        String expectedResponse = convertToString(resource("expectedJson/responseUserPointSum.json"));
+        String url = USER_POINT_SUM_URL;
+        String expectedResponse = convertToString(resource("acceptance/response/responseUserPointSum.json"));
 
         //when
-        Response actualResponse =
-                given()
-                        .contentType("application/json")
-                        .when()
-                        .get(url)
-                        .then()
-                        .statusCode(200)
-                        .extract()
-                        .response();
-
+        Response actualResponse = getResponse(url, EMPTY_JSON_CONTENT_REQUEST, HttpMethod.GET);
         printConsoleReport(url, expectedResponse, actualResponse.body());
 
         //then
@@ -52,23 +47,12 @@ public class UserAcceptanceTest extends BaseAcceptanceTest {
     public void testUrlAchieveDetails() throws IOException {
 
         //given
-        String url = "/user/achieveDetails";
-        String expectedResponse = convertToString(resource("expectedJson/responseUserAchieveDetails.json"));
-
-        String jsonContentRequest = "{\"toIds\":[\"max\",\"peter\"]}";
+        String url = USER_ACHIEVE_DETAILS_URL;
+        String jsonContentRequest = convertToString(resource("acceptance/request/selectAchieveDetails.json"));
+        String expectedResponse = convertToString(resource("acceptance/response/responseUserAchieveDetails.json"));
 
         //when
-        Response actualResponse =
-                given()
-                        .contentType("application/json")
-                        .body(jsonContentRequest)
-                        .when()
-                        .post(url)
-                        .then()
-                        .statusCode(200)
-                        .extract()
-                        .response();
-
+        Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);
         printConsoleReport(url, expectedResponse, actualResponse.body());
 
         //then
