@@ -44,21 +44,20 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         assertEquals(2, list.size());
     }
 
-    //TODO This test can't be accurate because an order of objects in list of result can be unpredictable
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
     public void shouldReturnAllUsersNameAndPointSum() {
         List<UserPointsSum> list = achievementRepository.getAllUsersWithPointSum();
 
         String expectedFirstName = "max";
-        int expectedSumPointUserPeter = 4;
+        int expectedSumPointUserMax = 4;
         assertEquals(expectedFirstName, list.get(0).getTo());
-        assertEquals(expectedSumPointUserPeter, list.get(0).getPoint());
+        assertEquals(expectedSumPointUserMax, list.get(0).getPoint());
 
         String expectedSecondName = "peter";
-        int expectedSumPointUserMax = 6;
+        int expectedSumPointUserPeter = 6;
         assertEquals(expectedSecondName, list.get(1).getTo());
-        assertEquals(expectedSumPointUserMax, list.get(1).getPoint());
+        assertEquals(expectedSumPointUserPeter, list.get(1).getPoint());
     }
 
     @Test
@@ -81,16 +80,16 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    public void getAllAchievementsByUserFromIdCurrentDateTypeTest(){
+    public void getAllAchievementsByUserFromIdCurrentDateTypeTest() {
         String sendDate = achievementRepository.getFormattedCurrentDate();
         String lineSeparator = System.lineSeparator();
 
         Achievement testAchievement =
-                new Achievement("oleg","oleg",1,"Old daily report", AchievementType.DAILY);
+                new Achievement("oleg", "oleg", 1, "Old daily report", AchievementType.DAILY);
         Achievement testAchievementAnotherDate =
-                new Achievement("oleg","oleg",1,"Old another date daily report", AchievementType.DAILY);
+                new Achievement("oleg", "oleg", 1, "Old another date daily report", AchievementType.DAILY);
         Achievement testAchievementNotADaily =
-                new Achievement("oleg","olga",1,"Not a daily report", AchievementType.THANKS);
+                new Achievement("oleg", "olga", 1, "Not a daily report", AchievementType.THANKS);
 
         testAchievement.setSendDate(sendDate);
         testAchievementAnotherDate.setSendDate("1917-02-09");
@@ -104,15 +103,15 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
 
         String shouldMuchRetrievedAchievement =
                 "Achievement:".concat(lineSeparator)
-                .concat("id = ").concat(id).concat(lineSeparator)
-                .concat("from = ").concat("oleg").concat(lineSeparator)
-                .concat("to = ").concat("oleg").concat(lineSeparator)
-                .concat("sendDate = ").concat(sendDate).concat(lineSeparator)
-                .concat("point = ").concat("1").concat(lineSeparator)
-                .concat("description = ").concat("Old daily report").concat(lineSeparator)
-                .concat("type = ").concat("DAILY").concat(lineSeparator);
+                        .concat("id = ").concat(id).concat(lineSeparator)
+                        .concat("from = ").concat("oleg").concat(lineSeparator)
+                        .concat("to = ").concat("oleg").concat(lineSeparator)
+                        .concat("sendDate = ").concat(sendDate).concat(lineSeparator)
+                        .concat("point = ").concat("1").concat(lineSeparator)
+                        .concat("description = ").concat("Old daily report").concat(lineSeparator)
+                        .concat("type = ").concat("DAILY").concat(lineSeparator);
 
-        assertEquals(1,list.size());
-        assertEquals(shouldMuchRetrievedAchievement,list.get(0).toString());
+        assertEquals(1, list.size());
+        assertEquals(shouldMuchRetrievedAchievement, list.get(0).toString());
     }
 }
