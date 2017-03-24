@@ -35,6 +35,7 @@ public class AchievementService {
     public String addDaily(DailyRequest request) {
         logger.debug("Entered to 'addDaily' method");
         requestValidator.checkDaily(request);
+
         String userFromId = request.getFrom();
         String description = request.getDescription();
         logger.debug("Received data userFromId: '{}', description: '{}'", userFromId, description);
@@ -65,10 +66,10 @@ public class AchievementService {
 
     public List<String> addThanks(ThanksRequest request) {
         requestValidator.checkThanks(request);
+
         String userFromId = request.getFrom();
         String userToId = request.getTo();
         String description = request.getDescription();
-        List<String> result = new ArrayList<>();
         List<Achievement> userFromAndToListToday = achievementRepository
                 .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
 
@@ -79,6 +80,7 @@ public class AchievementService {
             }
         }
 
+        List<String> result = new ArrayList<>();
         if (userFromAndToListToday.isEmpty()) {
             Achievement firstThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
             result.add(achievementRepository.addAchievement(firstThanks));
@@ -104,6 +106,7 @@ public class AchievementService {
 
     public List<String> addCodenjoy(CodenjoyRequest request) {
         requestValidator.checkCodenjoy(request);
+
         String userFromId = request.getFrom();
         List<Achievement> codenjoyUsersToday = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
 
@@ -139,9 +142,9 @@ public class AchievementService {
 
     public String addInterview(InterviewRequest request) {
         requestValidator.checkInterview(request);
+
         String userFromId = request.getFrom();
         String description = request.getDescription();
-
         Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description, AchievementType.INTERVIEW);
         logger.info("Added 'Interview' achievement from user '{}'", userFromId);
 
