@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.Appender;
+import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.InterviewRequest;
 import juja.microservices.gamification.entity.ThanksRequest;
@@ -36,7 +37,7 @@ public class RequestValidatorTest {
     @Before
     public void setUp() {
         validator = new RequestValidator();
-        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        final Logger logger = (Logger) LoggerFactory.getLogger(RequestValidator.class);
         logger.addAppender(mockAppender);
     }
 
@@ -130,5 +131,70 @@ public class RequestValidatorTest {
         final LoggingEvent event = captorLoggingMessage.getValue();
         assertThat(event.getLevel(), is(Level.INFO));
         assertThat(event.getFormattedMessage(), is("Interview request successfully checked"));
+    }
+
+    @Test
+    public void codenjoyRequestTest() {
+        //given
+        CodenjoyRequest request = new CodenjoyRequest("Bob",  "Max", "Den", "Alex");
+
+        //when
+        validator.checkCodenjoy(request);
+
+        //then
+        verify(mockAppender).doAppend(captorLoggingMessage.capture());
+        final LoggingEvent event = captorLoggingMessage.getValue();
+        assertThat(event.getLevel(), is(Level.INFO));
+        assertThat(event.getFormattedMessage(), is("Codenjoy request successfully checked"));
+    }
+
+    @Test (expected = UnsupportedAchievementException.class)
+    public void emptyFirstPlaceTest() {
+        //given
+        CodenjoyRequest request = new CodenjoyRequest("Bob",  "", "Den", "Alex");
+
+        //when
+        validator.checkCodenjoy(request);
+        fail();
+    }
+
+    @Test (expected = UnsupportedAchievementException.class)
+    public void emptySecondPlaceTest() {
+        //given
+        CodenjoyRequest request = new CodenjoyRequest("Bob",  "Max", "", "Alex");
+
+        //when
+        validator.checkCodenjoy(request);
+        fail();
+    }
+
+    @Test (expected = UnsupportedAchievementException.class)
+    public void sameFirstAndSecondPlaceTest() {
+        //given
+        CodenjoyRequest request = new CodenjoyRequest("Bob",  "Max", "Max", "Alex");
+
+        //when
+        validator.checkCodenjoy(request);
+        fail();
+    }
+
+    @Test (expected = UnsupportedAchievementException.class)
+    public void sameSecondAndThirdPlaceTest() {
+        //given
+        CodenjoyRequest request = new CodenjoyRequest("Bob",  "Max", "Alex", "Alex");
+
+        //when
+        validator.checkCodenjoy(request);
+        fail();
+    }
+
+    @Test (expected = UnsupportedAchievementException.class)
+    public void sameFirstAndThirdPlaceTest() {
+        //given
+        CodenjoyRequest request = new CodenjoyRequest("Bob",  "Max", "Den", "Max");
+
+        //when
+        validator.checkCodenjoy(request);
+        fail();
     }
 }

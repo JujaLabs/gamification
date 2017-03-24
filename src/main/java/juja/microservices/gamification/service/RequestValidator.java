@@ -46,21 +46,21 @@ public class RequestValidator {
 
     private void checkFrom(AbstractRequest request) {
         if (request.getFrom().isEmpty()) {
-            logger.warn("Field 'From' in request {} is empty", request);
+            logger.warn("Field 'From' in request '{}' is empty", request.getClass().getSimpleName());
             throw new UnsupportedAchievementException("Field 'From' in request is empty");
         }
     }
 
     private void checkDescription(AbstractRequest request) {
         if (request.getDescription().isEmpty()) {
-            logger.warn("Field 'Description' in request {} is empty", request);
+            logger.warn("Field 'Description' in request '{}' is empty", request.getClass().getSimpleName());
             throw new UnsupportedAchievementException("Field 'Description' in request is empty");
         }
     }
 
     private void checkTo(ThanksRequest request) {
         if (request.getTo().isEmpty()) {
-            logger.warn("Field 'To' in request {} is empty", request);
+            logger.warn("Field 'To' in request '{}' is empty", request.getClass().getSimpleName());
             throw new UnsupportedAchievementException("Field 'To' in request is empty");
         }
 
