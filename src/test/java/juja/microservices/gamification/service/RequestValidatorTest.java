@@ -5,6 +5,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.Appender;
 import juja.microservices.gamification.entity.DailyRequest;
+import juja.microservices.gamification.entity.ThanksRequest;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,12 +72,47 @@ public class RequestValidatorTest {
     }
 
     @Test (expected = UnsupportedAchievementException.class)
-    public void emptyDescriptionDailyTest() {
+    public void emptyDescriptionTest() {
         //given
         DailyRequest request = new DailyRequest("Max","");
 
         //when
         validator.checkDaily(request);
+        fail();
+    }
+
+    @Test
+    public void thanksRequestTest() {
+        //given
+        ThanksRequest request = new ThanksRequest("Max", "Bob", "Thanks for good job!");
+
+        //when
+        validator.checkThanks(request);
+
+        //then
+        verify(mockAppender).doAppend(captorLoggingMessage.capture());
+        final LoggingEvent event = captorLoggingMessage.getValue();
+        assertThat(event.getLevel(), is(Level.INFO));
+        assertThat(event.getFormattedMessage(), is("Thanks request successfully checked"));
+    }
+
+    @Test (expected = UnsupportedAchievementException.class)
+    public void emptyToTest() {
+        //given
+        ThanksRequest request = new ThanksRequest("Max", "", "Thanks for good job!");
+
+        //when
+        validator.checkThanks(request);
+        fail();
+    }
+
+    @Test (expected = UnsupportedAchievementException.class)
+    public void thanksYourselfTest() {
+        //given
+        ThanksRequest request = new ThanksRequest("Max", "Max", "Thanks for good job!");
+
+        //when
+        validator.checkThanks(request);
         fail();
     }
 }

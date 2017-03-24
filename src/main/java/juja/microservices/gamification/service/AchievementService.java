@@ -72,11 +72,6 @@ public class AchievementService {
         List<Achievement> userFromAndToListToday = achievementRepository
                 .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
 
-        if (userFromId.equalsIgnoreCase(userToId)) {
-            logger.warn("User '{}' trying to put 'Thanks' achievement to yourself", userFromId);
-            throw new UnsupportedAchievementException("You cannot thank yourself");
-        }
-
         for (Achievement achievement : userFromAndToListToday) {
             if (achievement.getTo().equals(userToId)) {
                 logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", userFromId, userToId);
