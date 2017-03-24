@@ -5,9 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-public class CodenjoyRequest {
+public class CodenjoyRequest extends AbstractRequest {
 
-    private String from;
     private String firstPlace;
     private String secondPlace;
     private String thirdPlace;

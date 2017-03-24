@@ -5,11 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-public class ThanksRequest {
+public class ThanksRequest extends AbstractRequest {
 
-    private String from;
     private String to;
-    private String description;
 
     @JsonCreator
     public ThanksRequest(@JsonProperty("from") String from, @JsonProperty("to") String to,

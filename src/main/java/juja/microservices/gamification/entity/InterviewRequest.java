@@ -6,9 +6,7 @@ import lombok.Getter;
 
 
 @Getter
-public class InterviewRequest {
-    private String from;
-    private String description;
+public class InterviewRequest extends AbstractRequest {
 
     @JsonCreator
     public InterviewRequest(@JsonProperty("from") String from, @JsonProperty("description") String description) {

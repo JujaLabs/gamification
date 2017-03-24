@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-public class DailyRequest {
-
-    private String from;
-    private String description;
+public class DailyRequest extends AbstractRequest {
 
     @JsonCreator
     public DailyRequest(@JsonProperty("from") String from, @JsonProperty("description") String description) {
