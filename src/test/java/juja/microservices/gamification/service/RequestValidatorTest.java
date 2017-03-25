@@ -99,6 +99,16 @@ public class RequestValidatorTest {
     }
 
     @Test (expected = UnsupportedAchievementException.class)
+    public void emptyDescriptionThanksTest() {
+        //given
+        ThanksRequest request = new ThanksRequest("Max","Ben", "");
+
+        //when
+        validator.checkThanks(request);
+        fail();
+    }
+
+    @Test (expected = UnsupportedAchievementException.class)
     public void emptyToTest() {
         //given
         ThanksRequest request = new ThanksRequest("Max", "", "Thanks for good job!");
@@ -132,6 +142,17 @@ public class RequestValidatorTest {
         assertThat(event.getLevel(), is(Level.INFO));
         assertThat(event.getFormattedMessage(), is("Interview request successfully checked"));
     }
+
+    @Test (expected = UnsupportedAchievementException.class)
+    public void emptyDescriptionInterviewTest() {
+        //given
+        InterviewRequest request = new InterviewRequest("Max", "");
+
+        //when
+        validator.checkInterview(request);
+        fail();
+    }
+
 
     @Test
     public void codenjoyRequestTest() {
