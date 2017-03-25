@@ -8,6 +8,7 @@ import lombok.Getter;
 public class ThanksRequest extends AbstractRequest {
 
     private String to;
+    private String description;
 
     @JsonCreator
     public ThanksRequest(@JsonProperty("from") String from, @JsonProperty("to") String to,

@@ -7,6 +7,8 @@ import lombok.Getter;
 @Getter
 public class DailyRequest extends AbstractRequest {
 
+    private String description;
+
     @JsonCreator
     public DailyRequest(@JsonProperty("from") String from, @JsonProperty("description") String description) {
         this.from = from;

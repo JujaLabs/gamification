@@ -5,5 +5,4 @@ import lombok.Getter;
 @Getter
 public abstract class AbstractRequest {
     protected String from;
-    protected String description;
 }

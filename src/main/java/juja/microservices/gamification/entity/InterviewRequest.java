@@ -8,6 +8,8 @@ import lombok.Getter;
 @Getter
 public class InterviewRequest extends AbstractRequest {
 
+    private String description;
+
     @JsonCreator
     public InterviewRequest(@JsonProperty("from") String from, @JsonProperty("description") String description) {
         this.from = from;

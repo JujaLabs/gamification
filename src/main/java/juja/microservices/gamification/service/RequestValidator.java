@@ -11,7 +11,10 @@ public class RequestValidator {
     public void checkDaily(DailyRequest request) {
         checkNull(request);
         checkFrom(request);
-        checkDescription(request);
+        if (request.getDescription().isEmpty()) {
+            logger.warn("Field 'Description' in request '{}' is empty", request.getClass().getSimpleName());
+            throw new UnsupportedAchievementException("Field 'Description' in request is empty");
+        }
         logger.info("Daily request successfully checked");
     }
 
@@ -19,7 +22,10 @@ public class RequestValidator {
         checkNull(request);
         checkFrom(request);
         checkTo(request);
-        checkDescription(request);
+        if (request.getDescription().isEmpty()) {
+            logger.warn("Field 'Description' in request '{}' is empty", request.getClass().getSimpleName());
+            throw new UnsupportedAchievementException("Field 'Description' in request is empty");
+        }
         logger.info("Thanks request successfully checked");
     }
 
@@ -33,7 +39,10 @@ public class RequestValidator {
     public void checkInterview(InterviewRequest request) {
         checkNull(request);
         checkFrom(request);
-        checkDescription(request);
+        if (request.getDescription().isEmpty()) {
+            logger.warn("Field 'Description' in request '{}' is empty", request.getClass().getSimpleName());
+            throw new UnsupportedAchievementException("Field 'Description' in request is empty");
+        }
         logger.info("Interview request successfully checked");
     }
 
@@ -48,13 +57,6 @@ public class RequestValidator {
         if (request.getFrom().isEmpty()) {
             logger.warn("Field 'From' in request '{}' is empty", request.getClass().getSimpleName());
             throw new UnsupportedAchievementException("Field 'From' in request is empty");
-        }
-    }
-
-    private void checkDescription(AbstractRequest request) {
-        if (request.getDescription().isEmpty()) {
-            logger.warn("Field 'Description' in request '{}' is empty", request.getClass().getSimpleName());
-            throw new UnsupportedAchievementException("Field 'Description' in request is empty");
         }
     }
 
