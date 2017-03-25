@@ -12,8 +12,9 @@ public class RequestValidator {
         checkNull(request);
         checkFrom(request);
         if (request.getDescription().isEmpty()) {
-            logger.warn("Field 'Description' in request '{}' is empty", request.getClass().getSimpleName());
-            throw new UnsupportedAchievementException("Field 'Description' in request is empty");
+            String message = "Field 'Description' in Daily request is empty";
+            logger.warn(message);
+            throw new UnsupportedAchievementException(message);
         }
         logger.info("Daily request successfully checked");
     }
@@ -23,8 +24,9 @@ public class RequestValidator {
         checkFrom(request);
         checkTo(request);
         if (request.getDescription().isEmpty()) {
-            logger.warn("Field 'Description' in request '{}' is empty", request.getClass().getSimpleName());
-            throw new UnsupportedAchievementException("Field 'Description' in request is empty");
+            String message = "Field 'Description' in Thanks request is empty";
+            logger.warn(message);
+            throw new UnsupportedAchievementException(message);
         }
         logger.info("Thanks request successfully checked");
     }
@@ -40,16 +42,18 @@ public class RequestValidator {
         checkNull(request);
         checkFrom(request);
         if (request.getDescription().isEmpty()) {
-            logger.warn("Field 'Description' in request '{}' is empty", request.getClass().getSimpleName());
-            throw new UnsupportedAchievementException("Field 'Description' in request is empty");
+            String message = "Field 'Description' in request Interview is empty";
+            logger.warn(message);
+            throw new UnsupportedAchievementException(message);
         }
         logger.info("Interview request successfully checked");
     }
 
     private void checkNull(AbstractRequest request) {
         if (request == null) {
-            logger.warn("Received request is null");
-            throw new UnsupportedAchievementException("Received request is null");
+            String message = "Received request is null";
+            logger.warn(message);
+            throw new UnsupportedAchievementException(message);
         }
     }
 
@@ -62,8 +66,9 @@ public class RequestValidator {
 
     private void checkTo(ThanksRequest request) {
         if (request.getTo().isEmpty()) {
-            logger.warn("Field 'To' in request '{}' is empty", request.getClass().getSimpleName());
-            throw new UnsupportedAchievementException("Field 'To' in request is empty");
+            String message = "Field 'To' in Thanks request is empty";
+            logger.warn(message);
+            throw new UnsupportedAchievementException(message);
         }
 
         if (request.getFrom().equalsIgnoreCase(request.getTo())) {
