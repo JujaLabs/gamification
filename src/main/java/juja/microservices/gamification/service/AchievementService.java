@@ -25,6 +25,7 @@ public class AchievementService {
 
     @Inject
     private AchievementRepository achievementRepository;
+    private RequestValidator requestValidator = new RequestValidator();
 
     /**
      * In this method userFromId = userToId because users add DAILY achievements to themselves.
@@ -33,6 +34,8 @@ public class AchievementService {
      */
     public String addDaily(DailyRequest request) {
         logger.debug("Entered to 'addDaily' method");
+        requestValidator.checkDaily(request);
+
         String userFromId = request.getFrom();
         String description = request.getDescription();
         logger.debug("Received data userFromId: '{}', description: '{}'", userFromId, description);
@@ -46,7 +49,7 @@ public class AchievementService {
         } else {
             logger.debug("There is already one 'Daily' achievement for user '{}' at current date", userFromId);
             Achievement achievement = userFromIdList.get(0);
-            logger.debug("Received achivement {}", achievement.getId());
+            logger.debug("Received achivement '{}'", achievement.getId());
             String oldDescription = achievement.getDescription();
             logger.debug("Recieved old description '{}'", oldDescription);
             description = oldDescription
@@ -56,22 +59,19 @@ public class AchievementService {
             achievement.setDescription(description);
             logger.debug("Description is set to achievement {}", achievement.getId());
             logger.info("Added description to daily achivement from user '{}'", userFromId);
+
             return achievementRepository.addAchievement(achievement);
         }
     }
 
     public List<String> addThanks(ThanksRequest request) {
+        requestValidator.checkThanks(request);
+
         String userFromId = request.getFrom();
         String userToId = request.getTo();
         String description = request.getDescription();
-        List<String> result = new ArrayList<>();
         List<Achievement> userFromAndToListToday = achievementRepository
                 .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
-
-        if (userFromId.equalsIgnoreCase(userToId)) {
-            logger.warn("User '{}' trying to put 'Thanks' achievement to yourself", userFromId);
-            throw new UnsupportedAchievementException("You cannot thank yourself");
-        }
 
         for (Achievement achievement : userFromAndToListToday) {
             if (achievement.getTo().equals(userToId)) {
@@ -80,10 +80,11 @@ public class AchievementService {
             }
         }
 
+        List<String> result = new ArrayList<>();
         if (userFromAndToListToday.isEmpty()) {
             Achievement firstThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
             result.add(achievementRepository.addAchievement(firstThanks));
-            logger.info("Added first 'Thanks' achievement from user '{}' to user '{}'",userFromId, userToId);
+            logger.info("Added first 'Thanks' achievement from user '{}' to user '{}'", userFromId, userToId);
             return result;
 
         } else if (userFromAndToListToday.size() >= TWO_THANKS) {
@@ -99,49 +100,25 @@ public class AchievementService {
             result.add(achievementRepository.addAchievement(thirdThanks));
             logger.info("Added 'Thanks' achievement to user '{}' for the distributed two thanks to other users", userFromId);
         }
+
         return result;
     }
 
     public List<String> addCodenjoy(CodenjoyRequest request) {
-        checkRequestData(request);
-        return addCodenjoyAchievement(request);
-    }
+        requestValidator.checkCodenjoy(request);
 
-    private void checkRequestData(CodenjoyRequest request) {
         String userFromId = request.getFrom();
-        String firstUserToId = request.getFirstPlace();
-        String secondUserToId = request.getSecondPlace();
-        String thirdUserToId = request.getThirdPlace();
         List<Achievement> codenjoyUsersToday = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
 
         if (!codenjoyUsersToday.isEmpty()) {
             logger.warn("User '{}' tried to give 'Codenjoy' achievement points twice a day", userFromId);
             throw new UnsupportedAchievementException("You cannot give codenjoy points twice a day");
         }
-        if ("".equals(userFromId)) {
-            logger.warn("Field 'userFromId' in codenjoy request is empty");
-            throw new UnsupportedAchievementException("User from cannot be empty");
-        }
-        if ("".equals(firstUserToId) || "".equals(secondUserToId)) {
-            logger.warn("Codenjoy request rejected: first or second user is empty");
-            throw new UnsupportedAchievementException("First or second place user cannot be empty");
-        }
-        if (firstUserToId.equalsIgnoreCase(secondUserToId)) {
-            logger.warn("Codenjoy request rejected: first and second place users is same");
-            throw new UnsupportedAchievementException("First and second users must be different");
-        }
-        if (firstUserToId.equalsIgnoreCase(thirdUserToId)) {
-            logger.warn("Codenjoy request rejected: first and third place users is same");
-            throw new UnsupportedAchievementException("First and third users must be different");
-        }
-        if (secondUserToId.equalsIgnoreCase(thirdUserToId)) {
-            logger.warn("Codenjoy request rejected: second and third place users is same");
-            throw new UnsupportedAchievementException("Second and third users must be different");
-        }
+
+        return addCodenjoyAchievement(request);
     }
 
     private List<String> addCodenjoyAchievement(CodenjoyRequest request) {
-
         List<String> result = new ArrayList<>();
         Achievement firstPlace = new Achievement(request.getFrom(), request.getFirstPlace(), CODENJOY_FIRST_PLACE,
                 "Codenjoy first place", AchievementType.CODENJOY);
@@ -159,20 +136,18 @@ public class AchievementService {
             result.add(achievementRepository.addAchievement(thirdPlace));
             logger.info("Added third place 'Codenjoy' achievement from user '{}' to '{}'", request.getFrom(), request.getThirdPlace());
         }
+
         return result;
     }
 
     public String addInterview(InterviewRequest request) {
+        requestValidator.checkInterview(request);
+
         String userFromId = request.getFrom();
         String description = request.getDescription();
+        Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description, AchievementType.INTERVIEW);
+        logger.info("Added 'Interview' achievement from user '{}'", userFromId);
 
-        if (description.isEmpty()) {
-            logger.warn("Interview request from user '{}' rejected: description is empty", userFromId);
-            throw new UnsupportedAchievementException("You must be enter interview report");
-        } else {
-            Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description, AchievementType.INTERVIEW);
-            logger.info("Added 'Interview' achievement from user '{}'", userFromId);
-            return achievementRepository.addAchievement(newAchievement);
-        }
+        return achievementRepository.addAchievement(newAchievement);
     }
 }
