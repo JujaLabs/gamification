@@ -5,6 +5,8 @@ import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -34,7 +36,11 @@ public class AchievementServiceTest {
     @Inject
     private MockMvc mockMvc;
 
+    @Mock
+    private RequestValidator validator;
+
     @Inject
+    @InjectMocks
     private AchievementService service;
 
     @MockBean
@@ -76,13 +82,6 @@ public class AchievementServiceTest {
         List<String> expectedlist = new ArrayList<>();
         expectedlist.add(FIRST_ACHIEVEMENT_ID);
         assertEquals(expectedlist, actualList);
-    }
-
-    @Test(expected = UnsupportedAchievementException.class)
-    public void addThanksToYourself() throws Exception {
-        ThanksRequest request = new ThanksRequest("max", "max", "Thanks");
-        service.addThanks(request);
-        fail();
     }
 
     @Test(expected = UnsupportedAchievementException.class)
@@ -180,48 +179,6 @@ public class AchievementServiceTest {
         fail();
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
-    public void CodenjoyEmptyFrom() throws Exception {
-        CodenjoyRequest request = new CodenjoyRequest("", "john", "bill", "bob");
-        service.addCodenjoy(request);
-        fail();
-    }
-
-    @Test(expected = UnsupportedAchievementException.class)
-    public void CodenjoyEmptyFirstUserNotEmptySecondUser() throws Exception {
-        CodenjoyRequest request = new CodenjoyRequest("max", "", "bill", "bob");
-        service.addCodenjoy(request);
-        fail();
-    }
-
-    @Test(expected = UnsupportedAchievementException.class)
-    public void CodenjoyEmptySecondUserNotEmptyThirdUser() throws Exception {
-        CodenjoyRequest request = new CodenjoyRequest("max", "john", "", "bob");
-        service.addCodenjoy(request);
-        fail();
-    }
-
-    @Test(expected = UnsupportedAchievementException.class)
-    public void CodenjoyFirstUserEqualsSecondUser() throws Exception {
-        CodenjoyRequest request = new CodenjoyRequest("max", "john", "john", "bob");
-        service.addCodenjoy(request);
-        fail();
-    }
-
-    @Test(expected = UnsupportedAchievementException.class)
-    public void CodenjoyFirstUserEqualsThirdUser() throws Exception {
-        CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "john");
-        service.addCodenjoy(request);
-        fail();
-    }
-
-    @Test(expected = UnsupportedAchievementException.class)
-    public void CodenjoySecondUserEqualsThirdUser() throws Exception {
-        CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "bill");
-        service.addCodenjoy(request);
-        fail();
-    }
-
     @Test
     public void addInterview() throws Exception {
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
@@ -229,13 +186,4 @@ public class AchievementServiceTest {
         String id = service.addInterview(request);
         assertEquals(FIRST_ACHIEVEMENT_ID, id);
     }
-
-    @Test (expected = UnsupportedAchievementException.class)
-    public void addEmptyInterview() throws Exception {
-        when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
-        InterviewRequest request = new InterviewRequest("max", "");
-        service.addInterview(request);
-        fail();
-    }
-
 }
