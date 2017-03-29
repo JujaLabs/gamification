@@ -1,3 +1,5 @@
+TravisCI Build Status Master branch [![Build Status](https://travis-ci.org/JujaLabs/gamification.svg?branch=master)](https://travis-ci.org/JujaLabs/gamification)
+
 **For using MongoDB in local machine**
  1. Install MongoDB
  2. Set up the MongoDB environment.
