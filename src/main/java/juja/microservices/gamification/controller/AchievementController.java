@@ -35,7 +35,7 @@ public class AchievementController {
 
     @RequestMapping(value = "/achieve/thanks", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<?> addThanks(@RequestBody ThanksRequest request) {
+    public ResponseEntity<?> addThanks(@Valid @RequestBody ThanksRequest request) {
         List<String> ids = achievementService.addThanks(request);
         logger.info("Added thanks achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
@@ -43,7 +43,7 @@ public class AchievementController {
 
     @RequestMapping(value = "/achieve/codenjoy", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<?> addCodenjoy(@RequestBody CodenjoyRequest request) {
+    public ResponseEntity<?> addCodenjoy(@Valid @RequestBody CodenjoyRequest request) {
         List<String> ids = achievementService.addCodenjoy(request);
         logger.info("Added codenjoy achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
@@ -51,7 +51,7 @@ public class AchievementController {
 
     @RequestMapping(value = "/achieve/interview", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<?> addInterview(@RequestBody InterviewRequest request) {
+    public ResponseEntity<?> addInterview(@Valid @RequestBody InterviewRequest request) {
         String achievementId = achievementService.addInterview(request);
         logger.info("Added daily achievement, id = {}", achievementId);
         return ResponseEntity.ok(achievementId);

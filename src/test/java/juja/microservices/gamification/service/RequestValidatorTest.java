@@ -143,26 +143,6 @@ public class RequestValidatorTest {
     }
 
     @Test (expected = UnsupportedAchievementException.class)
-    public void emptyFirstPlaceTest() {
-        //given
-        CodenjoyRequest request = new CodenjoyRequest("Bob",  "", "Den", "Alex");
-
-        //when
-        validator.checkCodenjoy(request);
-        fail();
-    }
-
-    @Test (expected = UnsupportedAchievementException.class)
-    public void emptySecondPlaceTest() {
-        //given
-        CodenjoyRequest request = new CodenjoyRequest("Bob",  "Max", "", "Alex");
-
-        //when
-        validator.checkCodenjoy(request);
-        fail();
-    }
-
-    @Test (expected = UnsupportedAchievementException.class)
     public void sameFirstAndSecondPlaceTest() {
         //given
         CodenjoyRequest request = new CodenjoyRequest("Bob",  "Max", "Max", "Alex");

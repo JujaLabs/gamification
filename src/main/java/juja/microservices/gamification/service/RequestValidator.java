@@ -30,8 +30,6 @@ public class RequestValidator {
     }
 
     public void checkCodenjoy(CodenjoyRequest request) {
-        checkNull(request);
-        checkFrom(request);
         checkUsers(request);
         logger.info("Codenjoy request successfully checked");
     }
@@ -80,10 +78,6 @@ public class RequestValidator {
         String secondUserToId = request.getSecondPlace();
         String thirdUserToId = request.getThirdPlace();
 
-        if ("".equals(firstUserToId) || "".equals(secondUserToId)) {
-            logger.warn("Codenjoy request rejected: first or second user is empty");
-            throw new UnsupportedAchievementException("First or second place user cannot be empty");
-        }
         if (firstUserToId.equalsIgnoreCase(secondUserToId)) {
             logger.warn("Codenjoy request rejected: first and second place users is same");
             throw new UnsupportedAchievementException("First and second users must be different");
