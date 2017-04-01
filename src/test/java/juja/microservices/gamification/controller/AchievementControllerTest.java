@@ -53,24 +53,19 @@ public class AchievementControllerTest {
 
     @Test
     public void addDailyWithoutFrom() throws Exception {
-        when(service.addDaily(any(DailyRequest.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
+        //given
         String jsonContentRequest = "{\"from\":\"\",\"description\":\"Daily report\"}";
-        mockMvc.perform(post("/achieve/daily")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(jsonContentRequest))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest());
+        //then
+        checkBadRequest("/achieve/daily", jsonContentRequest);
     }
+
 
     @Test
     public void addDailyWithoutDescription() throws Exception {
-        when(service.addDaily(any(DailyRequest.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
+        //given
         String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
-        mockMvc.perform(post("/achieve/daily")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(jsonContentRequest))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest());
+        //then
+        checkBadRequest("/achieve/daily", jsonContentRequest);
     }
 
     @Test
@@ -111,46 +106,38 @@ public class AchievementControllerTest {
 
     @Test
     public void addCodenjoyWithoutFrom() throws Exception {
-        when(service.addDaily(any(DailyRequest.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
-        String jsonContentRequest = "{\"from\":\"\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
-        mockMvc.perform(post("/achieve/codenjoy")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(jsonContentRequest))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest());
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
+        //then
+        checkBadRequest("/achieve/codenjoy", jsonContentRequest);
     }
 
     @Test
     public void addCodenjoyWithoutFirst() throws Exception {
-        when(service.addDaily(any(DailyRequest.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
-        String jsonContentRequest = "{\"from\":\"max\",\"firstPlace\":\"\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
-        mockMvc.perform(post("/achieve/codenjoy")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(jsonContentRequest))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest());
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"firstPlace\":\"\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
+        //then
+        checkBadRequest("/achieve/codenjoy", jsonContentRequest);
     }
 
     @Test
     public void addCodenjoyWithoutSecond() throws Exception {
-        when(service.addDaily(any(DailyRequest.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
-        String jsonContentRequest = "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"\",\"thirdPlace\":\"tomas\"}";
-        mockMvc.perform(post("/achieve/codenjoy")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(jsonContentRequest))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest());
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"\",\"thirdPlace\":\"tomas\"}";
+        //then
+        checkBadRequest("/achieve/codenjoy", jsonContentRequest);
     }
 
     @Test
     public void addCodenjoyWithoutThird() throws Exception {
-        when(service.addDaily(any(DailyRequest.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
-        String jsonContentRequest = "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"\"}";
-        mockMvc.perform(post("/achieve/codenjoy")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(jsonContentRequest))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest());
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"\"}";
+        //then
+        checkBadRequest("/achieve/codenjoy", jsonContentRequest);
     }
 
     @Test
@@ -162,6 +149,22 @@ public class AchievementControllerTest {
         assertEquals(FIRST_ACHIEVEMENT_ID, result);
     }
 
+    @Test
+    public void addInterviewWithoutFrom() throws Exception {
+        //given
+        String jsonContentRequest = "{\"from\":\"\",\"description\":\"Interview report\"}";
+        //then
+        checkBadRequest("/achieve/interview", jsonContentRequest);
+    }
+
+    @Test
+    public void addInterviewWithoutDescription() throws Exception {
+        //given
+        String jsonContentRequest = "{\"from\":\"max\",\"description\":\"\"}";
+        //then
+        checkBadRequest("/achieve/interview", jsonContentRequest);
+    }
+
     private String getResult(String uri, String jsonContentRequest) throws Exception {
         return mockMvc.perform(post(uri)
                 .contentType(APPLICATION_JSON_UTF8)
@@ -171,12 +174,11 @@ public class AchievementControllerTest {
                 .andReturn().getResponse().getContentAsString();
     }
 
-    private String getBadResult(String uri, String jsonContentRequest) throws Exception {
-        return mockMvc.perform(post(uri)
+    private void checkBadRequest(String uri, String jsonContentRequest) throws Exception {
+        mockMvc.perform(post(uri)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest())
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(status().isBadRequest());
     }
 }

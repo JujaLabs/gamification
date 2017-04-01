@@ -6,7 +6,6 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.Appender;
 import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.entity.DailyRequest;
-import juja.microservices.gamification.entity.InterviewRequest;
 import juja.microservices.gamification.entity.ThanksRequest;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Before;
@@ -100,32 +99,6 @@ public class RequestValidatorTest {
         validator.checkThanks(request);
         fail();
     }
-
-    @Test
-    public void interviewRequestTest() {
-        //given
-        InterviewRequest request = new InterviewRequest("Max",  "Interview description");
-
-        //when
-        validator.checkInterview(request);
-
-        //then
-        verify(mockAppender).doAppend(captorLoggingMessage.capture());
-        final LoggingEvent event = captorLoggingMessage.getValue();
-        assertThat(event.getLevel(), is(Level.INFO));
-        assertThat(event.getFormattedMessage(), is("Interview request successfully checked"));
-    }
-
-    @Test (expected = UnsupportedAchievementException.class)
-    public void emptyDescriptionInterviewTest() {
-        //given
-        InterviewRequest request = new InterviewRequest("Max", "");
-
-        //when
-        validator.checkInterview(request);
-        fail();
-    }
-
 
     @Test
     public void codenjoyRequestTest() {

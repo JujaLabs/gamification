@@ -34,17 +34,6 @@ public class RequestValidator {
         logger.info("Codenjoy request successfully checked");
     }
 
-    public void checkInterview(InterviewRequest request) {
-        checkNull(request);
-        checkFrom(request);
-        if (request.getDescription().isEmpty()) {
-            String message = "Field 'Description' in request Interview is empty";
-            logger.warn(message);
-            throw new UnsupportedAchievementException(message);
-        }
-        logger.info("Interview request successfully checked");
-    }
-
     private void checkNull(AbstractRequest request) {
         if (request == null) {
             String message = "Received request is null";

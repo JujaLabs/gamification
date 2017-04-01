@@ -141,8 +141,6 @@ public class AchievementService {
     }
 
     public String addInterview(InterviewRequest request) {
-        requestValidator.checkInterview(request);
-
         String userFromId = request.getFrom();
         String description = request.getDescription();
         Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description, AchievementType.INTERVIEW);
