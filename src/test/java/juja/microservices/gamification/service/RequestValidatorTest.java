@@ -56,33 +56,6 @@ public class RequestValidatorTest {
         assertThat(event.getFormattedMessage(), is("Daily request successfully checked"));
     }
 
-    @Test (expected = UnsupportedAchievementException.class)
-    public void nullRequestTest() {
-        //when
-        validator.checkDaily(null);
-        fail();
-    }
-
-    @Test (expected = UnsupportedAchievementException.class)
-    public void emptyFromTest() {
-        //given
-        DailyRequest request = new DailyRequest("","daily description");
-
-        //when
-        validator.checkDaily(request);
-        fail();
-    }
-
-    @Test (expected = UnsupportedAchievementException.class)
-    public void emptyDescriptionTest() {
-        //given
-        DailyRequest request = new DailyRequest("Max","");
-
-        //when
-        validator.checkDaily(request);
-        fail();
-    }
-
     @Test
     public void thanksRequestTest() {
         //given

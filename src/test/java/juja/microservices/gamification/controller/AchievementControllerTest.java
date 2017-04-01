@@ -52,6 +52,28 @@ public class AchievementControllerTest {
     }
 
     @Test
+    public void addDailyWithoutFrom() throws Exception {
+        when(service.addDaily(any(DailyRequest.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
+        String jsonContentRequest = "{\"from\":\"\",\"description\":\"Daily report\"}";
+        mockMvc.perform(post("/achieve/daily")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addDailyWithoutDescription() throws Exception {
+        when(service.addDaily(any(DailyRequest.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
+        String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
+        mockMvc.perform(post("/achieve/daily")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void addFirstThanks() throws Exception {
         List<String> ids = new ArrayList<>();
         ids.add(FIRST_ACHIEVEMENT_ID);
@@ -102,6 +124,15 @@ public class AchievementControllerTest {
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    private String getBadResult(String uri, String jsonContentRequest) throws Exception {
+        return mockMvc.perform(post(uri)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class AchievementController {
 
     @RequestMapping(value = "/achieve/daily", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<?> addDaily(@RequestBody DailyRequest request) {
+    public ResponseEntity<?> addDaily(@Valid @RequestBody DailyRequest request) {
         String achievementId = achievementService.addDaily(request);
         logger.info("Added daily achievement, id = {}", achievementId);
         return ResponseEntity.ok(achievementId);

@@ -24,11 +24,15 @@
         </encoder>
     </appender>
 
-    <logger name="juja.microservices.gamification.service" level="DEBUG" additivity="false">
+    <logger name="juja.microservices.gamification.service" level="INFO" additivity="false">
         <appender-ref ref="Console-Appender"/>
         <appender-ref ref="RollingFile-Appender"/>
     </logger>
     <logger name="juja.microservices.gamification.controller" level="INFO" additivity="false">
+        <appender-ref ref="Console-Appender"/>
+        <appender-ref ref="RollingFile-Appender"/>
+    </logger>
+    <logger name="juja.microservices.gamification.exceptions" level="INFO" additivity="false">
         <appender-ref ref="Console-Appender"/>
         <appender-ref ref="RollingFile-Appender"/>
     </logger>

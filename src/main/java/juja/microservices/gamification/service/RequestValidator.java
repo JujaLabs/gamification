@@ -9,8 +9,6 @@ public class RequestValidator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public void checkDaily(DailyRequest request) {
-        checkNull(request);
-        checkFrom(request);
         if (request.getDescription().isEmpty()) {
             String message = "Field 'Description' in Daily request is empty";
             logger.warn(message);
