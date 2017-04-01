@@ -3,11 +3,16 @@ package juja.microservices.gamification.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Getter
-public class ThanksRequest extends AbstractRequest {
+public class ThanksRequest {
 
+    @NotEmpty
+    private String from;
+    @NotEmpty
     private String to;
+    @NotEmpty
     private String description;
 
     @JsonCreator

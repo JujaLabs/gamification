@@ -18,8 +18,7 @@ public class RequestValidator {
     }
 
     public void checkThanks(ThanksRequest request) {
-        checkNull(request);
-        checkFrom(request);
+
         checkTo(request);
         if (request.getDescription().isEmpty()) {
             String message = "Field 'Description' in Thanks request is empty";
@@ -32,21 +31,6 @@ public class RequestValidator {
     public void checkCodenjoy(CodenjoyRequest request) {
         checkUsers(request);
         logger.info("Codenjoy request successfully checked");
-    }
-
-    private void checkNull(AbstractRequest request) {
-        if (request == null) {
-            String message = "Received request is null";
-            logger.warn(message);
-            throw new UnsupportedAchievementException(message);
-        }
-    }
-
-    private void checkFrom(AbstractRequest request) {
-        if (request.getFrom().isEmpty()) {
-            logger.warn("Field 'From' in request '{}' is empty", request.getClass().getSimpleName());
-            throw new UnsupportedAchievementException("Field 'From' in request is empty");
-        }
     }
 
     private void checkTo(ThanksRequest request) {

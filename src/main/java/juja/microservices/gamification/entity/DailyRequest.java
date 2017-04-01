@@ -8,9 +8,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Getter
 public class DailyRequest {
 
-    @NotEmpty (message = "Field 'From' must not be empty")
+    @NotEmpty
     private String from;
-    @NotEmpty (message = "Field 'Description' must not be empty")
+    @NotEmpty
     private String description;
 
     @JsonCreator

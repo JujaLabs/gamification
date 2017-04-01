@@ -52,7 +52,7 @@ public class AchievementControllerTest {
     }
 
     @Test
-    public void addDailyWithoutFrom() throws Exception {
+    public void addDailyWithEmptyFrom() throws Exception {
         //given
         String jsonContentRequest = "{\"from\":\"\",\"description\":\"Daily report\"}";
         //then
@@ -61,7 +61,7 @@ public class AchievementControllerTest {
 
 
     @Test
-    public void addDailyWithoutDescription() throws Exception {
+    public void addDailyWithEmptyDescription() throws Exception {
         //given
         String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
         //then
@@ -92,6 +92,33 @@ public class AchievementControllerTest {
     }
 
     @Test
+    public void addThanksWithEmptyFrom() throws Exception {
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"\",\"to\":\"john\",\"description\":\"thanks\"}";
+        //then
+        checkBadRequest("/achieve/thanks", jsonContentRequest);
+    }
+
+    @Test
+    public void addThanksWithEmptyTo() throws Exception {
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"to\":\"\",\"description\":\"thanks\"}";
+        //then
+        checkBadRequest("/achieve/thanks", jsonContentRequest);
+    }
+
+    @Test
+    public void addThanksWithEmptyDescription() throws Exception {
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"to\":\"john\",\"description\":\"\"}";
+        //then
+        checkBadRequest("/achieve/thanks", jsonContentRequest);
+    }
+
+    @Test
     public void addCodenjoy() throws Exception {
         List<String> ids = new ArrayList<>();
         ids.add(FIRST_ACHIEVEMENT_ID);
@@ -105,7 +132,7 @@ public class AchievementControllerTest {
     }
 
     @Test
-    public void addCodenjoyWithoutFrom() throws Exception {
+    public void addCodenjoyWithEmptyFrom() throws Exception {
         //given
         String jsonContentRequest =
                 "{\"from\":\"\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
@@ -114,7 +141,7 @@ public class AchievementControllerTest {
     }
 
     @Test
-    public void addCodenjoyWithoutFirst() throws Exception {
+    public void addCodenjoyWithEmptyFirstPlace() throws Exception {
         //given
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
@@ -123,7 +150,7 @@ public class AchievementControllerTest {
     }
 
     @Test
-    public void addCodenjoyWithoutSecond() throws Exception {
+    public void addCodenjoyWithEmptySecondPlace() throws Exception {
         //given
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"\",\"thirdPlace\":\"tomas\"}";
@@ -132,7 +159,7 @@ public class AchievementControllerTest {
     }
 
     @Test
-    public void addCodenjoyWithoutThird() throws Exception {
+    public void addCodenjoyWithEmptyThirdPlace() throws Exception {
         //given
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"\"}";
@@ -150,7 +177,7 @@ public class AchievementControllerTest {
     }
 
     @Test
-    public void addInterviewWithoutFrom() throws Exception {
+    public void addInterviewWithEmptyFrom() throws Exception {
         //given
         String jsonContentRequest = "{\"from\":\"\",\"description\":\"Interview report\"}";
         //then
@@ -158,7 +185,7 @@ public class AchievementControllerTest {
     }
 
     @Test
-    public void addInterviewWithoutDescription() throws Exception {
+    public void addInterviewWithEmptyDescription() throws Exception {
         //given
         String jsonContentRequest = "{\"from\":\"max\",\"description\":\"\"}";
         //then
