@@ -90,7 +90,6 @@ public class AchievementService {
         } else {
             return addSecondThanks(userFromId, userToId, description);
         }
-
     }
 
     private void checkTryToThanksYourself(String userFromId, String userToId, Achievement achievement) {
@@ -118,8 +117,10 @@ public class AchievementService {
     private List<String> addFirstThanks(String userFromId, String userToId, String description) {
         List<String> result = new ArrayList<>();
         Achievement firstThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
+
         result.add(achievementRepository.addAchievement(firstThanks));
         logger.info("Added first 'Thanks' achievement from user '{}' to user '{}'", userFromId, userToId);
+
         return result;
     }
 
@@ -133,6 +134,7 @@ public class AchievementService {
             logger.warn("User '{}' tried to give 'Codenjoy' achievement points twice a day", userFromId);
             throw new UnsupportedAchievementException("You cannot give codenjoy points twice a day");
         }
+
         return addCodenjoyAchievement(request);
     }
 
