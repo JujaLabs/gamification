@@ -156,23 +156,26 @@ public class AchievementService {
     }
 
     private List<String> addCodenjoyAchievement(CodenjoyRequest request) {
-        List<String> result = new ArrayList<>();
-        Achievement firstPlace = new Achievement(request.getFrom(), request.getFirstPlace(), CODENJOY_FIRST_PLACE,
+        String userFromId = request.getFrom();
+        String userFirstPlace = request.getFirstPlace();
+        String userSecondPlace = request.getSecondPlace();
+        String userThirdPlace = request.getThirdPlace();
+
+        Achievement firstPlace = new Achievement(userFromId, userFirstPlace, CODENJOY_FIRST_PLACE,
                 "Codenjoy first place", AchievementType.CODENJOY);
-        Achievement secondPlace = new Achievement(request.getFrom(), request.getSecondPlace(), CODENJOY_SECOND_PLACE,
+        Achievement secondPlace = new Achievement(userFromId, userSecondPlace, CODENJOY_SECOND_PLACE,
                 "Codenjoy second place", AchievementType.CODENJOY);
+        Achievement thirdPlace = new Achievement(userFromId, userThirdPlace, CODENJOY_THIRD_PLACE,
+                "Codenjoy third place", AchievementType.CODENJOY);
 
+        List<String> result = new ArrayList<>();
         result.add(achievementRepository.addAchievement(firstPlace));
-        logger.info("Added fist place 'Codenjoy' achievement from user '{}' to '{}'", request.getFrom(), request.getFirstPlace());
+        logger.info("Added fist place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userFirstPlace);
         result.add(achievementRepository.addAchievement(secondPlace));
-        logger.info("Added second place 'Codenjoy' achievement from user '{}' to '{}'", request.getFrom(), request.getSecondPlace());
+        logger.info("Added second place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userSecondPlace);
+        result.add(achievementRepository.addAchievement(thirdPlace));
+        logger.info("Added third place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userThirdPlace);
 
-        if (!"".equals(request.getThirdPlace())) {
-            Achievement thirdPlace = new Achievement(request.getFrom(), request.getThirdPlace(), CODENJOY_THIRD_PLACE,
-                    "Codenjoy third place", AchievementType.CODENJOY);
-            result.add(achievementRepository.addAchievement(thirdPlace));
-            logger.info("Added third place 'Codenjoy' achievement from user '{}' to '{}'", request.getFrom(), request.getThirdPlace());
-        }
         return result;
     }
 
