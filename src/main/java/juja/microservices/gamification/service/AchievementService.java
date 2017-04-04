@@ -77,26 +77,34 @@ public class AchievementService {
                 .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
 
         for (Achievement achievement : userFromAndToListToday) {
-            checkTryToThanksYourself(userFromId, userToId, achievement);
+            checkTryToThanksTwice(userFromId, userToId, achievement);
         }
 
-        if (userFromAndToListToday.isEmpty()) {
-            return addFirstThanks(userFromId, userToId, description);
-
-        } else if (userFromAndToListToday.size() >= TWO_THANKS) {
+        if (userFromAndToListToday.size() >= TWO_THANKS) {
             logger.warn("User '{}' tried to give 'Thanks' achievement more than two times per day", userFromId);
             throw new UnsupportedAchievementException("You cannot give more than two thanks for day");
-
+        } else if (userFromAndToListToday.isEmpty()) {
+            return addFirstThanks(userFromId, userToId, description);
         } else {
             return addSecondThanks(userFromId, userToId, description);
         }
     }
 
-    private void checkTryToThanksYourself(String userFromId, String userToId, Achievement achievement) {
+    private void checkTryToThanksTwice(String userFromId, String userToId, Achievement achievement) {
         if (achievement.getTo().equals(userToId)) {
             logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", userFromId, userToId);
             throw new UnsupportedAchievementException("You cannot give more than one thanks for day one person");
         }
+    }
+
+    private List<String> addFirstThanks(String userFromId, String userToId, String description) {
+        List<String> result = new ArrayList<>();
+        Achievement firstThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
+
+        result.add(achievementRepository.addAchievement(firstThanks));
+        logger.info("Added first 'Thanks' achievement from user '{}' to user '{}'", userFromId, userToId);
+
+        return result;
     }
 
     private List<String> addSecondThanks(String userFromId, String userToId, String description) {
@@ -112,18 +120,6 @@ public class AchievementService {
 
         return result;
     }
-
-
-    private List<String> addFirstThanks(String userFromId, String userToId, String description) {
-        List<String> result = new ArrayList<>();
-        Achievement firstThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
-
-        result.add(achievementRepository.addAchievement(firstThanks));
-        logger.info("Added first 'Thanks' achievement from user '{}' to user '{}'", userFromId, userToId);
-
-        return result;
-    }
-
 
     public List<String> addCodenjoy(CodenjoyRequest request) {
         checkUsers(request);
