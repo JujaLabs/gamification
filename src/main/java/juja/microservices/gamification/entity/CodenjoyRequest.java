@@ -3,12 +3,18 @@ package juja.microservices.gamification.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Getter
-public class CodenjoyRequest extends AbstractRequest {
+public class CodenjoyRequest {
 
+    @NotEmpty
+    private String from;
+    @NotEmpty
     private String firstPlace;
+    @NotEmpty
     private String secondPlace;
+    @NotEmpty
     private String thirdPlace;
 
     @JsonCreator
