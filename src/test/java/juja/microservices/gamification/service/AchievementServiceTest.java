@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 
@@ -31,8 +30,6 @@ public class AchievementServiceTest {
     private static final int CODENJOY_THIRD_PLACE = 1;
     private static final int ONE_POINT = 1;
 
-    @Inject
-    private MockMvc mockMvc;
 
     @Inject
     private AchievementService service;
