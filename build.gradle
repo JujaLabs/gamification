@@ -57,6 +57,8 @@ dependencies {
     compile 'commons-lang:commons-lang:2.6'
     compile 'javax.inject:javax.inject:1'
     compile 'org.projectlombok:lombok:1.16.10'
+    compile 'io.springfox:springfox-swagger2:2.6.1'
+    compile 'io.springfox:springfox-swagger-ui:2.6.1'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'com.github.fakemongo:fongo:2.0.10'

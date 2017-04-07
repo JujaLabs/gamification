@@ -40,12 +40,14 @@ public class AchievementServiceTest {
     @Test
     public void addDaily() throws Exception {
         List<Achievement> userFromIdList = new ArrayList<>();
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.DAILY))
                 .thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         DailyRequest request = new DailyRequest("max", "Daily");
-        String id = service.addDaily(request);
-        assertEquals(FIRST_ACHIEVEMENT_ID, id);
+        List<String> actualList = service.addDaily(request);
+        assertEquals(expectedList, actualList);
     }
 
     @Test
@@ -54,12 +56,14 @@ public class AchievementServiceTest {
         Achievement achievement = new Achievement("max", "max", ONE_POINT, "Daily",
                 AchievementType.DAILY );
         userFromIdList.add(achievement);
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.DAILY))
                 .thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         DailyRequest request = new DailyRequest("max", "Second daily");
-        String id = service.addDaily(request);
-        assertEquals(FIRST_ACHIEVEMENT_ID, id);
+        List<String> actualList = service.addDaily(request);
+        assertEquals(expectedList, actualList);
     }
 
     @Test
@@ -70,9 +74,9 @@ public class AchievementServiceTest {
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         ThanksRequest request = new ThanksRequest("max", "john", "Thanks");
         List<String> actualList = service.addThanks(request);
-        List<String> expectedlist = new ArrayList<>();
-        expectedlist.add(FIRST_ACHIEVEMENT_ID);
-        assertEquals(expectedlist, actualList);
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        assertEquals(expectedList, actualList);
     }
 
     @Test(expected = UnsupportedAchievementException.class)
@@ -186,9 +190,11 @@ public class AchievementServiceTest {
 
     @Test
     public void addInterview() throws Exception {
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         InterviewRequest request = new InterviewRequest("max", "Interview");
-        String id = service.addInterview(request);
-        assertEquals(FIRST_ACHIEVEMENT_ID, id);
+        List<String> actualList = service.addInterview(request);
+        assertEquals(expectedList, actualList);
     }
 }

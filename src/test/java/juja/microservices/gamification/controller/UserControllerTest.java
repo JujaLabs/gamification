@@ -98,7 +98,7 @@ public class UserControllerTest {
 
     @Test()
     public void getHttpMediaTypeNotSupportedException() throws Exception {
-        mockMvc.perform(get("/user/pointSum")
+        mockMvc.perform(post("/user/achieveDetails")
                 .contentType(APPLICATION_ATOM_XML))
                 .andExpect(status().isUnsupportedMediaType());
     }
