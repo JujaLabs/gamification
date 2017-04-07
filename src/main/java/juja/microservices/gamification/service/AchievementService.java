@@ -25,7 +25,6 @@ public class AchievementService {
 
     @Inject
     private AchievementRepository achievementRepository;
-    private RequestValidator requestValidator = new RequestValidator();
 
     /**
      * In this method userFromId = userToId because users add DAILY achievements to themselves.
@@ -34,11 +33,11 @@ public class AchievementService {
      */
     public List<String> addDaily(DailyRequest request) {
         logger.debug("Entered to 'addDaily' method");
-        requestValidator.checkDaily(request);
 
         String userFromId = request.getFrom();
         String description = request.getDescription();
         logger.debug("Received data userFromId: '{}', description: '{}'", userFromId, description);
+
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.DAILY);
         List<String> result = new ArrayList<>();
         Achievement achievement;
@@ -58,6 +57,7 @@ public class AchievementService {
             logger.debug("Added new description to old description");
             achievement.setDescription(description);
             logger.debug("Description is set to achievement {}", achievement.getId());
+
             logger.info("Added description to daily achivement from user '{}'", userFromId);
         }
         result.add(achievementRepository.addAchievement(achievement));
@@ -65,48 +65,65 @@ public class AchievementService {
     }
 
     public List<String> addThanks(ThanksRequest request) {
-        requestValidator.checkThanks(request);
-
         String userFromId = request.getFrom();
         String userToId = request.getTo();
         String description = request.getDescription();
+
+        if (userFromId.equalsIgnoreCase(userToId)) {
+            logger.warn("User '{}' trying to put 'Thanks' achievement to yourself", request.getTo());
+            throw new UnsupportedAchievementException("You cannot thank yourself");
+        }
+
         List<Achievement> userFromAndToListToday = achievementRepository
                 .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
 
         for (Achievement achievement : userFromAndToListToday) {
-            if (achievement.getTo().equals(userToId)) {
-                logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", userFromId, userToId);
-                throw new UnsupportedAchievementException("You cannot give more than one thanks for day one person");
-            }
+            checkTryToThanksTwice(userFromId, userToId, achievement);
         }
 
-        List<String> result = new ArrayList<>();
-        if (userFromAndToListToday.isEmpty()) {
-            Achievement firstThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
-            result.add(achievementRepository.addAchievement(firstThanks));
-            logger.info("Added first 'Thanks' achievement from user '{}' to user '{}'", userFromId, userToId);
-            return result;
-
-        } else if (userFromAndToListToday.size() >= TWO_THANKS) {
+        if (userFromAndToListToday.size() >= TWO_THANKS) {
             logger.warn("User '{}' tried to give 'Thanks' achievement more than two times per day", userFromId);
             throw new UnsupportedAchievementException("You cannot give more than two thanks for day");
-
+        } else if (userFromAndToListToday.isEmpty()) {
+            return addFirstThanks(userFromId, userToId, description);
         } else {
-            Achievement secondThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
-            result.add(achievementRepository.addAchievement(secondThanks));
-            logger.info("Added second 'Thanks' achievement from user '{}' to user '{}'", userFromId, userToId);
-            String descriptionTwoThanks = "Issued two thanks";
-            Achievement thirdThanks = new Achievement(userFromId, userFromId, 1, descriptionTwoThanks, AchievementType.THANKS);
-            result.add(achievementRepository.addAchievement(thirdThanks));
-            logger.info("Added 'Thanks' achievement to user '{}' for the distributed two thanks to other users", userFromId);
+            return addSecondThanks(userFromId, userToId, description);
         }
+    }
+
+    private void checkTryToThanksTwice(String userFromId, String userToId, Achievement achievement) {
+        if (achievement.getTo().equals(userToId)) {
+            logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", userFromId, userToId);
+            throw new UnsupportedAchievementException("You cannot give more than one thanks for day one person");
+        }
+    }
+
+    private List<String> addFirstThanks(String userFromId, String userToId, String description) {
+        List<String> result = new ArrayList<>();
+        Achievement firstThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
+
+        result.add(achievementRepository.addAchievement(firstThanks));
+        logger.info("Added first 'Thanks' achievement from user '{}' to user '{}'", userFromId, userToId);
+
+        return result;
+    }
+
+    private List<String> addSecondThanks(String userFromId, String userToId, String description) {
+        List<String> result = new ArrayList<>();
+        Achievement secondThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
+        result.add(achievementRepository.addAchievement(secondThanks));
+        logger.info("Added second 'Thanks' achievement from user '{}' to user '{}'", userFromId, userToId);
+
+        String descriptionTwoThanks = "Issued two thanks";
+        Achievement thirdThanks = new Achievement(userFromId, userFromId, 1, descriptionTwoThanks, AchievementType.THANKS);
+        result.add(achievementRepository.addAchievement(thirdThanks));
+        logger.info("Added 'Thanks' achievement to user '{}' for the distributed two thanks to other users", userFromId);
 
         return result;
     }
 
     public List<String> addCodenjoy(CodenjoyRequest request) {
-        requestValidator.checkCodenjoy(request);
-
+        checkUsers(request);
         String userFromId = request.getFrom();
         List<Achievement> codenjoyUsersToday = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
 
@@ -118,24 +135,45 @@ public class AchievementService {
         return addCodenjoyAchievement(request);
     }
 
-    private List<String> addCodenjoyAchievement(CodenjoyRequest request) {
-        List<String> result = new ArrayList<>();
-        Achievement firstPlace = new Achievement(request.getFrom(), request.getFirstPlace(), CODENJOY_FIRST_PLACE,
-                "Codenjoy first place", AchievementType.CODENJOY);
-        Achievement secondPlace = new Achievement(request.getFrom(), request.getSecondPlace(), CODENJOY_SECOND_PLACE,
-                "Codenjoy second place", AchievementType.CODENJOY);
+    private void checkUsers(CodenjoyRequest request) {
+        String firstUserId = request.getFirstPlace();
+        String secondUserId = request.getSecondPlace();
+        String thirdUserId = request.getThirdPlace();
 
-        result.add(achievementRepository.addAchievement(firstPlace));
-        logger.info("Added fist place 'Codenjoy' achievement from user '{}' to '{}'", request.getFrom(), request.getFirstPlace());
-        result.add(achievementRepository.addAchievement(secondPlace));
-        logger.info("Added second place 'Codenjoy' achievement from user '{}' to '{}'", request.getFrom(), request.getSecondPlace());
-
-        if (!"".equals(request.getThirdPlace())) {
-            Achievement thirdPlace = new Achievement(request.getFrom(), request.getThirdPlace(), CODENJOY_THIRD_PLACE,
-                    "Codenjoy third place", AchievementType.CODENJOY);
-            result.add(achievementRepository.addAchievement(thirdPlace));
-            logger.info("Added third place 'Codenjoy' achievement from user '{}' to '{}'", request.getFrom(), request.getThirdPlace());
+        if (firstUserId.equalsIgnoreCase(secondUserId)) {
+            logger.warn("Codenjoy request rejected: first and second place users is same");
+            throw new UnsupportedAchievementException("First and second users must be different");
         }
+        if (firstUserId.equalsIgnoreCase(thirdUserId)) {
+            logger.warn("Codenjoy request rejected: first and third place users is same");
+            throw new UnsupportedAchievementException("First and third users must be different");
+        }
+        if (secondUserId.equalsIgnoreCase(thirdUserId)) {
+            logger.warn("Codenjoy request rejected: second and third place users is same");
+            throw new UnsupportedAchievementException("Second and third users must be different");
+        }
+    }
+
+    private List<String> addCodenjoyAchievement(CodenjoyRequest request) {
+        String userFromId = request.getFrom();
+        String userFirstPlace = request.getFirstPlace();
+        String userSecondPlace = request.getSecondPlace();
+        String userThirdPlace = request.getThirdPlace();
+
+        Achievement firstPlace = new Achievement(userFromId, userFirstPlace, CODENJOY_FIRST_PLACE,
+                "Codenjoy first place", AchievementType.CODENJOY);
+        Achievement secondPlace = new Achievement(userFromId, userSecondPlace, CODENJOY_SECOND_PLACE,
+                "Codenjoy second place", AchievementType.CODENJOY);
+        Achievement thirdPlace = new Achievement(userFromId, userThirdPlace, CODENJOY_THIRD_PLACE,
+                "Codenjoy third place", AchievementType.CODENJOY);
+
+        List<String> result = new ArrayList<>();
+        result.add(achievementRepository.addAchievement(firstPlace));
+        logger.info("Added fist place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userFirstPlace);
+        result.add(achievementRepository.addAchievement(secondPlace));
+        logger.info("Added second place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userSecondPlace);
+        result.add(achievementRepository.addAchievement(thirdPlace));
+        logger.info("Added third place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userThirdPlace);
 
         return result;
     }

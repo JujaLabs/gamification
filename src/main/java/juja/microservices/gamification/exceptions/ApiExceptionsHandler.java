@@ -1,5 +1,7 @@
 package juja.microservices.gamification.exceptions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +33,8 @@ import java.util.List;
 @RestControllerAdvice
 public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorMessage> handleAll(Exception ex) {
         ApiErrorMessage message =
@@ -38,7 +42,6 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
                         .httpStatus(HttpStatus.BAD_REQUEST.value())
                         .exceptionMessage(ex.getMessage())
                         .build();
-
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
@@ -57,6 +60,7 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
                                                              Object body, HttpHeaders headers,
                                                              HttpStatus status, WebRequest request) {
         ApiErrorMessage message = convertToApiErrorMessage(ex, status);
+        logger.warn(message.getExceptionMessage());
         return super.handleExceptionInternal(ex, message, headers, status, request);
     }
 

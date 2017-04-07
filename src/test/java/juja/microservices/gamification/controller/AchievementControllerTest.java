@@ -54,6 +54,23 @@ public class AchievementControllerTest {
     }
 
     @Test
+    public void addDailyWithEmptyFrom() throws Exception {
+        //given
+        String jsonContentRequest = "{\"from\":\"\",\"description\":\"Daily report\"}";
+        //then
+        checkBadRequest("/achieve/daily", jsonContentRequest);
+    }
+
+
+    @Test
+    public void addDailyWithEmptyDescription() throws Exception {
+        //given
+        String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
+        //then
+        checkBadRequest("/achieve/daily", jsonContentRequest);
+    }
+
+    @Test
     public void addFirstThanks() throws Exception {
         List<String> ids = new ArrayList<>();
         ids.add(FIRST_ACHIEVEMENT_ID);
@@ -77,6 +94,33 @@ public class AchievementControllerTest {
     }
 
     @Test
+    public void addThanksWithEmptyFrom() throws Exception {
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"\",\"to\":\"john\",\"description\":\"thanks\"}";
+        //then
+        checkBadRequest("/achieve/thanks", jsonContentRequest);
+    }
+
+    @Test
+    public void addThanksWithEmptyTo() throws Exception {
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"to\":\"\",\"description\":\"thanks\"}";
+        //then
+        checkBadRequest("/achieve/thanks", jsonContentRequest);
+    }
+
+    @Test
+    public void addThanksWithEmptyDescription() throws Exception {
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"to\":\"john\",\"description\":\"\"}";
+        //then
+        checkBadRequest("/achieve/thanks", jsonContentRequest);
+    }
+
+    @Test
     public void addCodenjoy() throws Exception {
         List<String> ids = new ArrayList<>();
         ids.add(FIRST_ACHIEVEMENT_ID);
@@ -90,6 +134,42 @@ public class AchievementControllerTest {
     }
 
     @Test
+    public void addCodenjoyWithEmptyFrom() throws Exception {
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
+        //then
+        checkBadRequest("/achieve/codenjoy", jsonContentRequest);
+    }
+
+    @Test
+    public void addCodenjoyWithEmptyFirstPlace() throws Exception {
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"firstPlace\":\"\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
+        //then
+        checkBadRequest("/achieve/codenjoy", jsonContentRequest);
+    }
+
+    @Test
+    public void addCodenjoyWithEmptySecondPlace() throws Exception {
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"\",\"thirdPlace\":\"tomas\"}";
+        //then
+        checkBadRequest("/achieve/codenjoy", jsonContentRequest);
+    }
+
+    @Test
+    public void addCodenjoyWithEmptyThirdPlace() throws Exception {
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"\"}";
+        //then
+        checkBadRequest("/achieve/codenjoy", jsonContentRequest);
+    }
+
+    @Test
     public void addInterview() throws Exception {
         List<String> expectedList = new ArrayList<>();
         expectedList.add(FIRST_ACHIEVEMENT_ID);
@@ -100,6 +180,22 @@ public class AchievementControllerTest {
         assertEquals(ONE_ID, result);
     }
 
+    @Test
+    public void addInterviewWithEmptyFrom() throws Exception {
+        //given
+        String jsonContentRequest = "{\"from\":\"\",\"description\":\"Interview report\"}";
+        //then
+        checkBadRequest("/achieve/interview", jsonContentRequest);
+    }
+
+    @Test
+    public void addInterviewWithEmptyDescription() throws Exception {
+        //given
+        String jsonContentRequest = "{\"from\":\"max\",\"description\":\"\"}";
+        //then
+        checkBadRequest("/achieve/interview", jsonContentRequest);
+    }
+
     private String getResult(String uri, String jsonContentRequest) throws Exception {
         return mockMvc.perform(post(uri)
                 .contentType(APPLICATION_JSON_UTF8)
@@ -107,5 +203,13 @@ public class AchievementControllerTest {
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
+    }
+
+    private void checkBadRequest(String uri, String jsonContentRequest) throws Exception {
+        mockMvc.perform(post(uri)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
     }
 }

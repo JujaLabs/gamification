@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.net.HttpURLConnection;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
