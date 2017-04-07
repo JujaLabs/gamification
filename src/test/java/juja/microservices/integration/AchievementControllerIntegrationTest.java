@@ -218,4 +218,70 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addDailyReturnValidJson() throws Exception {
+        String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"text\"}";
+        String expectedJson = "[{\"to\":\"sasha\",\"point\":1}]";
+
+        mockMvc.perform(post("/achieve/daily")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+        MvcResult result = getMvcResultUserAchieveSum();
+        String content = result.getResponse().getContentAsString();
+
+        assertEquals(expectedJson, content);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addSecondDailyReturnValidJson() throws Exception {
+        String expectedJson = "[{\"to\":\"sasha\",\"point\":1}]";
+        String firstContentRequest = "{\"from\":\"sasha\",\"description\":\"text\"}";
+        String secondContentRequest = "{\"from\":\"sasha\",\"description\":\"add text\"}";
+
+        addDailyIsOk(firstContentRequest);
+        addDailyIsOk(secondContentRequest);
+
+        MvcResult result = getMvcResultUserAchieveSum();
+
+        String content = result.getResponse().getContentAsString();
+        JSONAssert.assertEquals(expectedJson, content, false);
+    }
+
+    private void addDailyIsOk(String jsonContentRequest) throws Exception {
+        mockMvc.perform(post("/achieve/daily")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addDailyShouldReturnExceptionFromMissed() throws Exception {
+        String jsonContentRequest = "{\"from\":\"\",\"description\":\"daily description\"}";
+
+        mockMvc.perform(post("/achieve/daily")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addDailyShouldReturnExceptionDescriptionMissed() throws Exception {
+        String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
+
+        mockMvc.perform(post("/achieve/daily")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
 }
