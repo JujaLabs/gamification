@@ -44,11 +44,13 @@ public class AchievementControllerTest {
 
     @Test
     public void addDaily() throws Exception {
-        when(service.addDaily(any(DailyRequest.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        when(service.addDaily(any(DailyRequest.class))).thenReturn(expectedList);
         String jsonContentRequest =
                 "{\"from\":\"max\",\"description\":\"Daily report\"}";
         String result = getResult("/achieve/daily", jsonContentRequest);
-        assertEquals(FIRST_ACHIEVEMENT_ID, result);
+        assertEquals(ONE_ID, result);
     }
 
     @Test
@@ -89,11 +91,13 @@ public class AchievementControllerTest {
 
     @Test
     public void addInterview() throws Exception {
-        when(service.addInterview((any(InterviewRequest.class)))).thenReturn(FIRST_ACHIEVEMENT_ID);
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        when(service.addInterview((any(InterviewRequest.class)))).thenReturn(expectedList);
         String jsonContentRequest =
                 "{\"from\":\"max\",\"description\":\"Interview report\"}";
         String result = getResult("/achieve/interview", jsonContentRequest);
-        assertEquals(FIRST_ACHIEVEMENT_ID, result);
+        assertEquals(ONE_ID, result);
     }
 
     private String getResult(String uri, String jsonContentRequest) throws Exception {

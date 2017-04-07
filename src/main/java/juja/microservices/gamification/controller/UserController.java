@@ -18,7 +18,7 @@ import java.net.HttpURLConnection;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/user", consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/user", produces = "application/json")
 public class UserController {
 
     @Inject
@@ -31,6 +31,8 @@ public class UserController {
     )
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns total points for all users"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method")
     })
     public ResponseEntity<?> getAllUsersWithPointSum() {
         List<UserPointsSum> users = userService.getAllUsersWithPointSum();
@@ -38,13 +40,16 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @RequestMapping(value = "/achieveDetails", method = RequestMethod.POST)
+    @RequestMapping(value = "/achieveDetails", consumes = "application/json", method = RequestMethod.POST)
     @ApiOperation(
             value = "Get achievement details for some users",
             notes = "This method returns detailed information for selected users"
     )
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns full information for selected users"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
+            @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> getUsersWithAchievementDetails(@RequestBody UserIdsRequest toIds) {
         List<UserAchievementDetails> result =

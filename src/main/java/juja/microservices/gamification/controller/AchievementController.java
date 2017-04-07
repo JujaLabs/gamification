@@ -1,8 +1,6 @@
 package juja.microservices.gamification.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.InterviewRequest;
@@ -34,15 +32,21 @@ public class AchievementController {
             value = "Add points for daily report",
             notes = "This method adds points for daily report"
     )
-    //TODO @ApiImplicitParams doesn`t works
-    //    @ApiImplicitParams(value - @ApiImplicitParam(name, value, dataType, required))
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(defaultValue = "d", example = "e", access = "a", allowableValues = "al", dataType = "{\n" +
+                    "    \"path\": \"/pets\",\n" +
+                    "    \"description\": \"Operations about pets.\"\n" +
+                    "}", name = "n", value = "zz")})
     @ApiResponses(value = {
-            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns achievement id.")
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns array with one achievement id"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
+            @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addDaily(@RequestBody DailyRequest request) {
-        String achievementId = achievementService.addDaily(request);
-        logger.info("Added daily achievement, id = {}", achievementId);
-        return ResponseEntity.ok(achievementId);
+        List<String> ids = achievementService.addDaily(request);
+        logger.info("Added daily achievement, ids = {}", ids.toString());
+        return ResponseEntity.ok(ids);
     }
 
     @RequestMapping(value = "/achieve/thanks", method = RequestMethod.POST)
@@ -52,8 +56,12 @@ public class AchievementController {
             notes = "This method adds points for help one user by another"
     )
     @ApiResponses(value = {
-            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "First thanks per day returns  achievement id.\n" +
-                    "Second thanks per day return array of achievement ids."),
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "First thanks per day returns array with " +
+                    "one achievement id.\n" +
+                    "Second thanks per day return array of two achievement ids"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
+            @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addThanks(@RequestBody ThanksRequest request) {
         List<String> ids = achievementService.addThanks(request);
@@ -68,7 +76,10 @@ public class AchievementController {
             notes = "This method adds points for winners in codenjoy tournament"
     )
     @ApiResponses(value = {
-            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns array of achievement ids."),
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns array of achievement ids"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
+            @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addCodenjoy(@RequestBody CodenjoyRequest request) {
         List<String> ids = achievementService.addCodenjoy(request);
@@ -83,11 +94,14 @@ public class AchievementController {
             notes = "This method adds points for successful or unsuccessful interview"
     )
     @ApiResponses(value = {
-            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns  achievement id."),
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns array with one achievement id"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
+            @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addInterview(@RequestBody InterviewRequest request) {
-        String achievementId = achievementService.addInterview(request);
-        logger.info("Added daily achievement, id = {}", achievementId);
-        return ResponseEntity.ok(achievementId);
+        List<String> ids = achievementService.addInterview(request);
+        logger.info("Added daily achievement, ids = {}", ids.toString());
+        return ResponseEntity.ok(ids);
     }
 }

@@ -32,7 +32,7 @@ public class AchievementService {
      * If the DAILY achievement already exists in the database and user wants to add another DAILY
      * achievement at the same day, the only field description will be updated.
      */
-    public String addDaily(DailyRequest request) {
+    public List<String> addDaily(DailyRequest request) {
         logger.debug("Entered to 'addDaily' method");
         requestValidator.checkDaily(request);
 
@@ -40,15 +40,15 @@ public class AchievementService {
         String description = request.getDescription();
         logger.debug("Received data userFromId: '{}', description: '{}'", userFromId, description);
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.DAILY);
-
+        List<String> result = new ArrayList<>();
+        Achievement achievement;
         if (userFromIdList.size() == 0) {
             logger.debug("No one 'Daily' achievement for user '{}' at current date", userFromId);
-            Achievement newAchievement = new Achievement(userFromId, userFromId, 1, description, AchievementType.DAILY);
-            logger.info("Added new 'Daily' achievement {}, from user '{}'", newAchievement.getId(), userFromId);
-            return achievementRepository.addAchievement(newAchievement);
+            achievement = new Achievement(userFromId, userFromId, 1, description, AchievementType.DAILY);
+            logger.info("Added new 'Daily' achievement {}, from user '{}'", achievement.getId(), userFromId);
         } else {
             logger.debug("There is already one 'Daily' achievement for user '{}' at current date", userFromId);
-            Achievement achievement = userFromIdList.get(0);
+            achievement = userFromIdList.get(0);
             logger.debug("Received achivement '{}'", achievement.getId());
             String oldDescription = achievement.getDescription();
             logger.debug("Recieved old description '{}'", oldDescription);
@@ -59,9 +59,9 @@ public class AchievementService {
             achievement.setDescription(description);
             logger.debug("Description is set to achievement {}", achievement.getId());
             logger.info("Added description to daily achivement from user '{}'", userFromId);
-
-            return achievementRepository.addAchievement(achievement);
         }
+        result.add(achievementRepository.addAchievement(achievement));
+        return result;
     }
 
     public List<String> addThanks(ThanksRequest request) {
@@ -140,14 +140,15 @@ public class AchievementService {
         return result;
     }
 
-    public String addInterview(InterviewRequest request) {
+    public List<String> addInterview(InterviewRequest request) {
         requestValidator.checkInterview(request);
 
         String userFromId = request.getFrom();
         String description = request.getDescription();
         Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description, AchievementType.INTERVIEW);
         logger.info("Added 'Interview' achievement from user '{}'", userFromId);
-
-        return achievementRepository.addAchievement(newAchievement);
+        List<String> result = new ArrayList<>();
+        result.add(achievementRepository.addAchievement(newAchievement));
+        return result;
     }
 }
