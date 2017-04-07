@@ -44,7 +44,7 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
-    public ResponseEntity<?> addDaily(@RequestBody DailyRequest request) {
+    public ResponseEntity<?> addDaily(@Valid @RequestBody DailyRequest request) {
         List<String> ids = achievementService.addDaily(request);
         logger.info("Added daily achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
@@ -64,7 +64,7 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
-    public ResponseEntity<?> addThanks(@RequestBody ThanksRequest request) {
+    public ResponseEntity<?> addThanks(@Valid @RequestBody ThanksRequest request) {
         List<String> ids = achievementService.addThanks(request);
         logger.info("Added thanks achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
@@ -82,7 +82,7 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
-    public ResponseEntity<?> addCodenjoy(@RequestBody CodenjoyRequest request) {
+    public ResponseEntity<?> addCodenjoy(@Valid @RequestBody CodenjoyRequest request) {
         List<String> ids = achievementService.addCodenjoy(request);
         logger.info("Added codenjoy achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
@@ -100,7 +100,7 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
-    public ResponseEntity<?> addInterview(@RequestBody InterviewRequest request) {
+    public ResponseEntity<?> addInterview(@Valid @RequestBody InterviewRequest request) {
         List<String> ids = achievementService.addInterview(request);
         logger.info("Added daily achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
