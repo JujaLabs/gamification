@@ -264,7 +264,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addDailyShouldReturnExceptionFromMissed() throws Exception {
-        String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
+        String jsonContentRequest = "{\"from\":\"\",\"description\":\"daily description\"}";
 
         mockMvc.perform(post("/achieve/daily")
                 .contentType(APPLICATION_JSON_UTF8)
@@ -273,4 +273,15 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addDailyShouldReturnExceptionDescriptionMissed() throws Exception {
+        String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
+
+        mockMvc.perform(post("/achieve/daily")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
 }
