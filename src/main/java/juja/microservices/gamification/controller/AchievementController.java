@@ -33,11 +33,6 @@ public class AchievementController {
             value = "Add points for daily report",
             notes = "This method adds points for daily report"
     )
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(defaultValue = "d", example = "e", access = "a", allowableValues = "al", dataType = "{\n" +
-                    "    \"path\": \"/pets\",\n" +
-                    "    \"description\": \"Operations about pets.\"\n" +
-                    "}", name = "n", value = "zz")})
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns array with one achievement id"),
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
