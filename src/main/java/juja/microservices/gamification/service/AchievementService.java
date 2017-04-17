@@ -187,4 +187,10 @@ public class AchievementService {
         result.add(achievementRepository.addAchievement(newAchievement));
         return result;
     }
+
+    public List<String> addThanksKeeper() {
+        List<String> result = new ArrayList<>();
+        //TODO implement method
+        return result;
+    }
 }

@@ -100,4 +100,22 @@ public class AchievementController {
         logger.info("Added daily achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
+
+    @RequestMapping(value =  "/achieve/keepers", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(
+            value = "Add points for thanks keeper",
+            notes = "This method adds points for successful or unsuccessful thanks keeper"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns array with achievement ids"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
+            @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
+    })
+    public ResponseEntity<?> addThanksKeeper() {
+        List<String> ids = achievementService.addThanksKeeper();
+        logger.info("Added thanks keeper achievement, ids = {}", ids.toString());
+        return ResponseEntity.ok(ids);
+    }
 }
