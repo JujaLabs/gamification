@@ -126,7 +126,7 @@ public class AchievementControllerTest {
         List<String> ids = new ArrayList<>();
         ids.add(FIRST_ACHIEVEMENT_ID);
         when(service.addThanksKeeper()).thenReturn(ids);
-        String result = getKeeperResult("/achieve/keepers");
+        String result = getKeeperResult("/achieve/keepers/thanks");
         assertEquals(ONE_ID, result);
     }
 

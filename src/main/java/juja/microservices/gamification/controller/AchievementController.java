@@ -20,14 +20,13 @@ import java.util.List;
  * @author Olga Kulykova
  */
 @RestController
-@RequestMapping(consumes = "application/json", produces = "application/json")
 public class AchievementController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
     private AchievementService achievementService;
 
-    @RequestMapping(value = "/achieve/daily", method = RequestMethod.POST)
+    @RequestMapping(value = "/achieve/daily", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     @ApiOperation(
             value = "Add points for daily report",
@@ -45,7 +44,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @RequestMapping(value = "/achieve/thanks", method = RequestMethod.POST)
+    @RequestMapping(value = "/achieve/thanks", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     @ApiOperation(
             value = "Add points for thanks one user by another",
@@ -65,7 +64,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @RequestMapping(value = "/achieve/codenjoy", method = RequestMethod.POST)
+    @RequestMapping(value = "/achieve/codenjoy", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     @ApiOperation(
             value = "Add points for codenjoy winners",
@@ -83,7 +82,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @RequestMapping(value = "/achieve/interview", method = RequestMethod.POST)
+    @RequestMapping(value = "/achieve/interview", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     @ApiOperation(
             value = "Add points for interview",
@@ -101,7 +100,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @RequestMapping(value =  "/achieve/keepers/thanks", method = RequestMethod.GET)
+    @RequestMapping(value =  "/achieve/keepers/thanks", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     @ApiOperation(
             value = "Add points for thanks keeper",
