@@ -7,16 +7,16 @@ import lombok.Getter;
 @Getter
 public class Keeper {
     private String uuid;
-    private String description;
+    private String keeperOf;
     private String from;
 
     @JsonCreator
     public Keeper (@JsonProperty("uuid")String uuid,
-                   @JsonProperty("description")String description,
+                   @JsonProperty("description")String keeperOf,
                    @JsonProperty("from")String from) {
 
         this.uuid = uuid;
-        this.description = description;
+        this.keeperOf = keeperOf;
         this.from = from;
     }
 }

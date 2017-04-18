@@ -1,5 +1,9 @@
 package juja.microservices.gamification.entity;
 
 public enum  AchievementType {
-    DAILY, INTERVIEW, THANKS, CODENJOY
+    CODENJOY,
+    DAILY,
+    INTERVIEW,
+    THANKS,
+    THANKS_KEEPER
 }

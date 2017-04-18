@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
+import juja.microservices.gamification.exceptions.GamificationException;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import java.util.List;
 @Service
 public class AchievementService {
 
+    private static final int KEEPER_THANKS = 2;
     private static final int TWO_THANKS = 2;
     private static final int INTERVIEW_POINTS = 10;
     private static final int CODENJOY_FIRST_PLACE = 5;
@@ -25,6 +27,8 @@ public class AchievementService {
 
     @Inject
     private AchievementRepository achievementRepository;
+    @Inject
+    private KeeperService keeperService;
 
     /**
      * In this method userFromId = userToId because users add DAILY achievements to themselves.
@@ -190,7 +194,26 @@ public class AchievementService {
 
     public List<String> addThanksKeeper() {
         List<String> result = new ArrayList<>();
-        //TODO implement method
+        List<Keeper> keepers = keeperService.getKeepers();
+
+        if (keepers.isEmpty()) {
+            logger.info("No any active keepers found");
+            throw new GamificationException("No any active keepers found");
+        } else {
+            keepers.forEach(keeper -> {
+                result.add(achievementRepository.addAchievement(getAchievement(keeper)));
+            });
+        }
+
         return result;
+    }
+
+    private Achievement getAchievement(Keeper keeper) {
+        String description = "За хранительство в направлении ".concat(keeper.getKeeperOf());
+        return new Achievement(keeper.getFrom(),
+                keeper.getUuid(),
+                KEEPER_THANKS,
+                description,
+                AchievementType.THANKS_KEEPER);
     }
 }
