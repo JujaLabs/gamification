@@ -204,7 +204,7 @@ public class AchievementService {
                 result.add(achievementRepository.addAchievement(getAchievement(keeper)));
             });
         }
-
+        logger.info("Added 'Thanks Keeper' achievements {}", result.toString());
         return result;
     }
 
