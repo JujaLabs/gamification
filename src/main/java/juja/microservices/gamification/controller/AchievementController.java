@@ -101,7 +101,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @RequestMapping(value =  "/achieve/keepers", method = RequestMethod.GET)
+    @RequestMapping(value =  "/achieve/keepers/thanks", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(
             value = "Add points for thanks keeper",
