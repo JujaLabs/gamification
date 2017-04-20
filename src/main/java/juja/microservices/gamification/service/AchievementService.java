@@ -198,7 +198,7 @@ public class AchievementService {
 
         if (keepers.isEmpty()) {
             logger.info("No any active keepers found");
-            throw new GamificationException("No any active keepers found");
+            throw new UnsupportedAchievementException("No any active keepers found");
         } else {
             keepers.forEach(keeper -> {
                 result.add(achievementRepository.addAchievement(getAchievement(keeper)));

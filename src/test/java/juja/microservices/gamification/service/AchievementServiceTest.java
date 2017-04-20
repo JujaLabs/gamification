@@ -36,6 +36,8 @@ public class AchievementServiceTest {
 
     @MockBean
     private AchievementRepository repository;
+    @MockBean
+    private KeeperService keeperService;
 
     @Test
     public void addDaily() throws Exception {
@@ -196,5 +198,33 @@ public class AchievementServiceTest {
         InterviewRequest request = new InterviewRequest("max", "Interview");
         List<String> actualList = service.addInterview(request);
         assertEquals(expectedList, actualList);
+    }
+
+    @Test
+    public void addKeeperThanks() throws Exception {
+        //given
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        List<Keeper> keepersList = new ArrayList<>();
+        keepersList.add(new Keeper("AAA", "thanks for keeper", "alex"));
+        when(keeperService.getKeepers()).thenReturn(keepersList);
+        when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
+
+        //when
+        List<String> actualList = service.addThanksKeeper();
+
+        //then
+        assertEquals(expectedList, actualList);
+    }
+
+    @Test (expected = UnsupportedAchievementException.class)
+    public void addKeeperThanksWithoutAnyActiveKeeper() throws Exception {
+        //given
+        List<Keeper> keepersList = new ArrayList<>();
+        when(keeperService.getKeepers()).thenReturn(keepersList);
+
+        //when
+        List<String> actualList = service.addThanksKeeper();
+        fail();
     }
 }
