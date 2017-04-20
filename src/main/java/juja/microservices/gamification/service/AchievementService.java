@@ -209,11 +209,11 @@ public class AchievementService {
     }
 
     private Achievement getAchievement(Keeper keeper) {
-        String description = "За хранительство в направлении ".concat(keeper.getKeeperOf());
-        return new Achievement(keeper.getFrom(),
+        return new Achievement(
+                keeper.getFrom(),
                 keeper.getUuid(),
                 KEEPER_THANKS,
-                description,
+                keeper.getDescription(),
                 AchievementType.THANKS_KEEPER);
     }
 }

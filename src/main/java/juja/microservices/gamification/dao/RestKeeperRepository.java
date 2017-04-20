@@ -1,6 +1,7 @@
 package juja.microservices.gamification.dao;
 
 import juja.microservices.gamification.entity.Keeper;
+import juja.microservices.gamification.exceptions.UserMicroserviceExchangeException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
@@ -23,16 +24,15 @@ public class RestKeeperRepository implements KeeperRepository {
         this.restTemplate = restTemplate;
     }
 
-
     @Override
     public List<Keeper> getKeepers() {
-        String urlTemplate = urlBase + urlGetKeepers + "?param=uuid,keepersOf,from";
-        List<Keeper> result = new ArrayList<>();
+        String urlTemplate = urlBase + urlGetKeepers;
+        List<Keeper> result;
         try {
             ResponseEntity<Keeper[]> response = this.restTemplate.getForEntity(urlTemplate, Keeper[].class);
             result = Arrays.asList(response.getBody());
         } catch (HttpClientErrorException ex) {
-            //TODO implement catch exception body
+            throw new UserMicroserviceExchangeException("User microservice Exchange Error: " + ex.getMessage());
         }
         return result;
     }

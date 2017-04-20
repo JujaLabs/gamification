@@ -10,7 +10,7 @@ public class KeeperTest {
         @Test
         public void shouldReturnKeeper() {
             String expectedFrom = "alex";
-            String expectedKeeperOf = "codenjoy";
+            String expectedDescription = "codenjoy";
             String expectedUuid = "ab2test";
 
             Keeper keeper = new Keeper("ab2test", "codenjoy", "alex");
@@ -18,6 +18,6 @@ public class KeeperTest {
             assertNotNull(keeper);
             assertEquals(expectedUuid, keeper.getUuid());
             assertEquals(expectedFrom, keeper.getFrom());
-            assertEquals(expectedKeeperOf, keeper.getKeeperOf());
+            assertEquals(expectedDescription, keeper.getDescription());
         }
 }
