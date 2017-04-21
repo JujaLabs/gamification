@@ -11,9 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
@@ -26,6 +24,7 @@ public class AchievementRepository {
     public String addAchievement(Achievement achievement) {
         if (achievement.getSendDate() == null) {
             achievement.setSendDate(getFormattedCurrentDate());
+            achievement.setCreatedDate(new Date());
         }
         mongoTemplate.save(achievement);
         return achievement.getId();
@@ -76,5 +75,23 @@ public class AchievementRepository {
         return mongoTemplate.find(new Query(
                 Criteria.where("sendDate").is(sendDate)
                         .and("type").is(AchievementType.CODENJOY)), Achievement.class);
+    }
+
+    public List<Achievement> getAllKeepersThanksAchievementsCurrentWeek() {
+        return mongoTemplate.find(new Query(
+                Criteria.where("createdDate")
+                        .gte(startDay()).lt(new Date())
+                        .and("type").is(AchievementType.THANKS_KEEPER)), Achievement.class);
+    }
+
+    private Date startDay() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.clear(Calendar.MINUTE);
+        calendar.clear(Calendar.SECOND);
+        calendar.clear(Calendar.MILLISECOND);
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+
+        return calendar.getTime();
     }
 }

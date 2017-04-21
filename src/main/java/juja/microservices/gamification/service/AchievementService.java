@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
-import juja.microservices.gamification.exceptions.GamificationException;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -200,12 +199,26 @@ public class AchievementService {
             logger.info("No any active keepers found");
             throw new UnsupportedAchievementException("No any active keepers found");
         } else {
+            List<Achievement> achievements = achievementRepository.getAllKeepersThanksAchievementsCurrentWeek();
+            logger.debug("Received achievement for current week {}", achievements.toString());
             keepers.forEach(keeper -> {
-                result.add(achievementRepository.addAchievement(getAchievement(keeper)));
+                if (!checkTryToThanksKeeperTwicePerWeek(achievements, keeper)) {
+                    result.add(achievementRepository.addAchievement(getAchievement(keeper)));
+                }
             });
         }
         logger.info("Added 'Thanks Keeper' achievements {}", result.toString());
         return result;
+    }
+
+    private boolean checkTryToThanksKeeperTwicePerWeek(List<Achievement> achievements, Keeper keeper) {
+        for (Achievement achievement:achievements) {
+            if (achievement.getTo().equals(keeper.getUuid()) && achievement.getDescription().equals(keeper.getDescription())) {
+                logger.info("There is already done achievement for keeper {}, description {} on current week", keeper.getUuid(), keeper.getDescription());
+                return true;
+            }
+        }
+        return false;
     }
 
     private Achievement getAchievement(Keeper keeper) {
