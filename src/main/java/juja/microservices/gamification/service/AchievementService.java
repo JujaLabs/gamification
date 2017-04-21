@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
+import juja.microservices.gamification.exceptions.ThanksKeeperAchievementException;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,31 +195,21 @@ public class AchievementService {
     public List<String> addThanksKeeper() {
         List<String> result = new ArrayList<>();
         List<Keeper> keepers = keeperService.getKeepers();
+        List<Achievement> achievements = achievementRepository.getAllThanksKeepersAchievementsCurrentWeek();
 
         if (keepers.isEmpty()) {
             logger.info("No any active keepers found");
-            throw new UnsupportedAchievementException("No any active keepers found");
-        } else {
-            List<Achievement> achievements = achievementRepository.getAllKeepersThanksAchievementsCurrentWeek();
-            logger.debug("Received achievement for current week {}", achievements.toString());
+        } else if (achievements.isEmpty()) {
             keepers.forEach(keeper -> {
-                if (!checkTryToThanksKeeperTwicePerWeek(achievements, keeper)) {
-                    result.add(achievementRepository.addAchievement(getAchievement(keeper)));
-                }
+                result.add(achievementRepository.addAchievement(getAchievement(keeper)));
             });
+            logger.info("Added 'Thanks Keeper' achievements {}", result.toString());
+        } else {
+            String message = "GMF-F8-D5, The keepers where thanked this week. You can not do it twice";
+            logger.warn(message);
+            throw new ThanksKeeperAchievementException(message);
         }
-        logger.info("Added 'Thanks Keeper' achievements {}", result.toString());
         return result;
-    }
-
-    private boolean checkTryToThanksKeeperTwicePerWeek(List<Achievement> achievements, Keeper keeper) {
-        for (Achievement achievement:achievements) {
-            if (achievement.getTo().equals(keeper.getUuid()) && achievement.getDescription().equals(keeper.getDescription())) {
-                logger.info("There is already done achievement for keeper {}, description {} on current week", keeper.getUuid(), keeper.getDescription());
-                return true;
-            }
-        }
-        return false;
     }
 
     private Achievement getAchievement(Keeper keeper) {

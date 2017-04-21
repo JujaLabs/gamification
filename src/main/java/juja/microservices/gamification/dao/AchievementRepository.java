@@ -77,7 +77,7 @@ public class AchievementRepository {
                         .and("type").is(AchievementType.CODENJOY)), Achievement.class);
     }
 
-    public List<Achievement> getAllKeepersThanksAchievementsCurrentWeek() {
+    public List<Achievement> getAllThanksKeepersAchievementsCurrentWeek() {
         return mongoTemplate.find(new Query(
                 Criteria.where("createdDate")
                         .gte(startDay()).lt(new Date())
