@@ -181,6 +181,8 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addCodenjoy() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
         String userFrom = "max";
         String firstUserTo = "john";
         String secondUserTo = "bob";
@@ -189,7 +191,7 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         String secondDescription = "Codenjoy second place";
         String thirdDescription = "Codenjoy third place";
         String expectedType = "CODENJOY";
-        String expectedDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
+        String expectedDate = dateFormat.format(new Date(System.currentTimeMillis()));
         CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
         achievementService.addCodenjoy(request);
         List<Achievement> achievementList = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
@@ -197,7 +199,7 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         achievementList.forEach(achievement -> {
             assertEquals(userFrom, achievement.getFrom());
             assertEquals(expectedType, achievement.getType().toString());
-            assertEquals(expectedDate, achievement.getSendDate());
+            assertEquals(expectedDate, dateFormat.format(achievement.getSendDate()));
             int point = achievement.getPoint();
             String actualDescription = achievement.getDescription();
             if (point == 5) {

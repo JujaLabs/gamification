@@ -11,7 +11,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -30,15 +34,16 @@ public class UserControllerTest {
 
     private static final String POINT_SUMS = "[{\"to\":\"max\",\"point\":5},{\"to\":\"john\",\"point\":3}]";
 
+    // Don't worry!  1492797600000 it is a magic number of date: 2017-04-21 21:00:00.000 (format "yyyy-MM-dd hh:mm:ss.SSS"
     private static final String ACHIEVEMENTS = "[" +
             "{\"user\":\"max\",\"details\":[" +
             "{\"from\":\"max\",\"to\":\"max\",\"point\":1,\"description\":\"Daily\"," +
-            "\"type\":\"DAILY\",\"id\":null,\"sendDate\":\"2017-02-28\"}," +
+            "\"type\":\"DAILY\",\"id\":null,\"sendDate\":1492797600000}," +
             "{\"from\":\"john\",\"to\":\"max\",\"point\":1,\"description\":\"Thanks\"," +
-            "\"type\":\"THANKS\",\"id\":null,\"sendDate\":\"2017-02-28\"}]}," +
+            "\"type\":\"THANKS\",\"id\":null,\"sendDate\":1492797600000}]}," +
             "{\"user\":\"john\",\"details\":[" +
             "{\"from\":\"john\",\"to\":\"john\",\"point\":10,\"description\":\"Interview\"," +
-            "\"type\":\"INTERVIEW\",\"id\":null,\"sendDate\":\"2017-02-28\"}]}" +
+            "\"type\":\"INTERVIEW\",\"id\":null,\"sendDate\":1492797600000}]}" +
             "]";
 
     @Inject
@@ -66,9 +71,9 @@ public class UserControllerTest {
         Achievement achievementOne = new Achievement("max", "max", 1, "Daily", AchievementType.DAILY);
         Achievement achievementTwo = new Achievement("john", "max", 1, "Thanks", AchievementType.THANKS);
         Achievement achievementThree = new Achievement("john", "john", 10, "Interview", AchievementType.INTERVIEW);
-        achievementOne.setSendDate("2017-02-28");
-        achievementTwo.setSendDate("2017-02-28");
-        achievementThree.setSendDate("2017-02-28");
+        achievementOne.setSendDate(new Date(1492797600000L));
+        achievementTwo.setSendDate(new Date(1492797600000L));
+        achievementThree.setSendDate(new Date(1492797600000L));
         List<Achievement> achievementsFirstUser = new ArrayList<>();
         achievementsFirstUser.add(achievementOne);
         achievementsFirstUser.add(achievementTwo);

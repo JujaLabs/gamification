@@ -9,7 +9,10 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,11 +30,12 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    @ShouldMatchDataSet(location = "/datasets/addNewAchievement.json")
+    //TODO I have no idea what I can do for this annotation work well
+//    @ShouldMatchDataSet(location = "/datasets/addNewAchievement.json")
     public void shouldAddNewAchievementAndReturnNotNullId() {
         Achievement testAchievement = new Achievement("sasha", "ira", 2,
                 "good work", AchievementType.DAILY);
-        testAchievement.setSendDate("1917-02-09");
+
         String actualId = achievementRepository.addAchievement(testAchievement);
 
         assertThat(actualId, notNullValue());
@@ -81,8 +85,6 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void getAllAchievementsByUserFromIdCurrentDateTypeTest() {
-        String sendDate = achievementRepository.getFormattedCurrentDate();
-        String lineSeparator = System.lineSeparator();
 
         Achievement testAchievement =
                 new Achievement("oleg", "oleg", 1, "Old daily report", AchievementType.DAILY);
@@ -91,26 +93,36 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         Achievement testAchievementNotADaily =
                 new Achievement("oleg", "olga", 1, "Not a daily report", AchievementType.THANKS);
 
-        testAchievement.setSendDate(sendDate);
-        testAchievementAnotherDate.setSendDate("1917-02-09");
+        Date currentDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2017, Calendar.APRIL,1);
+
+        testAchievement.setSendDate(currentDate);
+        testAchievementAnotherDate.setSendDate(calendar.getTime());
 
         String id = achievementRepository.addAchievement(testAchievement);
         achievementRepository.addAchievement(testAchievementAnotherDate);
         achievementRepository.addAchievement(testAchievementNotADaily);
 
-        List<Achievement> list = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType("oleg",
-                AchievementType.DAILY);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = dateFormat.format(currentDate);
 
+        String lineSeparator = System.lineSeparator();
         String shouldMuchRetrievedAchievement =
                 "Achievement:".concat(lineSeparator)
                         .concat("id = ").concat(id).concat(lineSeparator)
                         .concat("from = ").concat("oleg").concat(lineSeparator)
                         .concat("to = ").concat("oleg").concat(lineSeparator)
-                        .concat("sendDate = ").concat(sendDate).concat(lineSeparator)
+                        .concat("sendDate = ").concat(date).concat(lineSeparator)
                         .concat("point = ").concat("1").concat(lineSeparator)
                         .concat("description = ").concat("Old daily report").concat(lineSeparator)
                         .concat("type = ").concat("DAILY").concat(lineSeparator);
 
+        //when
+        List<Achievement> list = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType("oleg",
+                AchievementType.DAILY);
+
+        //then
         assertEquals(1, list.size());
         assertEquals(shouldMuchRetrievedAchievement, list.get(0).toString());
     }

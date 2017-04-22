@@ -23,17 +23,10 @@ public class AchievementRepository {
 
     public String addAchievement(Achievement achievement) {
         if (achievement.getSendDate() == null) {
-            achievement.setSendDate(getFormattedCurrentDate());
-            achievement.setCreatedDate(new Date());
+            achievement.setSendDate(new Date());
         }
         mongoTemplate.save(achievement);
         return achievement.getId();
-    }
-
-    public String getFormattedCurrentDate() {
-        Date currentDate = new Date(System.currentTimeMillis());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return dateFormat.format(currentDate);
     }
 
     public List<UserAchievementDetails> getUserAchievementsDetails(UserIdsRequest ids) {
@@ -50,11 +43,9 @@ public class AchievementRepository {
     }
 
     public List<Achievement> getAllAchievementsByUserFromIdCurrentDateType(String from, AchievementType type) {
-        String sendDate = getFormattedCurrentDate();
-
         return mongoTemplate.find(new Query(
                 Criteria.where("from").is(from)
-                        .and("sendDate").is(sendDate)
+                        .and("sendDate").gte(startCurrentDay()).lte(endCurrentDay())
                         .and("type").is(type.toString())), Achievement.class);
     }
 
@@ -71,20 +62,31 @@ public class AchievementRepository {
     }
 
     public List<Achievement> getAllCodenjoyAchievementsCurrentDate() {
-        String sendDate = getFormattedCurrentDate();
         return mongoTemplate.find(new Query(
-                Criteria.where("sendDate").is(sendDate)
+                Criteria.where("sendDate").gte(startCurrentDay()).lte(endCurrentDay())
                         .and("type").is(AchievementType.CODENJOY)), Achievement.class);
     }
 
     public List<Achievement> getAllThanksKeepersAchievementsCurrentWeek() {
         return mongoTemplate.find(new Query(
-                Criteria.where("createdDate")
-                        .gte(startDay()).lt(new Date())
+                Criteria.where("sendDate").gte(fistDayOfCurrentWeek()).lte(endCurrentDay())
                         .and("type").is(AchievementType.THANKS_KEEPER)), Achievement.class);
     }
+    private Date startCurrentDay() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.clear(Calendar.MINUTE);
+        calendar.clear(Calendar.SECOND);
+        calendar.clear(Calendar.MILLISECOND);
 
-    private Date startDay() {
+        return calendar.getTime();
+    }
+
+    private Date endCurrentDay() {
+        return new Date();
+    }
+
+    private Date fistDayOfCurrentWeek() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.clear(Calendar.MINUTE);
