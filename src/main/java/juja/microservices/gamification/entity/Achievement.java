@@ -1,6 +1,7 @@
 package juja.microservices.gamification.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,8 @@ public class Achievement {
     private String to;
 
     @Setter
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private Date sendDate;
 
     private int point;
@@ -29,7 +31,7 @@ public class Achievement {
     private AchievementType type;
 
     @JsonCreator
-    public Achievement(@JsonProperty("from") String from,@JsonProperty("to") String to,
+    public Achievement(@JsonProperty("from") String from, @JsonProperty("to") String to,
                        @JsonProperty("point") int point, @JsonProperty("description") String description,
                        @JsonProperty("type") AchievementType type) {
         this.from = from;

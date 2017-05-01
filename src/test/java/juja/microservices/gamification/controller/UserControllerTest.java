@@ -34,16 +34,15 @@ public class UserControllerTest {
 
     private static final String POINT_SUMS = "[{\"to\":\"max\",\"point\":5},{\"to\":\"john\",\"point\":3}]";
 
-    // Don't worry!  1492797600000 it is a magic number of date: 2017-04-21 21:00:00.000 (format "yyyy-MM-dd hh:mm:ss.SSS"
     private static final String ACHIEVEMENTS = "[" +
             "{\"user\":\"max\",\"details\":[" +
             "{\"from\":\"max\",\"to\":\"max\",\"point\":1,\"description\":\"Daily\"," +
-            "\"type\":\"DAILY\",\"id\":null,\"sendDate\":1492797600000}," +
+            "\"type\":\"DAILY\",\"id\":null,\"sendDate\":\"2017-04-21\"}," +
             "{\"from\":\"john\",\"to\":\"max\",\"point\":1,\"description\":\"Thanks\"," +
-            "\"type\":\"THANKS\",\"id\":null,\"sendDate\":1492797600000}]}," +
+            "\"type\":\"THANKS\",\"id\":null,\"sendDate\":\"2017-04-21\"}]}," +
             "{\"user\":\"john\",\"details\":[" +
             "{\"from\":\"john\",\"to\":\"john\",\"point\":10,\"description\":\"Interview\"," +
-            "\"type\":\"INTERVIEW\",\"id\":null,\"sendDate\":1492797600000}]}" +
+            "\"type\":\"INTERVIEW\",\"id\":null,\"sendDate\":\"2017-04-21\"}]}" +
             "]";
 
     @Inject
@@ -71,9 +70,9 @@ public class UserControllerTest {
         Achievement achievementOne = new Achievement("max", "max", 1, "Daily", AchievementType.DAILY);
         Achievement achievementTwo = new Achievement("john", "max", 1, "Thanks", AchievementType.THANKS);
         Achievement achievementThree = new Achievement("john", "john", 10, "Interview", AchievementType.INTERVIEW);
-        achievementOne.setSendDate(new Date(1492797600000L));
-        achievementTwo.setSendDate(new Date(1492797600000L));
-        achievementThree.setSendDate(new Date(1492797600000L));
+        achievementOne.setSendDate(testDate());
+        achievementTwo.setSendDate(testDate());
+        achievementThree.setSendDate(testDate());
         List<Achievement> achievementsFirstUser = new ArrayList<>();
         achievementsFirstUser.add(achievementOne);
         achievementsFirstUser.add(achievementTwo);
@@ -92,6 +91,15 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         assertEquals(ACHIEVEMENTS, result);
+    }
+
+    private Date testDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 2017);
+        calendar.set(Calendar.MONTH, 3);
+        calendar.set(Calendar.DAY_OF_MONTH, 21);
+
+        return calendar.getTime();
     }
 
     @Test()

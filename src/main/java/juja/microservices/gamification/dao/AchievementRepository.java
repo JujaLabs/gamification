@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
@@ -45,7 +44,7 @@ public class AchievementRepository {
     public List<Achievement> getAllAchievementsByUserFromIdCurrentDateType(String from, AchievementType type) {
         return mongoTemplate.find(new Query(
                 Criteria.where("from").is(from)
-                        .and("sendDate").gte(startCurrentDay()).lte(endCurrentDay())
+                        .and("sendDate").gte(startCurrentDay())
                         .and("type").is(type.toString())), Achievement.class);
     }
 
@@ -63,15 +62,16 @@ public class AchievementRepository {
 
     public List<Achievement> getAllCodenjoyAchievementsCurrentDate() {
         return mongoTemplate.find(new Query(
-                Criteria.where("sendDate").gte(startCurrentDay()).lte(endCurrentDay())
+                Criteria.where("sendDate").gte(startCurrentDay())
                         .and("type").is(AchievementType.CODENJOY)), Achievement.class);
     }
 
     public List<Achievement> getAllThanksKeepersAchievementsCurrentWeek() {
         return mongoTemplate.find(new Query(
-                Criteria.where("sendDate").gte(fistDayOfCurrentWeek()).lte(endCurrentDay())
+                Criteria.where("sendDate").gte(fistDayOfCurrentWeek())
                         .and("type").is(AchievementType.THANKS_KEEPER)), Achievement.class);
     }
+
     private Date startCurrentDay() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -80,10 +80,6 @@ public class AchievementRepository {
         calendar.clear(Calendar.MILLISECOND);
 
         return calendar.getTime();
-    }
-
-    private Date endCurrentDay() {
-        return new Date();
     }
 
     private Date fistDayOfCurrentWeek() {
