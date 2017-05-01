@@ -1,9 +1,5 @@
 package juja.microservices.gamification;
 
-import juja.microservices.gamification.dao.KeeperRepository;
-import juja.microservices.gamification.dao.RestKeeperRepository;
-import juja.microservices.gamification.service.DefaultKeeperService;
-import juja.microservices.gamification.service.KeeperService;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.SpringApplication;
@@ -49,16 +45,6 @@ public class Gamification {
         RestTemplate restTemplate = new RestTemplate(httpRequestFactory());
         restTemplate.setMessageConverters(getHttpMessageConverters());
         return restTemplate;
-    }
-
-    @Bean
-    public KeeperRepository keeperDao() {
-        return new RestKeeperRepository(restTemplate());
-    }
-
-    @Bean
-    public KeeperService keeperService() {
-        return new DefaultKeeperService(keeperDao());
     }
 
     private ClientHttpRequestFactory httpRequestFactory() {
