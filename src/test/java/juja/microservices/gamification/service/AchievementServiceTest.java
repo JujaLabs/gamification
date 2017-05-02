@@ -238,7 +238,7 @@ public class AchievementServiceTest {
     }
 
     @Test
-    public void addKeeperThanksTwicePerCurrentWeekCaseTwo() throws Exception {
+    public void addKeeperThanksWithoutActiveKeeperTest() throws Exception {
         //given
         when(keeperService.getKeepers()).thenReturn(new ArrayList<>());
         when(repository.getAllThanksKeepersAchievementsCurrentWeek()).thenReturn(new ArrayList<>());
@@ -247,6 +247,6 @@ public class AchievementServiceTest {
         List<String> actualList = service.addThanksKeeper();
 
         //then
-        assertTrue(actualList.size() == 0);
+        assertTrue(actualList.isEmpty());
     }
 }

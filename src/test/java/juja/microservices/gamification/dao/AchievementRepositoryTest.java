@@ -1,6 +1,5 @@
 package juja.microservices.gamification.dao;
 
-import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import juja.microservices.integration.BaseIntegrationTest;
 import juja.microservices.gamification.entity.*;
@@ -30,15 +29,29 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    //TODO I have no idea what I can do for this annotation work well
-//    @ShouldMatchDataSet(location = "/datasets/addNewAchievement.json")
     public void shouldAddNewAchievementAndReturnNotNullId() {
-        Achievement testAchievement = new Achievement("sasha", "ira", 2,
+        Achievement achievement = new Achievement("sasha", "ira", 1,
                 "good work", AchievementType.DAILY);
 
-        String actualId = achievementRepository.addAchievement(testAchievement);
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = dateFormat.format(currentDate);
+        String actualId = achievementRepository.addAchievement(achievement);
+        List<Achievement> achievements = achievementRepository.getAllAchievementsByUserToId("ira");
+
+        String lineSeparator = System.lineSeparator();
+        String shouldMuchRetrievedAchievement =
+                "Achievement:".concat(lineSeparator)
+                        .concat("id = ").concat(actualId).concat(lineSeparator)
+                        .concat("from = ").concat("sasha").concat(lineSeparator)
+                        .concat("to = ").concat("ira").concat(lineSeparator)
+                        .concat("sendDate = ").concat(date).concat(lineSeparator)
+                        .concat("point = ").concat("1").concat(lineSeparator)
+                        .concat("description = ").concat("good work").concat(lineSeparator)
+                        .concat("type = ").concat("DAILY").concat(lineSeparator);
 
         assertThat(actualId, notNullValue());
+        assertEquals(shouldMuchRetrievedAchievement, achievements.get(0).toString());
     }
 
     @Test
@@ -125,5 +138,49 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         //then
         assertEquals(1, list.size());
         assertEquals(shouldMuchRetrievedAchievement, list.get(0).toString());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void getAllThanksKeepersAchievementsCurrentWeekTest(){
+        Achievement achievement =
+                new Achievement("sasha", "ira", 2, "keeper thanks", AchievementType.THANKS_KEEPER);
+        achievement.setSendDate(getFistDayOfCurrentWeek());
+        achievementRepository.addAchievement(achievement);
+
+        List<Achievement> list = achievementRepository.getAllThanksKeepersAchievementsCurrentWeek();
+
+        assertEquals(1, list.size());
+    }
+
+    private Date getFistDayOfCurrentWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+
+        return calendar.getTime();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void getAllCodenjoyAchievementsCurrentDateTest(){
+        String userFromId = "sasha";
+        String userFirstPlace = "ira";
+        String userSecondPlace = "max";
+        String userThirdPlace = "ben";
+
+        Achievement firstPlace = new Achievement(userFromId, userFirstPlace, 3,
+                "Codenjoy first place", AchievementType.CODENJOY);
+        Achievement secondPlace = new Achievement(userFromId, userSecondPlace, 2,
+                "Codenjoy second place", AchievementType.CODENJOY);
+        Achievement thirdPlace = new Achievement(userFromId, userThirdPlace, 1,
+                "Codenjoy third place", AchievementType.CODENJOY);
+
+        achievementRepository.addAchievement(firstPlace);
+        achievementRepository.addAchievement(secondPlace);
+        achievementRepository.addAchievement(thirdPlace);
+
+        List<Achievement> list = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
+
+        assertEquals(3, list.size());
     }
 }
