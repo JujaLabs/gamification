@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
-import juja.microservices.gamification.exceptions.ThanksKeeperAchievementException;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,22 +192,28 @@ public class AchievementService {
     }
 
     public List<String> addThanksKeeper() {
+        List<Achievement> achievements = achievementRepository.getAllThanksKeepersAchievementsCurrentWeek();
+        return achievements.isEmpty() ? createThanksKeeperAchievements() : getIdsCreatedAchievement(achievements);
+    }
+
+    private List<String> createThanksKeeperAchievements() {
         List<String> result = new ArrayList<>();
         List<Keeper> keepers = keeperService.getKeepers();
-        List<Achievement> achievements = achievementRepository.getAllThanksKeepersAchievementsCurrentWeek();
-
         if (keepers.isEmpty()) {
-            logger.info("No any active keepers found");
-        } else if (achievements.isEmpty()) {
+            logger.info("No any active keepers received from user service");
+        } else {
             keepers.forEach(keeper -> {
                 result.add(achievementRepository.addAchievement(getAchievement(keeper)));
             });
             logger.info("Added 'Thanks Keeper' achievements {}", result.toString());
-        } else {
-            String message = "GMF-F8-D5, The keepers where thanked this week. You can not do it twice";
-            logger.warn(message);
-            throw new ThanksKeeperAchievementException(message);
         }
+        return result;
+    }
+
+    private List<String> getIdsCreatedAchievement (List<Achievement> achievements) {
+        List<String> result;
+        result = getIds(achievements);
+        logger.info("Returned already created 'Thanks Keeper' achievements in current week {}", result.toString());
         return result;
     }
 
@@ -219,5 +224,13 @@ public class AchievementService {
                 KEEPER_THANKS,
                 keeper.getDescription(),
                 AchievementType.THANKS_KEEPER);
+    }
+
+    private List<String> getIds(List<Achievement> achievements) {
+        List<String> result = new ArrayList<>();
+        achievements.forEach(achievement -> {
+            result.add(achievement.getId());
+        });
+        return result;
     }
 }

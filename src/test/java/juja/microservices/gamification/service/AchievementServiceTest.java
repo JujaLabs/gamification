@@ -2,7 +2,6 @@ package juja.microservices.gamification.service;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
-import juja.microservices.gamification.exceptions.ThanksKeeperAchievementException;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -219,37 +218,35 @@ public class AchievementServiceTest {
         assertEquals(expectedList, actualList);
     }
 
-    @Test (expected = ThanksKeeperAchievementException.class)
-    public void addKeeperThanksTwicePerCurrentWeekCaseOne() throws Exception {
+    @Test
+    public void addKeeperThanksTwicePerCurrentWeek() throws Exception {
         //given
         List<Keeper> keepersList = new ArrayList<>();
         keepersList.add(new Keeper("AAA", "job", "alex"));
         List<Achievement> achievements = new ArrayList<>();
         achievements.add(new Achievement("alex","AAA",THANKS_KEEPER, "job", AchievementType.THANKS_KEEPER));
+        String expectedId = achievements.get(0).getId();
 
         when(keeperService.getKeepers()).thenReturn(keepersList);
         when(repository.getAllThanksKeepersAchievementsCurrentWeek()).thenReturn(achievements);
 
         //when
-        service.addThanksKeeper();
-        fail();
+        List<String> actualList = service.addThanksKeeper();
+
+        //then
+        assertEquals(expectedId, actualList.get(0));
     }
 
-    @Test (expected = ThanksKeeperAchievementException.class)
+    @Test
     public void addKeeperThanksTwicePerCurrentWeekCaseTwo() throws Exception {
         //given
-        List<Keeper> keepersList = new ArrayList<>();
-        keepersList.add(new Keeper("AAA", "job", "alex"));
-        keepersList.add(new Keeper("BBB", "job", "alex"));
-
-        List<Achievement> achievements = new ArrayList<>();
-        achievements.add(new Achievement("alex","AAA",THANKS_KEEPER, "job", AchievementType.THANKS_KEEPER));
-
-        when(keeperService.getKeepers()).thenReturn(keepersList);
-        when(repository.getAllThanksKeepersAchievementsCurrentWeek()).thenReturn(achievements);
+        when(keeperService.getKeepers()).thenReturn(new ArrayList<>());
+        when(repository.getAllThanksKeepersAchievementsCurrentWeek()).thenReturn(new ArrayList<>());
 
         //when
-        service.addThanksKeeper();
-        fail();
+        List<String> actualList = service.addThanksKeeper();
+
+        //then
+        assertTrue(actualList.size() == 0);
     }
 }
