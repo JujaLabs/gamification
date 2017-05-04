@@ -211,9 +211,9 @@ public class AchievementService {
     }
 
     private List<String> getIdsCreatedAchievement (List<Achievement> achievements) {
-        List<String> result;
-        result = getIds(achievements);
+        List<String> result = getIds(achievements);
         logger.info("Returned already created 'Thanks Keeper' achievements in current week {}", result.toString());
+
         return result;
     }
 

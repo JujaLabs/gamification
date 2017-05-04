@@ -14,17 +14,13 @@ import java.util.*;
 @Repository
 public class RestKeeperRepository implements KeeperRepository {
 
-    private final RestTemplate restTemplate;
+    @Inject
+    private RestTemplate restTemplate;
 
     @Value("${user.baseURL}")
     private String urlBase;
     @Value("${endpoint.keepers}")
     private String urlGetKeepers;
-
-    @Inject
-    public RestKeeperRepository(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
 
     @Override
     public List<Keeper> getKeepers() {

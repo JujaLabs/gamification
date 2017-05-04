@@ -9,13 +9,8 @@ import java.util.List;
 
 @Service
 public class DefaultKeeperService implements KeeperService {
-
-    private final KeeperRepository keeperRepository;
-
     @Inject
-    public DefaultKeeperService(KeeperRepository keeperRepository) {
-        this.keeperRepository = keeperRepository;
-    }
+    private KeeperRepository keeperRepository;
 
     @Override
     public List<Keeper> getKeepers() {

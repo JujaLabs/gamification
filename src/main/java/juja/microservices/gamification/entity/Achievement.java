@@ -6,9 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Getter
@@ -20,12 +21,11 @@ public class Achievement {
     private String from;
     private String to;
 
-    @Setter
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private Date sendDate;
 
     private int point;
+
     @Setter
     private String description;
     private AchievementType type;
@@ -39,6 +39,10 @@ public class Achievement {
         this.point = point;
         this.description = description;
         this.type = type;
+    }
+
+    public void setSendDate(LocalDateTime date) {
+        this.sendDate = Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     @Override

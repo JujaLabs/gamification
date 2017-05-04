@@ -11,11 +11,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -93,13 +91,8 @@ public class UserControllerTest {
         assertEquals(ACHIEVEMENTS, result);
     }
 
-    private Date testDate() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, 2017);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 21);
-
-        return calendar.getTime();
+    private LocalDateTime testDate() {
+        return LocalDateTime.of(2017, Month.APRIL, 21,12,0);
     }
 
     @Test()

@@ -10,6 +10,11 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
@@ -22,7 +27,7 @@ public class AchievementRepository {
 
     public String addAchievement(Achievement achievement) {
         if (achievement.getSendDate() == null) {
-            achievement.setSendDate(new Date());
+            achievement.setSendDate(LocalDateTime.now());
         }
         mongoTemplate.save(achievement);
         return achievement.getId();
@@ -73,23 +78,12 @@ public class AchievementRepository {
     }
 
     private Date startCurrentDay() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.clear(Calendar.MINUTE);
-        calendar.clear(Calendar.SECOND);
-        calendar.clear(Calendar.MILLISECOND);
-
-        return calendar.getTime();
+        return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     private Date fistDayOfCurrentWeek() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.clear(Calendar.MINUTE);
-        calendar.clear(Calendar.SECOND);
-        calendar.clear(Calendar.MILLISECOND);
-        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        LocalDate localDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
-        return calendar.getTime();
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 }

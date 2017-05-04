@@ -13,9 +13,9 @@ public class Keeper {
     private String from;
 
     @JsonCreator
-    public Keeper (@JsonProperty("uuid")String uuid,
-                   @JsonProperty("description")String description,
-                   @JsonProperty("from")String from) {
+    public Keeper (@JsonProperty("uuid") String uuid,
+                   @JsonProperty("description") String description,
+                   @JsonProperty("from") String from) {
 
         this.uuid = uuid;
         this.description = description;

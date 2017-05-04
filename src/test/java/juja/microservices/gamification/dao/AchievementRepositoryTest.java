@@ -9,8 +9,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -106,19 +110,18 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         Achievement testAchievementNotADaily =
                 new Achievement("oleg", "olga", 1, "Not a daily report", AchievementType.THANKS);
 
-        Date currentDate = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2017, Calendar.APRIL,1);
+        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime anotherDate = LocalDateTime.of(2017, Month.APRIL, 1, 12,0);
 
         testAchievement.setSendDate(currentDate);
-        testAchievementAnotherDate.setSendDate(calendar.getTime());
+        testAchievementAnotherDate.setSendDate(anotherDate);
 
         String id = achievementRepository.addAchievement(testAchievement);
         achievementRepository.addAchievement(testAchievementAnotherDate);
         achievementRepository.addAchievement(testAchievementNotADaily);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String date = dateFormat.format(currentDate);
+        String date = currentDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
 
         String lineSeparator = System.lineSeparator();
         String shouldMuchRetrievedAchievement =
@@ -145,7 +148,7 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
     public void getAllThanksKeepersAchievementsCurrentWeekTest(){
         Achievement achievement =
                 new Achievement("sasha", "ira", 2, "keeper thanks", AchievementType.THANKS_KEEPER);
-        achievement.setSendDate(getFistDayOfCurrentWeek());
+        achievement.setSendDate(getDateOfMondayOfCurrentWeek());
         achievementRepository.addAchievement(achievement);
 
         List<Achievement> list = achievementRepository.getAllThanksKeepersAchievementsCurrentWeek();
@@ -153,11 +156,8 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         assertEquals(1, list.size());
     }
 
-    private Date getFistDayOfCurrentWeek() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
-
-        return calendar.getTime();
+    private LocalDateTime getDateOfMondayOfCurrentWeek() {
+        return LocalDateTime.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
     }
 
     @Test
