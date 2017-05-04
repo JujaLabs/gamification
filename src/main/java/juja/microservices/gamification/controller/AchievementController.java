@@ -40,7 +40,7 @@ public class AchievementController {
     })
     public ResponseEntity<?> addDaily(@Valid @RequestBody DailyRequest request) {
         List<String> ids = achievementService.addDaily(request);
-        logger.info("Added daily achievement, ids = {}", ids.toString());
+        logger.info("Added 'Daily' achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
@@ -60,7 +60,7 @@ public class AchievementController {
     })
     public ResponseEntity<?> addThanks(@Valid @RequestBody ThanksRequest request) {
         List<String> ids = achievementService.addThanks(request);
-        logger.info("Added thanks achievement, ids = {}", ids.toString());
+        logger.info("Added 'Thanks' achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
@@ -78,7 +78,7 @@ public class AchievementController {
     })
     public ResponseEntity<?> addCodenjoy(@Valid @RequestBody CodenjoyRequest request) {
         List<String> ids = achievementService.addCodenjoy(request);
-        logger.info("Added codenjoy achievement, ids = {}", ids.toString());
+        logger.info("Added 'Codenjoy' achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
@@ -96,7 +96,7 @@ public class AchievementController {
     })
     public ResponseEntity<?> addInterview(@Valid @RequestBody InterviewRequest request) {
         List<String> ids = achievementService.addInterview(request);
-        logger.info("Added daily achievement, ids = {}", ids.toString());
+        logger.info("Added 'Interview' achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
@@ -114,7 +114,7 @@ public class AchievementController {
     })
     public ResponseEntity<?> addThanksKeeper() {
         List<String> ids = achievementService.addThanksKeeper();
-        logger.info("Added thanks keeper achievement, ids = {}", ids.toString());
+        logger.info("Added 'Thanks keeper' achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 }

@@ -168,9 +168,9 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         achievementService.addThanks(firstRequest);
         achievementService.addThanks(secondRequest);
 
-        String expectedDescription = "Issued two thanks";
+        String expectedDescription = String.format("Distributed all 'thanks' to users: %s, %s",firstUserTo, secondUserTo);
         String expectedType = "THANKS";
-        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId(userFrom);
         String actualDescription = achievementList.get(0).getDescription();
         String actualType = String.valueOf(achievementList.get(0).getType());
 
