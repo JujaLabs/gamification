@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
+import juja.microservices.gamification.exceptions.ThanksAchievementException;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class AchievementService {
 
         if (fromId.equalsIgnoreCase(toId)) {
             logger.warn("User '{}' trying to put 'Thanks' achievement to yourself", request.getTo());
-            throw new UnsupportedAchievementException("You cannot thank yourself");
+            throw new ThanksAchievementException("You cannot thank yourself");
         }
 
         List<Achievement> userFromThanksAchievementToday = achievementRepository
@@ -83,13 +84,13 @@ public class AchievementService {
 
         if (userFromThanksAchievementToday.size() >= TWO_THANKS) {
             logger.warn("User '{}' tried to give 'Thanks' achievement more than two times per day", fromId);
-            throw new UnsupportedAchievementException("You cannot give more than two thanks for day");
+            throw new ThanksAchievementException("You cannot give more than two thanks for day");
         }
 
         for (Achievement achievement : userFromThanksAchievementToday) {
             if (achievement.getTo().equals(toId)) {
                 logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", fromId, toId);
-                throw new UnsupportedAchievementException("You cannot give more than one thanks for day one person");
+                throw new ThanksAchievementException("You cannot give more than one thanks for day to one person");
             }
         }
 

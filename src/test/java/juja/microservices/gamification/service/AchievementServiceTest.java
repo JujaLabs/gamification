@@ -2,6 +2,7 @@ package juja.microservices.gamification.service;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
+import juja.microservices.gamification.exceptions.ThanksAchievementException;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,14 +83,14 @@ public class AchievementServiceTest {
         assertEquals(expectedList, actualList);
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = ThanksAchievementException.class)
     public void addThanksToYourself() throws Exception {
         ThanksRequest request = new ThanksRequest("max", "max", "Thanks");
         service.addThanks(request);
         fail();
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = ThanksAchievementException.class)
     public void addSecondThanksToOneUser() throws Exception {
         List<Achievement> userFromIdList = new ArrayList<>();
         Achievement achievement = new Achievement("max", "john", ONE_POINT, "Thanks",
@@ -120,7 +121,7 @@ public class AchievementServiceTest {
         assertEquals(expectedList, actualList);
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = ThanksAchievementException.class)
     public void addThirdThanks() throws Exception {
         Achievement firstAchievement = new Achievement("max", "john", ONE_POINT, "Thanks",
                 AchievementType.THANKS );
@@ -131,7 +132,7 @@ public class AchievementServiceTest {
         userFromIdList.add(secondAchievement);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS))
                 .thenReturn(userFromIdList);
-        when(repository.addAchievement(any(Achievement.class))).thenThrow(UnsupportedAchievementException.class);
+        when(repository.addAchievement(any(Achievement.class))).thenThrow(ThanksAchievementException.class);
         ThanksRequest request = new ThanksRequest("max", "bill","Third thanks");
         service.addThanks(request);
         fail();
