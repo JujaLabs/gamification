@@ -1,36 +1,36 @@
 {
   "achievement": [
     {
-      "from":"sasha",
-      "to":"max",
-      "point":1,
-      "description":"For helping with...",
-      "sendDate":"2017-02-09",
-      "type":"THANKS"
+      "from": "sasha",
+      "to": "max",
+      "point": 1,
+      "description": "For helping with...",
+      "sendDate": { "$date" : "2017-02-07T00:00:00.000Z"},
+      "type": "THANKS"
     },
     {
-      "from":"sasha",
-      "to":"ira",
-      "point":1,
-      "description":"For helping with...",
-      "sendDate":"2017-02-09",
-      "type":"THANKS"
+      "from": "sasha",
+      "to": "ira",
+      "point": 1,
+      "description": "For helping with...",
+      "sendDate": { "$date" : "2017-02-07T00:00:00.000Z"},
+      "type": "THANKS"
     },
     {
-      "from":"sasha",
-      "to":"sasha",
-      "point":1,
-      "description":"Issued two thanks",
-      "sendDate":"2017-02-09",
-      "type":"THANKS"
+      "from": "sasha",
+      "to": "sasha",
+      "point": 1,
+      "description": "Issued two thanks",
+      "sendDate": { "$date" : "2017-02-07T00:00:00.000Z"},
+      "type": "THANKS"
     },
     {
-      "from":"misha",
-      "to":"sasha",
-      "point":1,
-      "description":"For helping with...",
-      "sendDate":"2017-02-09",
-      "type":"THANKS"
+      "from": "misha",
+      "to": "sasha",
+      "point": 1,
+      "description": "For helping with...",
+      "sendDate": { "$date" : "2017-02-07T00:00:00.000Z"},
+      "type": "THANKS"
     }
   ]
 }

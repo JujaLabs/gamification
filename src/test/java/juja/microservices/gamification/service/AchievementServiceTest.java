@@ -2,6 +2,7 @@ package juja.microservices.gamification.service;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
+import juja.microservices.gamification.exceptions.ThanksAchievementException;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +30,7 @@ public class AchievementServiceTest {
     private static final int CODENJOY_SECOND_PLACE = 3;
     private static final int CODENJOY_THIRD_PLACE = 1;
     private static final int ONE_POINT = 1;
+    private static final int THANKS_KEEPER = 2;
 
 
     @Inject
@@ -36,6 +38,8 @@ public class AchievementServiceTest {
 
     @MockBean
     private AchievementRepository repository;
+    @MockBean
+    private KeeperService keeperService;
 
     @Test
     public void addDaily() throws Exception {
@@ -79,14 +83,14 @@ public class AchievementServiceTest {
         assertEquals(expectedList, actualList);
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = ThanksAchievementException.class)
     public void addThanksToYourself() throws Exception {
         ThanksRequest request = new ThanksRequest("max", "max", "Thanks");
         service.addThanks(request);
         fail();
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = ThanksAchievementException.class)
     public void addSecondThanksToOneUser() throws Exception {
         List<Achievement> userFromIdList = new ArrayList<>();
         Achievement achievement = new Achievement("max", "john", ONE_POINT, "Thanks",
@@ -117,7 +121,7 @@ public class AchievementServiceTest {
         assertEquals(expectedList, actualList);
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = ThanksAchievementException.class)
     public void addThirdThanks() throws Exception {
         Achievement firstAchievement = new Achievement("max", "john", ONE_POINT, "Thanks",
                 AchievementType.THANKS );
@@ -128,7 +132,7 @@ public class AchievementServiceTest {
         userFromIdList.add(secondAchievement);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS))
                 .thenReturn(userFromIdList);
-        when(repository.addAchievement(any(Achievement.class))).thenThrow(UnsupportedAchievementException.class);
+        when(repository.addAchievement(any(Achievement.class))).thenThrow(ThanksAchievementException.class);
         ThanksRequest request = new ThanksRequest("max", "bill","Third thanks");
         service.addThanks(request);
         fail();
@@ -196,5 +200,54 @@ public class AchievementServiceTest {
         InterviewRequest request = new InterviewRequest("max", "Interview");
         List<String> actualList = service.addInterview(request);
         assertEquals(expectedList, actualList);
+    }
+
+    @Test
+    public void addKeeperThanks() throws Exception {
+        //given
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        List<Keeper> keepersList = new ArrayList<>();
+        keepersList.add(new Keeper("AAA", "thanks for keeper", "alex"));
+        when(keeperService.getKeepers()).thenReturn(keepersList);
+        when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
+
+        //when
+        List<String> actualList = service.addThanksKeeper();
+
+        //then
+        assertEquals(expectedList, actualList);
+    }
+
+    @Test
+    public void addKeeperThanksTwicePerCurrentWeek() throws Exception {
+        //given
+        List<Keeper> keepersList = new ArrayList<>();
+        keepersList.add(new Keeper("AAA", "job", "alex"));
+        List<Achievement> achievements = new ArrayList<>();
+        achievements.add(new Achievement("alex","AAA",THANKS_KEEPER, "job", AchievementType.THANKS_KEEPER));
+        String expectedId = achievements.get(0).getId();
+
+        when(keeperService.getKeepers()).thenReturn(keepersList);
+        when(repository.getAllThanksKeepersAchievementsCurrentWeek()).thenReturn(achievements);
+
+        //when
+        List<String> actualList = service.addThanksKeeper();
+
+        //then
+        assertEquals(expectedId, actualList.get(0));
+    }
+
+    @Test
+    public void addKeeperThanksWithoutActiveKeeperTest() throws Exception {
+        //given
+        when(keeperService.getKeepers()).thenReturn(new ArrayList<>());
+        when(repository.getAllThanksKeepersAchievementsCurrentWeek()).thenReturn(new ArrayList<>());
+
+        //when
+        List<String> actualList = service.addThanksKeeper();
+
+        //then
+        assertTrue(actualList.isEmpty());
     }
 }
