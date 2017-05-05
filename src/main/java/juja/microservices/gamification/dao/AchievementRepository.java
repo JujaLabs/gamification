@@ -73,7 +73,7 @@ public class AchievementRepository {
 
     public List<Achievement> getAllThanksKeepersAchievementsCurrentWeek() {
         return mongoTemplate.find(new Query(
-                Criteria.where("sendDate").gte(fistDayOfCurrentWeek())
+                Criteria.where("sendDate").gte(firstDayOfCurrentWeek())
                         .and("type").is(AchievementType.THANKS_KEEPER)), Achievement.class);
     }
 
@@ -81,7 +81,7 @@ public class AchievementRepository {
         return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
-    private Date fistDayOfCurrentWeek() {
+    private Date firstDayOfCurrentWeek() {
         LocalDate localDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
