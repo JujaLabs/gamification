@@ -1,10 +1,7 @@
 package juja.microservices.gamification.controller;
 
 import io.swagger.annotations.*;
-import juja.microservices.gamification.entity.CodenjoyRequest;
-import juja.microservices.gamification.entity.DailyRequest;
-import juja.microservices.gamification.entity.InterviewRequest;
-import juja.microservices.gamification.entity.ThanksRequest;
+import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.service.AchievementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,4 +97,23 @@ public class AchievementController {
         logger.info("Added daily achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
+
+    @RequestMapping(value = "/achieve/welcome", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(
+            value = "Add welcome points to new user",
+            notes = "This method adds points to new user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Return array of one id"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
+            @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
+    })
+    public ResponseEntity<?> addWelcome(@Valid @RequestBody WelcomeRequest request) {
+        List<String> ids = achievementService.addWelcome(request);
+        logger.info("Added welcome achievement, ids = {}", ids.toString());
+        return ResponseEntity.ok(ids);
+    }
+
 }
