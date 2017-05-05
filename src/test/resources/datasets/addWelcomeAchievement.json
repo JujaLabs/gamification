@@ -1,0 +1,12 @@
+{
+  "achievement": [
+    {
+      "from":"sasha",
+      "to":"max",
+      "point":1,
+      "description":"Welcome to JuJa!",
+      "sendDate":"2017-02-09",
+      "type":"WELCOME"
+    }
+  ]
+}

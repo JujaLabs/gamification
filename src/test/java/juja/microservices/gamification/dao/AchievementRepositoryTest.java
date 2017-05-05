@@ -114,4 +114,18 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         assertEquals(1, list.size());
         assertEquals(shouldMuchRetrievedAchievement, list.get(0).toString());
     }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void getEmptyWelcomeAchievementsByUserTest() {
+        List<Achievement> list = achievementRepository.getWelcomeAchievementsByUser("max");
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/addWelcomeAchievement.json")
+    public void getWelcomeAchievementsByUserTest() {
+        List<Achievement> list = achievementRepository.getWelcomeAchievementsByUser("max");
+        assertEquals(1, list.size());
+    }
 }
