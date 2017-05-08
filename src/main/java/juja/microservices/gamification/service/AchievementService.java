@@ -91,7 +91,8 @@ public class AchievementService {
 
         for (Achievement achievement : userFromThanksAchievementToday) {
             if (achievement.getTo().equals(toId)) {
-                logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", fromId, toId);
+                logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", fromId,
+                        toId);
                 throw new ThanksAchievementException("You cannot give more than one thanks for day to one person");
             }
         }
@@ -104,7 +105,8 @@ public class AchievementService {
             String descriptionTwoThanks = String.format("Distributed all 'thanks' to users: %s, %s",
                     userFromThanksAchievementToday.get(0).getTo(),
                     toId);
-            Achievement achievementTwoThanks = new Achievement(fromId, fromId, THANKS_POINTS, descriptionTwoThanks, AchievementType.THANKS);
+            Achievement achievementTwoThanks = new Achievement(fromId, fromId, THANKS_POINTS, descriptionTwoThanks,
+                    AchievementType.THANKS);
             result.add(achievementRepository.addAchievement(achievementTwoThanks));
         }
 
@@ -171,7 +173,8 @@ public class AchievementService {
     public List<String> addInterview(InterviewRequest request) {
         String userFromId = request.getFrom();
         String description = request.getDescription();
-        Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description, AchievementType.INTERVIEW);
+        Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description,
+                AchievementType.INTERVIEW);
         logger.info("Added 'Interview' achievement from user '{}'", userFromId);
         List<String> result = new ArrayList<>();
         result.add(achievementRepository.addAchievement(newAchievement));
@@ -216,11 +219,6 @@ public class AchievementService {
     public List<String> addWelcome(WelcomeRequest request) {
         String userFromId = request.getFrom();
         String userToId = request.getTo();
-
-        if (userFromId.equalsIgnoreCase(userToId)) {
-            logger.warn("User '{}' trying to put 'Welcome' achievement to yourself", userToId);
-            throw new UnsupportedAchievementException("You cannot give welcome achievement to yourself");
-        }
 
         List<Achievement> welcome = achievementRepository.getWelcomeAchievementsByUser(userToId);
 

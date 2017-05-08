@@ -115,7 +115,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @RequestMapping(value = "/achieve/welcome", method = RequestMethod.POST)
+    @RequestMapping(value = "/achieve/welcome", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     @ApiOperation(
             value = "Add welcome points to new user",

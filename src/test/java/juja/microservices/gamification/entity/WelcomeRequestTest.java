@@ -10,9 +10,9 @@ public class WelcomeRequestTest {
     @Test
     public void shouldReturnWelcome() {
         String expectedUserFrom = "peter";
-        String expectedUserTo = "jon";
+        String expectedUserTo = "john";
 
-        WelcomeRequest welcomeRequest = new WelcomeRequest("peter", "jon");
+        WelcomeRequest welcomeRequest = new WelcomeRequest("peter", "john");
 
         assertNotNull(welcomeRequest);
         assertEquals(expectedUserFrom, welcomeRequest.getFrom());

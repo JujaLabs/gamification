@@ -31,6 +31,8 @@ public class AchievementServiceTest {
     private static final int CODENJOY_THIRD_PLACE = 1;
     private static final int ONE_POINT = 1;
     private static final int THANKS_KEEPER = 2;
+    private static final int WELCOME_POINTS = 1;
+    private static final String WELCOME_DESCRIPTION = "Welcome to JuJa!";
 
 
     @Inject
@@ -250,4 +252,39 @@ public class AchievementServiceTest {
         //then
         assertTrue(actualList.isEmpty());
     }
+
+    @Test
+    public void addWelcome() throws Exception {
+        //given
+        List<Achievement> welcomeList = new ArrayList<>();
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        WelcomeRequest request = new WelcomeRequest("max", "john");
+
+        //when
+        when(repository.getWelcomeAchievementsByUser("John")).thenReturn(welcomeList);
+        when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
+        List<String> actualList = service.addWelcome(request);
+
+        //then
+        assertEquals(expectedList, actualList);
+    }
+
+    @Test(expected = UnsupportedAchievementException.class)
+    public void addSecondWelcome() throws Exception {
+        //given
+        List<Achievement> welcomeList = new ArrayList<>();
+        Achievement achievement = new Achievement("max", "john", WELCOME_POINTS, WELCOME_DESCRIPTION,
+                AchievementType.WELCOME );
+        welcomeList.add(achievement);
+        WelcomeRequest request = new WelcomeRequest("max", "john");
+
+        //when
+        when(repository.getWelcomeAchievementsByUser("john")).thenReturn(welcomeList);
+        List<String> actualList = service.addWelcome(request);
+
+        //then
+        fail();
+    }
+
 }
