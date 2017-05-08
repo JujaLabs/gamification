@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -118,6 +119,22 @@ public class AchievementControllerTest {
                 "{\"from\":\"max\",\"to\":\"john\",\"description\":\"\"}";
         //then
         checkBadRequest("/achieve/thanks", jsonContentRequest);
+    }
+
+    @Test
+    public void addThanksKeeper() throws Exception {
+        List<String> ids = new ArrayList<>();
+        ids.add(FIRST_ACHIEVEMENT_ID);
+        when(service.addThanksKeeper()).thenReturn(ids);
+        String result = getKeeperResult("/achieve/keepers/thanks");
+        assertEquals(ONE_ID, result);
+    }
+
+    private String getKeeperResult(String uri) throws Exception {
+        return  mockMvc.perform(get(uri)
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
     }
 
     @Test

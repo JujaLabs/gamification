@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
+import juja.microservices.gamification.exceptions.ThanksAchievementException;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,9 @@ import java.util.List;
 @Service
 public class AchievementService {
 
+    private static final int KEEPER_THANKS = 2;
     private static final int TWO_THANKS = 2;
+    private static final int THANKS_POINTS = 1;
     private static final int INTERVIEW_POINTS = 10;
     private static final int CODENJOY_FIRST_PLACE = 5;
     private static final int CODENJOY_SECOND_PLACE = 3;
@@ -26,6 +29,8 @@ public class AchievementService {
 
     @Inject
     private AchievementRepository achievementRepository;
+    @Inject
+    private KeeperService keeperService;
 
     /**
      * In this method userFromId = userToId because users add DAILY achievements to themselves.
@@ -67,62 +72,43 @@ public class AchievementService {
     }
 
     public List<String> addThanks(ThanksRequest request) {
-        String userFromId = request.getFrom();
-        String userToId = request.getTo();
+        String fromId = request.getFrom();
+        String toId = request.getTo();
         String description = request.getDescription();
 
-        if (userFromId.equalsIgnoreCase(userToId)) {
+        if (fromId.equalsIgnoreCase(toId)) {
             logger.warn("User '{}' trying to put 'Thanks' achievement to yourself", request.getTo());
-            throw new UnsupportedAchievementException("You cannot thank yourself");
+            throw new ThanksAchievementException("You cannot thank yourself");
         }
 
-        List<Achievement> userFromAndToListToday = achievementRepository
-                .getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.THANKS);
+        List<Achievement> userFromThanksAchievementToday = achievementRepository
+                .getAllAchievementsByUserFromIdCurrentDateType(fromId, AchievementType.THANKS);
 
-        for (Achievement achievement : userFromAndToListToday) {
-            checkTryToThanksTwice(userFromId, userToId, achievement);
+        if (userFromThanksAchievementToday.size() >= TWO_THANKS) {
+            logger.warn("User '{}' tried to give 'Thanks' achievement more than two times per day", fromId);
+            throw new ThanksAchievementException("You cannot give more than two thanks for day");
         }
 
-        if (userFromAndToListToday.size() >= TWO_THANKS) {
-            logger.warn("User '{}' tried to give 'Thanks' achievement more than two times per day", userFromId);
-            throw new UnsupportedAchievementException("You cannot give more than two thanks for day");
-        } else if (userFromAndToListToday.isEmpty()) {
-            return addFirstThanks(userFromId, userToId, description);
-        } else {
-            return addSecondThanks(userFromId, userToId, description);
+        for (Achievement achievement : userFromThanksAchievementToday) {
+            if (achievement.getTo().equals(toId)) {
+                logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", fromId, toId);
+                throw new ThanksAchievementException("You cannot give more than one thanks for day to one person");
+            }
         }
-    }
 
-    private void checkTryToThanksTwice(String userFromId, String userToId, Achievement achievement) {
-        if (achievement.getTo().equals(userToId)) {
-            logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", userFromId,
-                    userToId);
-            throw new UnsupportedAchievementException("You cannot give more than one thanks for day one person");
-        }
-    }
-
-    private List<String> addFirstThanks(String userFromId, String userToId, String description) {
         List<String> result = new ArrayList<>();
-        Achievement firstThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
+        Achievement achievement = new Achievement(fromId, toId, THANKS_POINTS, description, AchievementType.THANKS);
+        result.add(achievementRepository.addAchievement(achievement));
 
-        result.add(achievementRepository.addAchievement(firstThanks));
-        logger.info("Added first 'Thanks' achievement from user '{}' to user '{}'", userFromId, userToId);
+        if (!userFromThanksAchievementToday.isEmpty()) {
+            String descriptionTwoThanks = String.format("Distributed all 'thanks' to users: %s, %s",
+                    userFromThanksAchievementToday.get(0).getTo(),
+                    toId);
+            Achievement achievementTwoThanks = new Achievement(fromId, fromId, THANKS_POINTS, descriptionTwoThanks, AchievementType.THANKS);
+            result.add(achievementRepository.addAchievement(achievementTwoThanks));
+        }
 
-        return result;
-    }
-
-    private List<String> addSecondThanks(String userFromId, String userToId, String description) {
-        List<String> result = new ArrayList<>();
-        Achievement secondThanks = new Achievement(userFromId, userToId, 1, description, AchievementType.THANKS);
-        result.add(achievementRepository.addAchievement(secondThanks));
-        logger.info("Added second 'Thanks' achievement from user '{}' to user '{}'", userFromId, userToId);
-
-        String descriptionTwoThanks = "Issued two thanks";
-        Achievement thirdThanks = new Achievement(userFromId, userFromId, 1, descriptionTwoThanks,
-                AchievementType.THANKS);
-        result.add(achievementRepository.addAchievement(thirdThanks));
-        logger.info("Added 'Thanks' achievement to user '{}' for the distributed two thanks to other users", userFromId);
-
+        logger.info("Added 'Thanks' achievements '{}'", result.toString());
         return result;
     }
 
@@ -185,12 +171,46 @@ public class AchievementService {
     public List<String> addInterview(InterviewRequest request) {
         String userFromId = request.getFrom();
         String description = request.getDescription();
-        Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description,
-                AchievementType.INTERVIEW);
+        Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description, AchievementType.INTERVIEW);
         logger.info("Added 'Interview' achievement from user '{}'", userFromId);
         List<String> result = new ArrayList<>();
         result.add(achievementRepository.addAchievement(newAchievement));
         return result;
+    }
+
+    public List<String> addThanksKeeper() {
+        List<Achievement> achievements = achievementRepository.getAllThanksKeepersAchievementsCurrentWeek();
+        return achievements.isEmpty() ? createThanksKeeperAchievements() : getIdsCreatedAchievement(achievements);
+    }
+
+    private List<String> createThanksKeeperAchievements() {
+        List<String> result = new ArrayList<>();
+        List<Keeper> keepers = keeperService.getKeepers();
+        if (keepers.isEmpty()) {
+            logger.info("No any active keepers received from user service");
+        } else {
+            keepers.forEach(keeper -> {
+                result.add(achievementRepository.addAchievement(getAchievement(keeper)));
+            });
+            logger.info("Added 'Thanks Keeper' achievements {}", result.toString());
+        }
+        return result;
+    }
+
+    private List<String> getIdsCreatedAchievement (List<Achievement> achievements) {
+        List<String> result = getIds(achievements);
+        logger.info("Returned already created 'Thanks Keeper' achievements in current week {}", result.toString());
+
+        return result;
+    }
+
+    private Achievement getAchievement(Keeper keeper) {
+        return new Achievement(
+                keeper.getFrom(),
+                keeper.getUuid(),
+                KEEPER_THANKS,
+                keeper.getDescription(),
+                AchievementType.THANKS_KEEPER);
     }
 
     public List<String> addWelcome(WelcomeRequest request) {
@@ -216,5 +236,13 @@ public class AchievementService {
             result.add(achievementRepository.addAchievement(newAchievement));
             return result;
         }
+    }
+
+    private List<String> getIds(List<Achievement> achievements) {
+        List<String> result = new ArrayList<>();
+        achievements.forEach(achievement -> {
+            result.add(achievement.getId());
+        });
+        return result;
     }
 }

@@ -168,9 +168,9 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         achievementService.addThanks(firstRequest);
         achievementService.addThanks(secondRequest);
 
-        String expectedDescription = "Issued two thanks";
+        String expectedDescription = String.format("Distributed all 'thanks' to users: %s, %s",firstUserTo, secondUserTo);
         String expectedType = "THANKS";
-        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId(userFrom);
         String actualDescription = achievementList.get(0).getDescription();
         String actualType = String.valueOf(achievementList.get(0).getType());
 
@@ -181,6 +181,8 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addCodenjoy() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
         String userFrom = "max";
         String firstUserTo = "john";
         String secondUserTo = "bob";
@@ -189,7 +191,7 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         String secondDescription = "Codenjoy second place";
         String thirdDescription = "Codenjoy third place";
         String expectedType = "CODENJOY";
-        String expectedDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
+        String expectedDate = dateFormat.format(new Date(System.currentTimeMillis()));
         CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
         achievementService.addCodenjoy(request);
         List<Achievement> achievementList = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
@@ -197,7 +199,7 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         achievementList.forEach(achievement -> {
             assertEquals(userFrom, achievement.getFrom());
             assertEquals(expectedType, achievement.getType().toString());
-            assertEquals(expectedDate, achievement.getSendDate());
+            assertEquals(expectedDate, dateFormat.format(achievement.getSendDate()));
             int point = achievement.getPoint();
             String actualDescription = achievement.getDescription();
             if (point == 5) {
