@@ -3,6 +3,7 @@ package juja.microservices.integration;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
+import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import juja.microservices.gamification.service.AchievementService;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -229,5 +230,44 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         String actualDescription = achievementList.get(0).getDescription();
 
         assertEquals(shouldMuchDescription, actualDescription);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldAddWelcomeAchievement() {
+        String userFromId = "max";
+        String userToId = "john";
+        int expectedPoints = 1;
+        AchievementType expectedType = AchievementType.WELCOME;
+        String expectedDescription = "Welcome to JuJa!";
+        WelcomeRequest request = new WelcomeRequest(userFromId, userToId);
+
+        achievementService.addWelcome(request);
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("john");
+        Achievement achievement = achievementList.get(0);
+        String actualFromId = achievement.getFrom();
+        String actualToId = achievement.getTo();
+        int actualPoints = achievement.getPoint();
+        AchievementType actualType = achievement.getType();
+        String actualDescription = achievement.getDescription();
+
+        assertEquals(userFromId, actualFromId);
+        assertEquals(userToId, actualToId);
+        assertEquals(expectedPoints, actualPoints);
+        assertEquals(expectedType, actualType);
+        assertEquals(expectedDescription, actualDescription);
+    }
+
+    @Test(expected = UnsupportedAchievementException.class)
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldAddTwoWelcomeAchievement() {
+        String userFromId = "max";
+        String userToId = "john";
+        WelcomeRequest request = new WelcomeRequest(userFromId, userToId);
+
+        achievementService.addWelcome(request);
+        achievementService.addWelcome(request);
+
+        fail();
     }
 }
