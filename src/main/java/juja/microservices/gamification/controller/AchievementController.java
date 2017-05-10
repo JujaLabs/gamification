@@ -27,7 +27,6 @@ public class AchievementController {
     private AchievementService achievementService;
 
     @RequestMapping(value = "/achieve/daily", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @ResponseBody
     @ApiOperation(
             value = "Add points for daily report",
             notes = "This method adds points for daily report"
@@ -45,7 +44,6 @@ public class AchievementController {
     }
 
     @RequestMapping(value = "/achieve/thanks", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @ResponseBody
     @ApiOperation(
             value = "Add points for thanks one user by another",
             notes = "This method adds points for help one user by another"
@@ -65,7 +63,6 @@ public class AchievementController {
     }
 
     @RequestMapping(value = "/achieve/codenjoy", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @ResponseBody
     @ApiOperation(
             value = "Add points for codenjoy winners",
             notes = "This method adds points for winners in codenjoy tournament"
@@ -83,7 +80,6 @@ public class AchievementController {
     }
 
     @RequestMapping(value = "/achieve/interview", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @ResponseBody
     @ApiOperation(
             value = "Add points for interview",
             notes = "This method adds points for successful or unsuccessful interview"
@@ -101,7 +97,6 @@ public class AchievementController {
     }
 
     @RequestMapping(value =  "/achieve/keepers/thanks", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
     @ApiOperation(
             value = "Add points for thanks keeper",
             notes = "This method adds points for successful or unsuccessful thanks keeper"
