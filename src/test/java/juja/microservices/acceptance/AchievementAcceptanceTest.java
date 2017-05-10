@@ -21,6 +21,7 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
     private static final String ACHIEVE_THANKS_URL = "/achieve/thanks";
     private static final String ACHIEVE_CODENJOY_URL = "/achieve/codenjoy";
     private static final String ACHIEVE_INTERVIEW_URL = "/achieve/interview";
+    private static final String ACHIEVE_WELCOME_URL = "/achieve/welcome";
     private static final String USER_POINT_SUM_URL = "/user/pointSum";
     private static final String EMPTY_JSON_CONTENT_REQUEST = "";
     private static final String ONE_ACHIEVEMENT_ID = "achievement id";
@@ -123,6 +124,27 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         String jsonContentRequest = convertToString(resource("acceptance/request/addInterview.json"));
         String jsonContentControlResponse = convertToString(resource(
                 "acceptance/response/responseUserPointSumTenPoints.json"));
+
+        //when
+        Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);
+        printConsoleReport(url, ONE_ACHIEVEMENT_ID, actualResponse.body());
+        Response controlResponse = getControlResponse();
+
+        //then
+        assertThatJson(controlResponse.asString())
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo(jsonContentControlResponse);
+    }
+
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @Test
+    public void testAddWelcome() throws IOException {
+
+        //given
+        String url = ACHIEVE_WELCOME_URL;
+        String jsonContentRequest = convertToString(resource("acceptance/request/addWelcome.json"));
+        String jsonContentControlResponse = convertToString(resource(
+                "acceptance/response/responseUserPointSumOnePoint.json"));
 
         //when
         Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);
