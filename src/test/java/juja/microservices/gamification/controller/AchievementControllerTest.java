@@ -123,15 +123,8 @@ public class AchievementControllerTest {
         List<String> ids = new ArrayList<>();
         ids.add(FIRST_ACHIEVEMENT_ID);
         when(service.addThanksKeeper()).thenReturn(ids);
-        String result = getKeeperResult("/achieve/keepers/thanks");
+        String result = getResult("/achieve/keepers/thanks", "");
         assertEquals(ONE_ID, result);
-    }
-
-    private String getKeeperResult(String uri) throws Exception {
-        return  mockMvc.perform(get(uri)
-                .contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
     }
 
     @Test
