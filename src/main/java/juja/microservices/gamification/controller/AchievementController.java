@@ -1,10 +1,7 @@
 package juja.microservices.gamification.controller;
 
 import io.swagger.annotations.*;
-import juja.microservices.gamification.entity.CodenjoyRequest;
-import juja.microservices.gamification.entity.DailyRequest;
-import juja.microservices.gamification.entity.InterviewRequest;
-import juja.microservices.gamification.entity.ThanksRequest;
+import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.service.AchievementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +93,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @GetMapping(value =  "/achieve/keepers/thanks", produces = "application/json")
+    @PostMapping(value = "/achieve/keepers/thanks", produces = "application/json")
     @ApiOperation(
             value = "Add points for thanks keeper",
             notes = "This method adds points for successful or unsuccessful thanks keeper"
@@ -112,4 +109,22 @@ public class AchievementController {
         logger.info("Added 'Thanks keeper' achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
+
+    @PostMapping(value = "/achieve/welcome", consumes = "application/json", produces = "application/json")
+    @ApiOperation(
+            value = "Add welcome points to new user",
+            notes = "This method adds points to new user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Return array of one id"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
+            @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
+    })
+    public ResponseEntity<?> addWelcome(@Valid @RequestBody WelcomeRequest request) {
+        List<String> ids = achievementService.addWelcome(request);
+        logger.info("Added welcome achievement, ids = {}", ids.toString());
+        return ResponseEntity.ok(ids);
+    }
+
 }

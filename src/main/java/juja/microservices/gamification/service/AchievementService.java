@@ -23,7 +23,8 @@ public class AchievementService {
     private static final int CODENJOY_FIRST_PLACE = 5;
     private static final int CODENJOY_SECOND_PLACE = 3;
     private static final int CODENJOY_THIRD_PLACE = 1;
-
+    private static final int WELCOME_POINTS = 1;
+    private static final String WELCOME_DESCRIPTION = "Welcome to JuJa!";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
@@ -43,7 +44,8 @@ public class AchievementService {
         String description = request.getDescription();
         logger.debug("Received data userFromId: '{}', description: '{}'", userFromId, description);
 
-        List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(userFromId, AchievementType.DAILY);
+        List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(
+                userFromId, AchievementType.DAILY);
         List<String> result = new ArrayList<>();
         Achievement achievement;
         if (userFromIdList.size() == 0) {
@@ -89,7 +91,8 @@ public class AchievementService {
 
         for (Achievement achievement : userFromThanksAchievementToday) {
             if (achievement.getTo().equals(toId)) {
-                logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", fromId, toId);
+                logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", fromId,
+                        toId);
                 throw new ThanksAchievementException("You cannot give more than one thanks for day to one person");
             }
         }
@@ -102,7 +105,8 @@ public class AchievementService {
             String descriptionTwoThanks = String.format("Distributed all 'thanks' to users: %s, %s",
                     userFromThanksAchievementToday.get(0).getTo(),
                     toId);
-            Achievement achievementTwoThanks = new Achievement(fromId, fromId, THANKS_POINTS, descriptionTwoThanks, AchievementType.THANKS);
+            Achievement achievementTwoThanks = new Achievement(fromId, fromId, THANKS_POINTS, descriptionTwoThanks,
+                    AchievementType.THANKS);
             result.add(achievementRepository.addAchievement(achievementTwoThanks));
         }
 
@@ -169,7 +173,8 @@ public class AchievementService {
     public List<String> addInterview(InterviewRequest request) {
         String userFromId = request.getFrom();
         String description = request.getDescription();
-        Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description, AchievementType.INTERVIEW);
+        Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description,
+                AchievementType.INTERVIEW);
         logger.info("Added 'Interview' achievement from user '{}'", userFromId);
         List<String> result = new ArrayList<>();
         result.add(achievementRepository.addAchievement(newAchievement));
@@ -209,6 +214,26 @@ public class AchievementService {
                 KEEPER_THANKS,
                 keeper.getDescription(),
                 AchievementType.THANKS_KEEPER);
+    }
+
+    public List<String> addWelcome(WelcomeRequest request) {
+        String userFromId = request.getFrom();
+        String userToId = request.getTo();
+
+        List<Achievement> welcome = achievementRepository.getWelcomeAchievementsByUser(userToId);
+
+        if (!welcome.isEmpty()) {
+            logger.warn("User '{}' tried to give 'Welcome' achievement more than one time to {}",
+                    userFromId, userToId);
+            throw new UnsupportedAchievementException(
+                    "You cannot give more than one welcome achievement to one person");
+        } else {
+            List<String> result = new ArrayList<>();
+            Achievement newAchievement = new Achievement(userFromId, userToId, WELCOME_POINTS, WELCOME_DESCRIPTION,
+                    AchievementType.WELCOME);
+            result.add(achievementRepository.addAchievement(newAchievement));
+            return result;
+        }
     }
 
     private List<String> getIds(List<Achievement> achievements) {

@@ -77,6 +77,12 @@ public class AchievementRepository {
                         .and("type").is(AchievementType.THANKS_KEEPER)), Achievement.class);
     }
 
+    public List<Achievement> getWelcomeAchievementsByUser(String to) {
+        return mongoTemplate.find(new Query(
+                Criteria.where("to").is(to)
+                        .and("type").is(AchievementType.WELCOME)), Achievement.class);
+    }
+
     private Date startCurrentDay() {
         return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
     }

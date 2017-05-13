@@ -5,5 +5,6 @@ public enum  AchievementType {
     DAILY,
     INTERVIEW,
     THANKS,
-    THANKS_KEEPER
+    THANKS_KEEPER,
+    WELCOME
 }

@@ -1,9 +1,6 @@
 package juja.microservices.gamification.controller;
 
-import juja.microservices.gamification.entity.CodenjoyRequest;
-import juja.microservices.gamification.entity.DailyRequest;
-import juja.microservices.gamification.entity.InterviewRequest;
-import juja.microservices.gamification.entity.ThanksRequest;
+import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.service.AchievementService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -126,15 +123,8 @@ public class AchievementControllerTest {
         List<String> ids = new ArrayList<>();
         ids.add(FIRST_ACHIEVEMENT_ID);
         when(service.addThanksKeeper()).thenReturn(ids);
-        String result = getKeeperResult("/achieve/keepers/thanks");
+        String result = getResult("/achieve/keepers/thanks", "");
         assertEquals(ONE_ID, result);
-    }
-
-    private String getKeeperResult(String uri) throws Exception {
-        return  mockMvc.perform(get(uri)
-                .contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
     }
 
     @Test
@@ -211,6 +201,31 @@ public class AchievementControllerTest {
         String jsonContentRequest = "{\"from\":\"max\",\"description\":\"\"}";
         //then
         checkBadRequest("/achieve/interview", jsonContentRequest);
+    }
+
+    @Test
+    public void addWelcome() throws Exception {
+        //given
+        List<String> ids = new ArrayList<>();
+        ids.add(FIRST_ACHIEVEMENT_ID);
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"to\":\"john\"}";
+
+        //when
+        when(service.addWelcome(any(WelcomeRequest.class))).thenReturn(ids);
+        String result = getResult("/achieve/welcome", jsonContentRequest);
+
+        //then
+        assertEquals(ONE_ID, result);
+    }
+
+    @Test
+    public void addWelcomeWithEmptyTo() throws Exception {
+        //given
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"to\":\"\"}";
+        //then
+        checkBadRequest("/achieve/welcome", jsonContentRequest);
     }
 
     private String getResult(String uri, String jsonContentRequest) throws Exception {
