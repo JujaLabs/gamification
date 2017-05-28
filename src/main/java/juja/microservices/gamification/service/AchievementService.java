@@ -5,7 +5,9 @@ import javax.inject.Inject;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
-import juja.microservices.gamification.exceptions.ThanksAchievementException;
+import juja.microservices.gamification.exceptions.ThanksAchievementMoreThanOneException;
+import juja.microservices.gamification.exceptions.ThanksAchievementMoreThanTwoException;
+import juja.microservices.gamification.exceptions.ThanksAchievementTryToThanksYourselfException;
 import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +18,14 @@ import java.util.List;
 @Service
 public class AchievementService {
 
-    private static final int KEEPER_THANKS = 2;
+    private static final int DAILY_POINTS = 1;
     private static final int TWO_THANKS = 2;
     private static final int THANKS_POINTS = 1;
     private static final int INTERVIEW_POINTS = 10;
     private static final int CODENJOY_FIRST_PLACE = 5;
     private static final int CODENJOY_SECOND_PLACE = 3;
     private static final int CODENJOY_THIRD_PLACE = 1;
+    private static final int KEEPER_THANKS = 2;
     private static final int WELCOME_POINTS = 1;
     private static final String WELCOME_DESCRIPTION = "Welcome to JuJa!";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -38,32 +41,23 @@ public class AchievementService {
      * achievement at the same day, the only field description will be updated.
      */
     public List<String> addDaily(DailyRequest request) {
-        logger.debug("Entered to 'addDaily' method");
-
         String userFromId = request.getFrom();
         String description = request.getDescription();
-        logger.debug("Received data userFromId: '{}', description: '{}'", userFromId, description);
 
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(
                 userFromId, AchievementType.DAILY);
         List<String> result = new ArrayList<>();
         Achievement achievement;
         if (userFromIdList.size() == 0) {
-            logger.debug("No one 'Daily' achievement for user '{}' at current date", userFromId);
-            achievement = new Achievement(userFromId, userFromId, 1, description, AchievementType.DAILY);
+            achievement = new Achievement(userFromId, userFromId, DAILY_POINTS, description, AchievementType.DAILY);
             logger.info("Added new 'Daily' achievement {}, from user '{}'", achievement.getId(), userFromId);
         } else {
-            logger.debug("There is already one 'Daily' achievement for user '{}' at current date", userFromId);
             achievement = userFromIdList.get(0);
-            logger.debug("Received achivement '{}'", achievement.getId());
             String oldDescription = achievement.getDescription();
-            logger.debug("Recieved old description '{}'", oldDescription);
             description = oldDescription
                     .concat(System.lineSeparator())
                     .concat(description);
-            logger.debug("Added new description to old description");
             achievement.setDescription(description);
-            logger.debug("Description is set to achievement {}", achievement.getId());
 
             logger.info("Added description to daily achivement from user '{}'", userFromId);
         }
@@ -77,8 +71,8 @@ public class AchievementService {
         String description = request.getDescription();
 
         if (fromId.equalsIgnoreCase(toId)) {
-            logger.warn("User '{}' trying to put 'Thanks' achievement to yourself", request.getTo());
-            throw new ThanksAchievementException("You cannot thank yourself");
+            logger.warn("User '{}' tried to put 'Thanks' achievement to yourself", request.getTo());
+            throw new ThanksAchievementTryToThanksYourselfException("User tried to put 'Thanks' achievement to yourself");
         }
 
         List<Achievement> userFromThanksAchievementToday = achievementRepository
@@ -86,14 +80,16 @@ public class AchievementService {
 
         if (userFromThanksAchievementToday.size() >= TWO_THANKS) {
             logger.warn("User '{}' tried to give 'Thanks' achievement more than two times per day", fromId);
-            throw new ThanksAchievementException("You cannot give more than two thanks for day");
+            throw new ThanksAchievementMoreThanTwoException(
+                    "User tried to give 'Thanks' achievement more than two times per day");
         }
 
         for (Achievement achievement : userFromThanksAchievementToday) {
             if (achievement.getTo().equals(toId)) {
                 logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", fromId,
                         toId);
-                throw new ThanksAchievementException("You cannot give more than one thanks for day to one person");
+                throw new ThanksAchievementMoreThanOneException(
+                        "User tried to give 'Thanks' achievement more than one times to person");
             }
         }
 

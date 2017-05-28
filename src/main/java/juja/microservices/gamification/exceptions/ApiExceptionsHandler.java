@@ -55,6 +55,39 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ThanksAchievementMoreThanOneException.class)
+    public ResponseEntity<ApiErrorMessage> handleThanksAchievementMoreThanOneException(
+            ThanksAchievementMoreThanOneException ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.THANKS_ACHIEVEMENT_MORE_THAN_ONE_THANKS_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ThanksAchievementTryToThanksYourselfException.class)
+    public ResponseEntity<ApiErrorMessage> handleThanksAchievementTryToThanksYourselfException(
+            ThanksAchievementTryToThanksYourselfException ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.THANKS_ACHIEVEMENT_TRY_TO_THANKS_YOURSELF_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ThanksAchievementMoreThanTwoException.class)
+    public ResponseEntity<ApiErrorMessage> handleThanksAchievementMoreThanTwoException(
+            ThanksAchievementMoreThanTwoException ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.THANKS_ACHIEVEMENT_MORE_THAN_TWO_THANKS_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
                                                              Object body, HttpHeaders headers,
