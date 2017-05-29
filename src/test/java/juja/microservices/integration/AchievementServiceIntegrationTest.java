@@ -3,7 +3,7 @@ package juja.microservices.integration;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
-import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
+import juja.microservices.gamification.exceptions.WelcomeAchievementException;
 import juja.microservices.gamification.service.AchievementService;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -258,7 +258,7 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         assertEquals(expectedDescription, actualDescription);
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = WelcomeAchievementException.class)
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void shouldAddTwoWelcomeAchievement() {
         String userFromId = "max";
