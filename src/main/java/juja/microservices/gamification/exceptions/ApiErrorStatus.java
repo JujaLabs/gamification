@@ -13,37 +13,37 @@ public enum ApiErrorStatus {
     THANKS_ACHIEVEMENT_MORE_THAN_ONE_THANKS_EXCEPTION(
             "GMF-F5-D2",
             "You cannot give more than one thanks for day to one person",
-            "The exception is 'Thanks' achievement"
+            "The reason of the exception is 'Thanks' achievement"
     ),
 
     THANKS_ACHIEVEMENT_MORE_THAN_TWO_THANKS_EXCEPTION(
             "GMF-F5-D5",
             "You cannot give more than two thanks for day",
-            "The exception is 'Thanks' achievement"
+            "The reason of the exception is 'Thanks' achievement"
     ),
 
     THANKS_ACHIEVEMENT_TRY_TO_THANKS_YOURSELF_EXCEPTION(
             "GMF-F5-D6",
             "You cannot thank yourself",
-            "The exception is 'Thanks' achievement"
+            "The reason of the exception is 'Thanks' achievement"
     ),
 
     CODENJOY_ACHIEVEMENT_EXCEPTION(
             "GMF-F6-D1",
             "The participants of the Codenjoy competition must be different",
-            "The exception is 'Codenjoy' achievement"
+            "The reason of the exception is 'Codenjoy' achievement"
     ),
 
     CODENJOY_ACHIEVEMENT_TWICE_IN_ONE_DAY_EXCEPTION(
             "GMF-F6-D5",
             "You cannot give codenjoy points twice a day",
-            "The exception is 'Codenjoy' achievement"
+            "The reason of the exception is 'Codenjoy' achievement"
     ),
 
     WELCOME_EXCEPTION(
             "GMF-F14-D1",
             "The User is already greeted",
-            "The exception is 'Welcome' achievement"
+            "The reason of the exception is 'Welcome' achievement"
     ),
 
     OTHER_EXCEPTION(

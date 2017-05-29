@@ -209,6 +209,14 @@ public class AchievementService {
                 AchievementType.THANKS_KEEPER);
     }
 
+    private List<String> getIds(List<Achievement> achievements) {
+        List<String> result = new ArrayList<>();
+        achievements.forEach(achievement -> {
+            result.add(achievement.getId());
+        });
+        return result;
+    }
+
     public List<String> addWelcome(WelcomeRequest request) {
         String userFromId = request.getFrom();
         String userToId = request.getTo();
@@ -227,13 +235,5 @@ public class AchievementService {
             result.add(achievementRepository.addAchievement(newAchievement));
             return result;
         }
-    }
-
-    private List<String> getIds(List<Achievement> achievements) {
-        List<String> result = new ArrayList<>();
-        achievements.forEach(achievement -> {
-            result.add(achievement.getId());
-        });
-        return result;
     }
 }
