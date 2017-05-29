@@ -88,6 +88,28 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CodenjoyAchievementTwiceInOneDayException.class)
+    public ResponseEntity<ApiErrorMessage> handleCodenjoyAchievementTwiceInOneDayException(
+            CodenjoyAchievementTwiceInOneDayException ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.CODENJOY_ACHIEVEMENT_TWICE_IN_ONE_DAY_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CodenjoyAchievementException.class)
+    public ResponseEntity<ApiErrorMessage> handleCodenjoyAchievementException(
+            CodenjoyAchievementException ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.CODENJOY_ACHIEVEMENT_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
                                                              Object body, HttpHeaders headers,

@@ -5,10 +5,7 @@ import javax.inject.Inject;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
-import juja.microservices.gamification.exceptions.ThanksAchievementMoreThanOneException;
-import juja.microservices.gamification.exceptions.ThanksAchievementMoreThanTwoException;
-import juja.microservices.gamification.exceptions.ThanksAchievementTryToThanksYourselfException;
-import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
+import juja.microservices.gamification.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -117,7 +114,7 @@ public class AchievementService {
 
         if (!codenjoyUsersToday.isEmpty()) {
             logger.warn("User '{}' tried to give 'Codenjoy' achievement points twice a day", userFromId);
-            throw new UnsupportedAchievementException("You cannot give codenjoy points twice a day");
+            throw new CodenjoyAchievementTwiceInOneDayException("User tried to give 'Codenjoy' achievement points twice a day");
         }
 
         return addCodenjoyAchievement(request);
@@ -130,15 +127,15 @@ public class AchievementService {
 
         if (firstUserId.equalsIgnoreCase(secondUserId)) {
             logger.warn("Codenjoy request rejected: first and second place users is same");
-            throw new UnsupportedAchievementException("First and second users must be different");
+            throw new CodenjoyAchievementException("First and second users is same");
         }
         if (firstUserId.equalsIgnoreCase(thirdUserId)) {
             logger.warn("Codenjoy request rejected: first and third place users is same");
-            throw new UnsupportedAchievementException("First and third users must be different");
+            throw new CodenjoyAchievementException("First and third users is same");
         }
         if (secondUserId.equalsIgnoreCase(thirdUserId)) {
             logger.warn("Codenjoy request rejected: second and third place users is same");
-            throw new UnsupportedAchievementException("Second and third users must be different");
+            throw new CodenjoyAchievementException("Second and third users is same");
         }
     }
 

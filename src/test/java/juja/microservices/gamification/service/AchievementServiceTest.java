@@ -2,10 +2,7 @@ package juja.microservices.gamification.service;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
-import juja.microservices.gamification.exceptions.ThanksAchievementMoreThanOneException;
-import juja.microservices.gamification.exceptions.ThanksAchievementMoreThanTwoException;
-import juja.microservices.gamification.exceptions.ThanksAchievementTryToThanksYourselfException;
-import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
+import juja.microservices.gamification.exceptions.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -157,7 +154,7 @@ public class AchievementServiceTest {
         assertEquals(expectedList, actualList);
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = CodenjoyAchievementTwiceInOneDayException.class)
     public void addSecondCodenjoy() throws Exception {
         Achievement firstAchievement = new Achievement("max", "john", CODENJOY_FIRST_PLACE, "First place codenjoy",
                 AchievementType.CODENJOY );
@@ -175,21 +172,21 @@ public class AchievementServiceTest {
         fail();
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = CodenjoyAchievementException.class)
     public void addCodenjoyWithSameFirstAndSecondPlaces() throws Exception {
         CodenjoyRequest request = new CodenjoyRequest("max", "john", "john", "bill");
         service.addCodenjoy(request);
         fail();
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = CodenjoyAchievementException.class)
     public void addCodenjoyWithSameFirstAndThirdPlaces() throws Exception {
         CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "john");
         service.addCodenjoy(request);
         fail();
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = CodenjoyAchievementException.class)
     public void addCodenjoyWithSameSecondAndThirdPlaces() throws Exception {
         CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "bill");
         service.addCodenjoy(request);

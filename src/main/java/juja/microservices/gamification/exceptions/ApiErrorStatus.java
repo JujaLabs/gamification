@@ -28,6 +28,18 @@ public enum ApiErrorStatus {
             "The exception is 'Thanks' achievement"
     ),
 
+    CODENJOY_ACHIEVEMENT_EXCEPTION(
+            "GMF-F6-D1",
+            "The participants of the Codenjoy competition must be different",
+            "The exception is 'Codenjoy' achievement"
+    ),
+
+    CODENJOY_ACHIEVEMENT_TWICE_IN_ONE_DAY_EXCEPTION(
+            "GMF-F6-D5",
+            "You cannot give codenjoy points twice a day",
+            "The exception is 'Codenjoy' achievement"
+    ),
+
     OTHER_EXCEPTION(
             "2",
             "Oops something went wrong :(",
