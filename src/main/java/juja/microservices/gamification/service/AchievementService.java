@@ -213,13 +213,13 @@ public class AchievementService {
         String userFromId = request.getFrom();
         String userToId = request.getTo();
 
-        List<Achievement> welcome = achievementRepository.getWelcomeAchievementsByUser(userToId);
+        List<Achievement> welcome = achievementRepository.getWelcomeAchievementByUser(userToId);
 
         if (!welcome.isEmpty()) {
             logger.warn("User '{}' tried to give 'Welcome' achievement more than one time to {}",
                     userFromId, userToId);
-            throw new UnsupportedAchievementException(
-                    "You cannot give more than one welcome achievement to one person");
+            throw new WelcomeAchievementException(
+                    "User tried to give 'Welcome' achievement more than one time to one person");
         } else {
             List<String> result = new ArrayList<>();
             Achievement newAchievement = new Achievement(userFromId, userToId, WELCOME_POINTS, WELCOME_DESCRIPTION,

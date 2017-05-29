@@ -261,7 +261,7 @@ public class AchievementServiceTest {
         WelcomeRequest request = new WelcomeRequest("max", "john");
 
         //when
-        when(repository.getWelcomeAchievementsByUser("John")).thenReturn(welcomeList);
+        when(repository.getWelcomeAchievementByUser("John")).thenReturn(welcomeList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         List<String> actualList = service.addWelcome(request);
 
@@ -269,7 +269,7 @@ public class AchievementServiceTest {
         assertEquals(expectedList, actualList);
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = WelcomeAchievementException.class)
     public void addSecondWelcome() throws Exception {
         //given
         List<Achievement> welcomeList = new ArrayList<>();
@@ -279,7 +279,7 @@ public class AchievementServiceTest {
         WelcomeRequest request = new WelcomeRequest("max", "john");
 
         //when
-        when(repository.getWelcomeAchievementsByUser("john")).thenReturn(welcomeList);
+        when(repository.getWelcomeAchievementByUser("john")).thenReturn(welcomeList);
         List<String> actualList = service.addWelcome(request);
 
         //then

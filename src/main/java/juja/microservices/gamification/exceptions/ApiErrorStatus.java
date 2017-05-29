@@ -40,6 +40,12 @@ public enum ApiErrorStatus {
             "The exception is 'Codenjoy' achievement"
     ),
 
+    WELCOME_EXCEPTION(
+            "GMF-F14-D1",
+            "The User is already greeted",
+            "The exception is 'Welcome' achievement"
+    ),
+
     OTHER_EXCEPTION(
             "2",
             "Oops something went wrong :(",
