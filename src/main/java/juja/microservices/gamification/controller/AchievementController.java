@@ -23,9 +23,7 @@ public class AchievementController {
     @Inject
     private AchievementService achievementService;
 
-    @RequestMapping(value = "/achieve/daily", method = RequestMethod.POST, consumes = "application/json",
-            produces = "application/json")
-    @ResponseBody
+    @PostMapping(value = "/achieve/daily", consumes = "application/json", produces = "application/json")
     @ApiOperation(
             value = "Add points for daily report",
             notes = "This method adds points for daily report"
@@ -42,9 +40,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @RequestMapping(value = "/achieve/thanks", method = RequestMethod.POST, consumes = "application/json",
-            produces = "application/json")
-    @ResponseBody
+    @PostMapping(value = "/achieve/thanks", consumes = "application/json", produces = "application/json")
     @ApiOperation(
             value = "Add points for thanks one user by another",
             notes = "This method adds points for help one user by another"
@@ -63,9 +59,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @RequestMapping(value = "/achieve/codenjoy", method = RequestMethod.POST, consumes = "application/json",
-            produces = "application/json")
-    @ResponseBody
+    @PostMapping(value = "/achieve/codenjoy", consumes = "application/json", produces = "application/json")
     @ApiOperation(
             value = "Add points for codenjoy winners",
             notes = "This method adds points for winners in codenjoy tournament"
@@ -82,9 +76,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @RequestMapping(value = "/achieve/interview", method = RequestMethod.POST, consumes = "application/json",
-            produces = "application/json")
-    @ResponseBody
+    @PostMapping(value = "/achieve/interview", consumes = "application/json", produces = "application/json")
     @ApiOperation(
             value = "Add points for interview",
             notes = "This method adds points for successful or unsuccessful interview"
@@ -101,8 +93,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @RequestMapping(value =  "/achieve/keepers/thanks", method = RequestMethod.POST, produces = "application/json")
-    @ResponseBody
+    @PostMapping(value = "/achieve/keepers/thanks", produces = "application/json")
     @ApiOperation(
             value = "Add points for thanks keeper",
             notes = "This method adds points for successful or unsuccessful thanks keeper"
@@ -119,9 +110,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @RequestMapping(value = "/achieve/welcome", method = RequestMethod.POST, consumes = "application/json",
-            produces = "application/json")
-    @ResponseBody
+    @PostMapping(value = "/achieve/welcome", consumes = "application/json", produces = "application/json")
     @ApiOperation(
             value = "Add welcome points to new user",
             notes = "This method adds points to new user"

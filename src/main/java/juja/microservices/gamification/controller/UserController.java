@@ -8,10 +8,7 @@ import juja.microservices.gamification.entity.UserAchievementDetails;
 import juja.microservices.gamification.entity.UserPointsSum;
 import juja.microservices.gamification.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.net.HttpURLConnection;
@@ -24,7 +21,7 @@ public class UserController {
     @Inject
     private UserService userService;
 
-    @RequestMapping(value = "/pointSum", method = RequestMethod.GET)
+    @GetMapping(value = "/pointSum")
     @ApiOperation(
             value = "Get total points for all users",
             notes = "This method returns total points for all users"
@@ -40,7 +37,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @RequestMapping(value = "/achieveDetails", consumes = "application/json", method = RequestMethod.POST)
+    @PostMapping(value = "/achieveDetails", consumes = "application/json")
     @ApiOperation(
             value = "Get achievement details for some users",
             notes = "This method returns detailed information for selected users"
