@@ -77,7 +77,7 @@ public class AchievementRepository {
                         .and("type").is(AchievementType.THANKS_KEEPER)), Achievement.class);
     }
 
-    public List<Achievement> getWelcomeAchievementsByUser(String to) {
+    public List<Achievement> getWelcomeAchievementByUser(String to) {
         return mongoTemplate.find(new Query(
                 Criteria.where("to").is(to)
                         .and("type").is(AchievementType.WELCOME)), Achievement.class);

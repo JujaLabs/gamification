@@ -187,14 +187,14 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void getEmptyWelcomeAchievementsByUserTest() {
-        List<Achievement> list = achievementRepository.getWelcomeAchievementsByUser("max");
+        List<Achievement> list = achievementRepository.getWelcomeAchievementByUser("max");
         assertEquals(0, list.size());
     }
 
     @Test
     @UsingDataSet(locations = "/datasets/addWelcomeAchievement.json")
     public void getWelcomeAchievementsByUserTest() {
-        List<Achievement> list = achievementRepository.getWelcomeAchievementsByUser("max");
+        List<Achievement> list = achievementRepository.getWelcomeAchievementByUser("max");
         assertEquals(1, list.size());
     }
 
