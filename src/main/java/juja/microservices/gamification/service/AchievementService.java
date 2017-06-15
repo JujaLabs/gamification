@@ -38,17 +38,20 @@ public class AchievementService {
      * achievement at the same day, the only field description will be updated.
      */
     public List<String> addDaily(DailyRequest request) {
+        logger.debug("Enter addDaily method");
         String userFromId = request.getFrom();
         String description = request.getDescription();
-
+        logger.debug("Send response to repository");
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(
                 userFromId, AchievementType.DAILY);
         List<String> result = new ArrayList<>();
         Achievement achievement;
         if (userFromIdList.size() == 0) {
+            logger.debug("Received empty data from repository");
             achievement = new Achievement(userFromId, userFromId, DAILY_POINTS, description, AchievementType.DAILY);
             logger.info("Added new 'Daily' achievement {}, from user '{}'", achievement.getId(), userFromId);
         } else {
+            logger.debug("Received data from repository: <{}>", userFromIdList );
             achievement = userFromIdList.get(0);
             String oldDescription = achievement.getDescription();
             description = oldDescription
@@ -56,13 +59,16 @@ public class AchievementService {
                     .concat(description);
             achievement.setDescription(description);
 
-            logger.info("Added description to daily achivement from user '{}'", userFromId);
+            logger.info("Added description to daily achievement from user '{}'", userFromId);
         }
+        logger.debug("Send achievement to repository");
         result.add(achievementRepository.addAchievement(achievement));
+        logger.debug("Return from addDaily method");
         return result;
     }
 
     public List<String> addThanks(ThanksRequest request) {
+        logger.debug("Enter addThanks method");
         String fromId = request.getFrom();
         String toId = request.getTo();
         String description = request.getDescription();
@@ -71,7 +77,7 @@ public class AchievementService {
             logger.warn("User '{}' tried to put 'Thanks' achievement to yourself", request.getTo());
             throw new ThanksAchievementTryToThanksYourselfException("User tried to put 'Thanks' achievement to yourself");
         }
-
+        logger.debug("Send request \"two thanks achievement today\" to repository");
         List<Achievement> userFromThanksAchievementToday = achievementRepository
                 .getAllAchievementsByUserFromIdCurrentDateType(fromId, AchievementType.THANKS);
 
@@ -92,6 +98,7 @@ public class AchievementService {
 
         List<String> result = new ArrayList<>();
         Achievement achievement = new Achievement(fromId, toId, THANKS_POINTS, description, AchievementType.THANKS);
+        logger.debug("Send achievement to repository");
         result.add(achievementRepository.addAchievement(achievement));
 
         if (!userFromThanksAchievementToday.isEmpty()) {
@@ -99,16 +106,19 @@ public class AchievementService {
 
             Achievement achievementTwoThanks = new Achievement(fromId, fromId, THANKS_POINTS, descriptionTwoThanks,
                     AchievementType.THANKS);
+            logger.debug("Send additional thanks achievement to repository");
             result.add(achievementRepository.addAchievement(achievementTwoThanks));
         }
 
-        logger.info("Added 'Thanks' achievements '{}'", result.toString());
+        logger.debug("Return from addThanks method");
         return result;
     }
 
     public List<String> addCodenjoy(CodenjoyRequest request) {
+        logger.debug("Enter addCodenjoy method");
         checkUsers(request);
         String userFromId = request.getFrom();
+        logger.debug("Send request 'getAllCodenjoyAchievementsCurrentDate' to repository");
         List<Achievement> codenjoyUsersToday = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
 
         if (!codenjoyUsersToday.isEmpty()) {
@@ -116,10 +126,13 @@ public class AchievementService {
             throw new CodenjoyAchievementTwiceInOneDayException("User tried to give 'Codenjoy' achievement points twice a day");
         }
 
-        return addCodenjoyAchievement(request);
+        List<String> result = addCodenjoyAchievement(request);
+        logger.debug("Return from addCodenjoy method");
+        return result;
     }
 
     private void checkUsers(CodenjoyRequest request) {
+        logger.debug("Verification users in codenjoy request");
         String firstUserId = request.getFirstPlace();
         String secondUserId = request.getSecondPlace();
         String thirdUserId = request.getThirdPlace();
@@ -136,9 +149,11 @@ public class AchievementService {
             logger.warn("Codenjoy request rejected: second and third place users is same");
             throw new CodenjoyAchievementException("Second and third users is same");
         }
+        logger.debug("Verification was successful");
     }
 
     private List<String> addCodenjoyAchievement(CodenjoyRequest request) {
+        logger.debug("Enter addCodenjoyAchievement method");
         String userFromId = request.getFrom();
         String userFirstPlace = request.getFirstPlace();
         String userSecondPlace = request.getSecondPlace();
@@ -153,23 +168,26 @@ public class AchievementService {
 
         List<String> result = new ArrayList<>();
         result.add(achievementRepository.addAchievement(firstPlace));
-        logger.info("Added fist place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userFirstPlace);
+        logger.debug("Add fist place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userFirstPlace);
         result.add(achievementRepository.addAchievement(secondPlace));
-        logger.info("Added second place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userSecondPlace);
+        logger.debug("Add second place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userSecondPlace);
         result.add(achievementRepository.addAchievement(thirdPlace));
-        logger.info("Added third place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userThirdPlace);
+        logger.debug("Add third place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userThirdPlace);
 
+        logger.debug("Return from addCodenjoyAchievement method");
         return result;
     }
 
     public List<String> addInterview(InterviewRequest request) {
+        logger.debug("Enter addInterview method");
         String userFromId = request.getFrom();
         String description = request.getDescription();
         Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description,
                 AchievementType.INTERVIEW);
-        logger.info("Added 'Interview' achievement from user '{}'", userFromId);
         List<String> result = new ArrayList<>();
+        logger.debug("Send request to repository");
         result.add(achievementRepository.addAchievement(newAchievement));
+        logger.debug("Return from addInterview method");
         return result;
     }
 
@@ -217,9 +235,11 @@ public class AchievementService {
     }
 
     public List<String> addWelcome(WelcomeRequest request) {
+        logger.debug("Enter addWelcome method");
         String userFromId = request.getFrom();
         String userToId = request.getTo();
 
+        logger.debug("Send request to repository");
         List<Achievement> welcome = achievementRepository.getWelcomeAchievementByUser(userToId);
 
         if (!welcome.isEmpty()) {
@@ -231,7 +251,10 @@ public class AchievementService {
             List<String> result = new ArrayList<>();
             Achievement newAchievement = new Achievement(userFromId, userToId, WELCOME_POINTS, WELCOME_DESCRIPTION,
                     AchievementType.WELCOME);
+            logger.debug("Send achievement to repository");
             result.add(achievementRepository.addAchievement(newAchievement));
+
+            logger.debug("Return from addWelcome method");
             return result;
         }
     }

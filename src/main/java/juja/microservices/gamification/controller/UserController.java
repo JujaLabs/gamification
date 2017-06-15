@@ -7,6 +7,8 @@ import juja.microservices.gamification.entity.UserIdsRequest;
 import juja.microservices.gamification.entity.UserAchievementDetails;
 import juja.microservices.gamification.entity.UserPointsSum;
 import juja.microservices.gamification.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/user", produces = "application/json")
 public class UserController {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
     private UserService userService;
@@ -32,8 +36,9 @@ public class UserController {
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method")
     })
     public ResponseEntity<?> getAllUsersWithPointSum() {
+        logger.debug("Received request /pointSum");
         List<UserPointsSum> users = userService.getAllUsersWithPointSum();
-
+        logger.debug("Response data: users with point sum, quantity = {}", users.size());
         return ResponseEntity.ok(users);
     }
 
@@ -49,9 +54,10 @@ public class UserController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> getUsersWithAchievementDetails(@RequestBody UserIdsRequest toIds) {
+        logger.debug("Received request /achieveDetails");
         List<UserAchievementDetails> result =
                 userService.getUserAchievementsDetails(toIds);
-
+        logger.debug("Response data: users with achievement details, quantity = {}", result.size());
         return ResponseEntity.ok(result);
     }
 }
