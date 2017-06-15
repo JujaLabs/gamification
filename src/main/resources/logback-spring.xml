@@ -24,7 +24,7 @@
         </encoder>
     </appender>
 
-    <logger name="juja.microservices.gamification" level="DEBUG" additivity="false">
+    <logger name="juja.microservices.gamification" level="INFO" additivity="false">
         <appender-ref ref="Console-Appender"/>
         <appender-ref ref="RollingFile-Appender"/>
     </logger>
