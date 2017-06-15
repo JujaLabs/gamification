@@ -95,9 +95,8 @@ public class AchievementService {
         result.add(achievementRepository.addAchievement(achievement));
 
         if (!userFromThanksAchievementToday.isEmpty()) {
-            String descriptionTwoThanks = String.format("Distributed all 'thanks' to users: %s, %s",
-                    userFromThanksAchievementToday.get(0).getTo(),
-                    toId);
+            String descriptionTwoThanks = ("You got 'thanks' achievement for thanking to other two users");
+
             Achievement achievementTwoThanks = new Achievement(fromId, fromId, THANKS_POINTS, descriptionTwoThanks,
                     AchievementType.THANKS);
             result.add(achievementRepository.addAchievement(achievementTwoThanks));
