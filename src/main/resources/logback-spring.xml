@@ -15,27 +15,20 @@
         <file>${LOG_PATH}/logfile.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${LOG_ARCHIVE}/logfile.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>100KB</maxFileSize>
+            <maxFileSize>1MB</maxFileSize>
             <maxHistory>10</maxHistory>
-            <totalSizeCap>1MB</totalSizeCap>
+            <totalSizeCap>10MB</totalSizeCap>
         </rollingPolicy>
         <encoder>
             <pattern>%d  ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15thread] %-40.40logger{39} : %m%n</pattern>
         </encoder>
     </appender>
 
-    <logger name="juja.microservices.gamification.service" level="INFO" additivity="false">
+    <logger name="juja.microservices.gamification" level="INFO" additivity="false">
         <appender-ref ref="Console-Appender"/>
         <appender-ref ref="RollingFile-Appender"/>
     </logger>
-    <logger name="juja.microservices.gamification.controller" level="INFO" additivity="false">
-        <appender-ref ref="Console-Appender"/>
-        <appender-ref ref="RollingFile-Appender"/>
-    </logger>
-    <logger name="juja.microservices.gamification.exceptions" level="INFO" additivity="false">
-        <appender-ref ref="Console-Appender"/>
-        <appender-ref ref="RollingFile-Appender"/>
-    </logger>
+
     <root level="INFO" additivity="false">
         <appender-ref ref="Console-Appender"/>
     </root>
