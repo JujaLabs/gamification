@@ -6,5 +6,6 @@ public enum  AchievementType {
     INTERVIEW,
     THANKS,
     THANKS_KEEPER,
-    WELCOME
+    WELCOME,
+    START
 }
