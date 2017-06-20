@@ -5,18 +5,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import org.hibernate.validator.constraints.NotEmpty;
 
-
 @Getter
-public class InterviewRequest {
+public class WelcomeRequest {
 
     @NotEmpty
     private String from;
     @NotEmpty
-    private String description;
+    private String to;
 
     @JsonCreator
-    public InterviewRequest(@JsonProperty("from") String from, @JsonProperty("description") String description) {
+    public WelcomeRequest(@JsonProperty("from") String from, @JsonProperty("to") String to) {
         this.from = from;
-        this.description = description;
+        this.to = to;
     }
 }

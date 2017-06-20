@@ -1,5 +1,7 @@
 package juja.microservices.gamification.exceptions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +33,8 @@ import java.util.List;
 @RestControllerAdvice
 public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorMessage> handleAll(Exception ex) {
         ApiErrorMessage message =
@@ -38,7 +42,6 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
                         .httpStatus(HttpStatus.BAD_REQUEST.value())
                         .exceptionMessage(ex.getMessage())
                         .build();
-
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
@@ -52,11 +55,78 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ThanksAchievementMoreThanOneException.class)
+    public ResponseEntity<ApiErrorMessage> handleThanksAchievementMoreThanOneException(
+            ThanksAchievementMoreThanOneException ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.THANKS_ACHIEVEMENT_MORE_THAN_ONE_THANKS_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ThanksAchievementTryToThanksYourselfException.class)
+    public ResponseEntity<ApiErrorMessage> handleThanksAchievementTryToThanksYourselfException(
+            ThanksAchievementTryToThanksYourselfException ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.THANKS_ACHIEVEMENT_TRY_TO_THANKS_YOURSELF_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ThanksAchievementMoreThanTwoException.class)
+    public ResponseEntity<ApiErrorMessage> handleThanksAchievementMoreThanTwoException(
+            ThanksAchievementMoreThanTwoException ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.THANKS_ACHIEVEMENT_MORE_THAN_TWO_THANKS_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CodenjoyAchievementTwiceInOneDayException.class)
+    public ResponseEntity<ApiErrorMessage> handleCodenjoyAchievementTwiceInOneDayException(
+            CodenjoyAchievementTwiceInOneDayException ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.CODENJOY_ACHIEVEMENT_TWICE_IN_ONE_DAY_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CodenjoyAchievementException.class)
+    public ResponseEntity<ApiErrorMessage> handleCodenjoyAchievementException(
+            CodenjoyAchievementException ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.CODENJOY_ACHIEVEMENT_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(WelcomeAchievementException.class)
+    public ResponseEntity<ApiErrorMessage> handleWelcomeException(
+            WelcomeAchievementException ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.WELCOME_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
                                                              Object body, HttpHeaders headers,
                                                              HttpStatus status, WebRequest request) {
         ApiErrorMessage message = convertToApiErrorMessage(ex, status);
+        logger.warn(message.getExceptionMessage());
         return super.handleExceptionInternal(ex, message, headers, status, request);
     }
 

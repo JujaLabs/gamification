@@ -11,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +35,12 @@ public class UserControllerTest {
     private static final String ACHIEVEMENTS = "[" +
             "{\"user\":\"max\",\"details\":[" +
             "{\"from\":\"max\",\"to\":\"max\",\"point\":1,\"description\":\"Daily\"," +
-            "\"type\":\"DAILY\",\"id\":null,\"sendDate\":\"2017-02-28\"}," +
+            "\"type\":\"DAILY\",\"id\":null,\"sendDate\":\"2017-04-21\"}," +
             "{\"from\":\"john\",\"to\":\"max\",\"point\":1,\"description\":\"Thanks\"," +
-            "\"type\":\"THANKS\",\"id\":null,\"sendDate\":\"2017-02-28\"}]}," +
+            "\"type\":\"THANKS\",\"id\":null,\"sendDate\":\"2017-04-21\"}]}," +
             "{\"user\":\"john\",\"details\":[" +
             "{\"from\":\"john\",\"to\":\"john\",\"point\":10,\"description\":\"Interview\"," +
-            "\"type\":\"INTERVIEW\",\"id\":null,\"sendDate\":\"2017-02-28\"}]}" +
+            "\"type\":\"INTERVIEW\",\"id\":null,\"sendDate\":\"2017-04-21\"}]}" +
             "]";
 
     @Inject
@@ -66,9 +68,9 @@ public class UserControllerTest {
         Achievement achievementOne = new Achievement("max", "max", 1, "Daily", AchievementType.DAILY);
         Achievement achievementTwo = new Achievement("john", "max", 1, "Thanks", AchievementType.THANKS);
         Achievement achievementThree = new Achievement("john", "john", 10, "Interview", AchievementType.INTERVIEW);
-        achievementOne.setSendDate("2017-02-28");
-        achievementTwo.setSendDate("2017-02-28");
-        achievementThree.setSendDate("2017-02-28");
+        achievementOne.setSendDate(testDate());
+        achievementTwo.setSendDate(testDate());
+        achievementThree.setSendDate(testDate());
         List<Achievement> achievementsFirstUser = new ArrayList<>();
         achievementsFirstUser.add(achievementOne);
         achievementsFirstUser.add(achievementTwo);
@@ -89,6 +91,10 @@ public class UserControllerTest {
         assertEquals(ACHIEVEMENTS, result);
     }
 
+    private LocalDateTime testDate() {
+        return LocalDateTime.of(2017, Month.APRIL, 21,12,0);
+    }
+
     @Test()
     public void getHttpRequestMethodNotSupportedException() throws Exception {
         mockMvc.perform(post("/user/pointSum")
@@ -98,7 +104,7 @@ public class UserControllerTest {
 
     @Test()
     public void getHttpMediaTypeNotSupportedException() throws Exception {
-        mockMvc.perform(get("/user/pointSum")
+        mockMvc.perform(post("/user/achieveDetails")
                 .contentType(APPLICATION_ATOM_XML))
                 .andExpect(status().isUnsupportedMediaType());
     }
