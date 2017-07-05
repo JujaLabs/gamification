@@ -40,25 +40,27 @@ public class AchievementService {
     public List<String> addDaily(DailyRequest request) {
         String userFromId = request.getFrom();
         String description = request.getDescription();
-
+        logger.debug("Send request to repository: get daily achievement by user <{}> for current date", userFromId);
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(
                 userFromId, AchievementType.DAILY);
         List<String> result = new ArrayList<>();
         Achievement achievement;
         if (userFromIdList.size() == 0) {
+            logger.debug("Received empty data from repository");
             achievement = new Achievement(userFromId, userFromId, DAILY_POINTS, description, AchievementType.DAILY);
-            logger.info("Added new 'Daily' achievement {}, from user '{}'", achievement.getId(), userFromId);
         } else {
+            logger.debug("Received achievement id from repository: [{}]", userFromIdList.get(0).getId());
             achievement = userFromIdList.get(0);
             String oldDescription = achievement.getDescription();
             description = oldDescription
                     .concat(System.lineSeparator())
                     .concat(description);
             achievement.setDescription(description);
-
-            logger.info("Added description to daily achivement from user '{}'", userFromId);
         }
+        logger.debug("Send 'Daily' achievement to repository");
         result.add(achievementRepository.addAchievement(achievement));
+        logger.debug("Received id from repository: {}", result);
+
         return result;
     }
 
@@ -71,10 +73,10 @@ public class AchievementService {
             logger.warn("User '{}' tried to put 'Thanks' achievement to yourself", request.getTo());
             throw new ThanksAchievementTryToThanksYourselfException("User tried to put 'Thanks' achievement to yourself");
         }
-
+        logger.debug("Send request to repository: get thanks achievements by user <{}> for current date", fromId);
         List<Achievement> userFromThanksAchievementToday = achievementRepository
                 .getAllAchievementsByUserFromIdCurrentDateType(fromId, AchievementType.THANKS);
-
+        logger.debug("Received list of achievements, size = {}", userFromThanksAchievementToday.size());
         if (userFromThanksAchievementToday.size() >= TWO_THANKS) {
             logger.warn("User '{}' tried to give 'Thanks' achievement more than two times per day", fromId);
             throw new ThanksAchievementMoreThanTwoException(
@@ -92,35 +94,40 @@ public class AchievementService {
 
         List<String> result = new ArrayList<>();
         Achievement achievement = new Achievement(fromId, toId, THANKS_POINTS, description, AchievementType.THANKS);
+        logger.debug("Send 'Thanks' achievement to repository");
         result.add(achievementRepository.addAchievement(achievement));
 
         if (!userFromThanksAchievementToday.isEmpty()) {
-            String descriptionTwoThanks = String.format("Distributed all 'thanks' to users: %s, %s",
-                    userFromThanksAchievementToday.get(0).getTo(),
-                    toId);
+            String descriptionTwoThanks = ("You got 'thanks' achievement for thanking to other two users");
+
             Achievement achievementTwoThanks = new Achievement(fromId, fromId, THANKS_POINTS, descriptionTwoThanks,
                     AchievementType.THANKS);
+            logger.debug("Send additional 'Thanks' achievement to repository");
             result.add(achievementRepository.addAchievement(achievementTwoThanks));
         }
 
-        logger.info("Added 'Thanks' achievements '{}'", result.toString());
+        logger.debug("Received id from repository: {}", result);
         return result;
     }
 
     public List<String> addCodenjoy(CodenjoyRequest request) {
         checkUsers(request);
         String userFromId = request.getFrom();
+        logger.debug("Send request to repository: get all codenjoy achievements for current date");
         List<Achievement> codenjoyUsersToday = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
-
+        logger.debug("Received list of achievements, size = {}", codenjoyUsersToday.size());
         if (!codenjoyUsersToday.isEmpty()) {
             logger.warn("User '{}' tried to give 'Codenjoy' achievement points twice a day", userFromId);
             throw new CodenjoyAchievementTwiceInOneDayException("User tried to give 'Codenjoy' achievement points twice a day");
         }
 
-        return addCodenjoyAchievement(request);
+        List<String> result = addCodenjoyAchievement(request);
+        logger.debug("Received id from repository: {}", result);
+        return result;
     }
 
     private void checkUsers(CodenjoyRequest request) {
+        logger.debug("Verification users in codenjoy request");
         String firstUserId = request.getFirstPlace();
         String secondUserId = request.getSecondPlace();
         String thirdUserId = request.getThirdPlace();
@@ -137,9 +144,11 @@ public class AchievementService {
             logger.warn("Codenjoy request rejected: second and third place users is same");
             throw new CodenjoyAchievementException("Second and third users is same");
         }
+        logger.debug("Verification was successful");
     }
 
     private List<String> addCodenjoyAchievement(CodenjoyRequest request) {
+        logger.debug("Preparing achievement for send to repository");
         String userFromId = request.getFrom();
         String userFirstPlace = request.getFirstPlace();
         String userSecondPlace = request.getSecondPlace();
@@ -154,46 +163,53 @@ public class AchievementService {
 
         List<String> result = new ArrayList<>();
         result.add(achievementRepository.addAchievement(firstPlace));
-        logger.info("Added fist place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userFirstPlace);
+        logger.debug("Add fist place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userFirstPlace);
         result.add(achievementRepository.addAchievement(secondPlace));
-        logger.info("Added second place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userSecondPlace);
+        logger.debug("Add second place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userSecondPlace);
         result.add(achievementRepository.addAchievement(thirdPlace));
-        logger.info("Added third place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userThirdPlace);
+        logger.debug("Add third place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userThirdPlace);
 
         return result;
     }
 
     public List<String> addInterview(InterviewRequest request) {
+
         String userFromId = request.getFrom();
         String description = request.getDescription();
         Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description,
                 AchievementType.INTERVIEW);
-        logger.info("Added 'Interview' achievement from user '{}'", userFromId);
         List<String> result = new ArrayList<>();
+        logger.debug("Send 'Interview' achievement to repository");
         result.add(achievementRepository.addAchievement(newAchievement));
+        logger.debug("Received id from repository: {}", result);
         return result;
     }
 
     public List<String> addThanksKeeper() {
+        logger.debug("Send request to repository: get all thanks_keepers achievements for current week");
         List<Achievement> achievements = achievementRepository.getAllThanksKeepersAchievementsCurrentWeek();
+        logger.debug("Received list of achievements, size = {}", achievements.size());
         return achievements.isEmpty() ? createThanksKeeperAchievements() : getIdsCreatedAchievement(achievements);
     }
 
     private List<String> createThanksKeeperAchievements() {
         List<String> result = new ArrayList<>();
+        logger.debug("Request to keepers repository: get all active keepers");
         List<Keeper> keepers = keeperService.getKeepers();
+        logger.debug("Received list of active keepers, size = {} ", keepers.size());
         if (keepers.isEmpty()) {
-            logger.info("No any active keepers received from user service");
+            logger.debug("No any active keepers received from user service");
         } else {
+            logger.debug("Send 'Thanks Keeper' achievements to repository");
             keepers.forEach(keeper -> {
                 result.add(achievementRepository.addAchievement(getAchievement(keeper)));
             });
-            logger.info("Added 'Thanks Keeper' achievements {}", result.toString());
+            logger.debug("Received ids from repository: {}", result);
         }
         return result;
     }
 
-    private List<String> getIdsCreatedAchievement (List<Achievement> achievements) {
+    private List<String> getIdsCreatedAchievement(List<Achievement> achievements) {
         List<String> result = getIds(achievements);
         logger.info("Returned already created 'Thanks Keeper' achievements in current week {}", result.toString());
 
@@ -218,9 +234,11 @@ public class AchievementService {
     }
 
     public List<String> addWelcome(WelcomeRequest request) {
+
         String userFromId = request.getFrom();
         String userToId = request.getTo();
 
+        logger.debug("Send request to repository: get welcome achievement by user <{}>", userToId);
         List<Achievement> welcome = achievementRepository.getWelcomeAchievementByUser(userToId);
 
         if (!welcome.isEmpty()) {
@@ -232,7 +250,10 @@ public class AchievementService {
             List<String> result = new ArrayList<>();
             Achievement newAchievement = new Achievement(userFromId, userToId, WELCOME_POINTS, WELCOME_DESCRIPTION,
                     AchievementType.WELCOME);
+            logger.debug("Send new 'Welcome' achievement to repository");
             result.add(achievementRepository.addAchievement(newAchievement));
+            logger.debug("Received id from repository: {}", result);
+
             return result;
         }
     }
