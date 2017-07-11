@@ -1,12 +1,15 @@
 package juja.microservices.integration;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import juja.microservices.gamification.dao.KeeperRepository;
+import juja.microservices.gamification.entity.KeeperDTO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -14,7 +17,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -23,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * @author danil.kuznetsov
+ * @author Vadim Dyachenko
  */
 @RunWith(SpringRunner.class)
 public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
@@ -32,10 +40,14 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     private static final String ACHIEVE_CODENJOY_URL = "/achieve/codenjoy";
     private static final String ACHIEVE_INTERVIEW_URL = "/achieve/interview";
     private static final String ACHIEVE_WELCOME_URL = "/achieve/welcome";
+    private static final String ACHIEVE_KEEPERS_THANKS_URL = "/achieve/keepers/thanks";
     private static final String USER_POINT_SUM_URL = "/user/pointSum";
     private static final String USER_ACHIEVE_DETAILS = "/user/achieveDetails";
 
     private MockMvc mockMvc;
+
+    @MockBean
+    private KeeperRepository repository;
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -266,6 +278,29 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         MvcResult result = getMvcResultUserAchieveSum();
 
         String content = result.getResponse().getContentAsString();
+        assertEquals(expectedJson, content);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addThanksKeeperShouldReturnValidJson() throws Exception {
+        //given
+        String expectedJson =
+                "[{\"to\":\"0002A\",\"point\":2}]";
+
+        List<KeeperDTO> keepers = new ArrayList<>();
+        List<String> directions = new ArrayList<>();
+        directions.add("direction");
+        KeeperDTO keeper = new KeeperDTO("0002A", directions);
+        keepers.add(keeper);
+        when(repository.getKeepers()).thenReturn(keepers);
+
+        //when
+        addAchievementsIsOk("", ACHIEVE_KEEPERS_THANKS_URL);
+        MvcResult result = getMvcResultUserAchieveSum();
+        String content = result.getResponse().getContentAsString();
+
+        //then
         assertEquals(expectedJson, content);
     }
 

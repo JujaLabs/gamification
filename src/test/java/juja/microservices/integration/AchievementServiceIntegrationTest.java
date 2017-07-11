@@ -2,6 +2,7 @@ package juja.microservices.integration;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import juja.microservices.gamification.dao.AchievementRepository;
+import juja.microservices.gamification.dao.KeeperRepository;
 import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.WelcomeAchievementException;
 import juja.microservices.gamification.service.AchievementService;
@@ -10,18 +11,22 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 /**
  * @author BaHo
+ * @author Vadim Dyachenko
  */
 @RunWith(SpringRunner.class)
 public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
@@ -31,6 +36,9 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
 
     @Inject
     private AchievementRepository achievementRepository;
+
+    @MockBean
+    private KeeperRepository keeperRepository;
 
     @Inject
     private AchievementService achievementService;
@@ -253,6 +261,42 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
 
         assertEquals(userFromId, actualFromId);
         assertEquals(userToId, actualToId);
+        assertEquals(expectedPoints, actualPoints);
+        assertEquals(expectedType, actualType);
+        assertEquals(expectedDescription, actualDescription);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldAddThanksKeeperAchievement() {
+        //given
+        String expectedFrom = "JuJa";
+        String expectedUuid = "0002A";
+        int expectedPoints = 2;
+        AchievementType expectedType = AchievementType.THANKS_KEEPER;
+        String expectedDescription = "Thank you for keeping in the direction of Codenjoy";
+
+        List<KeeperDTO> keepers = new ArrayList<>();
+        List<String> directions = new ArrayList<>();
+        directions.add("Codenjoy");
+        KeeperDTO keeper = new KeeperDTO("0002A", directions);
+        keepers.add(keeper);
+        when(keeperRepository.getKeepers()).thenReturn(keepers);
+
+        //when
+        achievementService.addThanksKeeper();
+
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("0002A");
+        Achievement achievement = achievementList.get(0);
+        String actualFrom = achievement.getFrom();
+        String actualUuid = achievement.getTo();
+        int actualPoints = achievement.getPoint();
+        AchievementType actualType = achievement.getType();
+        String actualDescription = achievement.getDescription();
+
+        //Then
+        assertEquals(expectedFrom, actualFrom);
+        assertEquals(expectedUuid, actualUuid);
         assertEquals(expectedPoints, actualPoints);
         assertEquals(expectedType, actualType);
         assertEquals(expectedDescription, actualDescription);
