@@ -23,7 +23,7 @@ public class RestKeeperRepository implements KeeperRepository {
     @Inject
     private RestTemplate restTemplate;
 
-    @Value("${user.baseURL}")
+    @Value("${keepers.baseURL}")
     private String urlBase;
     @Value("${endpoint.keepers}")
     private String urlGetKeepers;
