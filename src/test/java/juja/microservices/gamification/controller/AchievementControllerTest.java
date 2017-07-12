@@ -27,6 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AchievementController.class)
 public class AchievementControllerTest {
 
+    private static final String ACHIEVE_DAILY_URL = "/v1/achieve/daily";
+    private static final String ACHIEVE_CODENJOY_URL = "/v1/achieve/codenjoy";
+    private static final String ACHIEVE_INTERVIEW_URL = "/v1/achieve/interview";
+    private static final String ACHIEVE_THANKS_URL = "/v1/achieve/thanks";
+    private static final String ACHIEVE_THANKS_KEEPER_URL = "/v1/achieve/keepers/thanks";
+    private static final String ACHIEVE_WELCOME_URL = "/v1/achieve/welcome";
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
     private static final String THIRD_ACHIEVEMENT_ID = "3";
@@ -47,7 +53,7 @@ public class AchievementControllerTest {
         when(service.addDaily(any(DailyRequest.class))).thenReturn(expectedList);
         String jsonContentRequest =
                 "{\"from\":\"max\",\"description\":\"Daily report\"}";
-        String result = getResult("/achieve/daily", jsonContentRequest);
+        String result = getResult(ACHIEVE_DAILY_URL, jsonContentRequest);
         assertEquals(ONE_ID, result);
     }
 
@@ -56,7 +62,7 @@ public class AchievementControllerTest {
         //given
         String jsonContentRequest = "{\"from\":\"\",\"description\":\"Daily report\"}";
         //then
-        checkBadRequest("/achieve/daily", jsonContentRequest);
+        checkBadRequest(ACHIEVE_DAILY_URL, jsonContentRequest);
     }
 
 
@@ -65,7 +71,7 @@ public class AchievementControllerTest {
         //given
         String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
         //then
-        checkBadRequest("/achieve/daily", jsonContentRequest);
+        checkBadRequest(ACHIEVE_DAILY_URL, jsonContentRequest);
     }
 
     @Test
@@ -75,7 +81,7 @@ public class AchievementControllerTest {
         when(service.addThanks(any(ThanksRequest.class))).thenReturn(ids);
         String jsonContentRequest =
                 "{\"from\":\"max\",\"to\":\"john\",\"description\":\"thanks\"}";
-        String result = getResult("/achieve/thanks", jsonContentRequest);
+        String result = getResult(ACHIEVE_THANKS_URL, jsonContentRequest);
         assertEquals(ONE_ID, result);
     }
 
@@ -87,7 +93,7 @@ public class AchievementControllerTest {
         when(service.addThanks(any(ThanksRequest.class))).thenReturn(ids);
         String jsonContentRequest =
                 "{\"from\":\"max\",\"to\":\"john\",\"description\":\"thanks\"}";
-        String result = getResult("/achieve/thanks", jsonContentRequest);
+        String result = getResult(ACHIEVE_THANKS_URL, jsonContentRequest);
         assertEquals(TWO_ID, result);
     }
 
@@ -97,7 +103,7 @@ public class AchievementControllerTest {
         String jsonContentRequest =
                 "{\"from\":\"\",\"to\":\"john\",\"description\":\"thanks\"}";
         //then
-        checkBadRequest("/achieve/thanks", jsonContentRequest);
+        checkBadRequest(ACHIEVE_THANKS_URL, jsonContentRequest);
     }
 
     @Test
@@ -106,7 +112,7 @@ public class AchievementControllerTest {
         String jsonContentRequest =
                 "{\"from\":\"max\",\"to\":\"\",\"description\":\"thanks\"}";
         //then
-        checkBadRequest("/achieve/thanks", jsonContentRequest);
+        checkBadRequest(ACHIEVE_THANKS_URL, jsonContentRequest);
     }
 
     @Test
@@ -115,7 +121,7 @@ public class AchievementControllerTest {
         String jsonContentRequest =
                 "{\"from\":\"max\",\"to\":\"john\",\"description\":\"\"}";
         //then
-        checkBadRequest("/achieve/thanks", jsonContentRequest);
+        checkBadRequest(ACHIEVE_THANKS_URL, jsonContentRequest);
     }
 
     @Test
@@ -123,7 +129,7 @@ public class AchievementControllerTest {
         List<String> ids = new ArrayList<>();
         ids.add(FIRST_ACHIEVEMENT_ID);
         when(service.addThanksKeeper()).thenReturn(ids);
-        String result = getResult("/achieve/keepers/thanks", "");
+        String result = getResult(ACHIEVE_THANKS_KEEPER_URL, "");
         assertEquals(ONE_ID, result);
     }
 
@@ -136,7 +142,7 @@ public class AchievementControllerTest {
         when(service.addCodenjoy(any(CodenjoyRequest.class))).thenReturn(ids);
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
-        String result = getResult("/achieve/codenjoy", jsonContentRequest);
+        String result = getResult(ACHIEVE_CODENJOY_URL, jsonContentRequest);
         assertEquals(THREE_ID, result);
     }
 
@@ -146,7 +152,7 @@ public class AchievementControllerTest {
         String jsonContentRequest =
                 "{\"from\":\"\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
         //then
-        checkBadRequest("/achieve/codenjoy", jsonContentRequest);
+        checkBadRequest(ACHIEVE_CODENJOY_URL, jsonContentRequest);
     }
 
     @Test
@@ -155,7 +161,7 @@ public class AchievementControllerTest {
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
         //then
-        checkBadRequest("/achieve/codenjoy", jsonContentRequest);
+        checkBadRequest(ACHIEVE_CODENJOY_URL, jsonContentRequest);
     }
 
     @Test
@@ -164,7 +170,7 @@ public class AchievementControllerTest {
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"\",\"thirdPlace\":\"tomas\"}";
         //then
-        checkBadRequest("/achieve/codenjoy", jsonContentRequest);
+        checkBadRequest(ACHIEVE_CODENJOY_URL, jsonContentRequest);
     }
 
     @Test
@@ -173,7 +179,7 @@ public class AchievementControllerTest {
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"\"}";
         //then
-        checkBadRequest("/achieve/codenjoy", jsonContentRequest);
+        checkBadRequest(ACHIEVE_CODENJOY_URL, jsonContentRequest);
     }
 
     @Test
@@ -183,7 +189,7 @@ public class AchievementControllerTest {
         when(service.addInterview((any(InterviewRequest.class)))).thenReturn(expectedList);
         String jsonContentRequest =
                 "{\"from\":\"max\",\"description\":\"Interview report\"}";
-        String result = getResult("/achieve/interview", jsonContentRequest);
+        String result = getResult(ACHIEVE_INTERVIEW_URL, jsonContentRequest);
         assertEquals(ONE_ID, result);
     }
 
@@ -192,7 +198,7 @@ public class AchievementControllerTest {
         //given
         String jsonContentRequest = "{\"from\":\"\",\"description\":\"Interview report\"}";
         //then
-        checkBadRequest("/achieve/interview", jsonContentRequest);
+        checkBadRequest(ACHIEVE_INTERVIEW_URL, jsonContentRequest);
     }
 
     @Test
@@ -200,7 +206,7 @@ public class AchievementControllerTest {
         //given
         String jsonContentRequest = "{\"from\":\"max\",\"description\":\"\"}";
         //then
-        checkBadRequest("/achieve/interview", jsonContentRequest);
+        checkBadRequest(ACHIEVE_INTERVIEW_URL, jsonContentRequest);
     }
 
     @Test
@@ -213,7 +219,7 @@ public class AchievementControllerTest {
 
         //when
         when(service.addWelcome(any(WelcomeRequest.class))).thenReturn(ids);
-        String result = getResult("/achieve/welcome", jsonContentRequest);
+        String result = getResult(ACHIEVE_WELCOME_URL, jsonContentRequest);
 
         //then
         assertEquals(ONE_ID, result);
@@ -225,7 +231,7 @@ public class AchievementControllerTest {
         String jsonContentRequest =
                 "{\"from\":\"max\",\"to\":\"\"}";
         //then
-        checkBadRequest("/achieve/welcome", jsonContentRequest);
+        checkBadRequest(ACHIEVE_WELCOME_URL, jsonContentRequest);
     }
 
     private String getResult(String uri, String jsonContentRequest) throws Exception {

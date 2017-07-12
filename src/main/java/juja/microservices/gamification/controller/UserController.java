@@ -25,7 +25,7 @@ public class UserController {
     @Inject
     private UserService userService;
 
-    @GetMapping(value = "/v1/pointSum")
+    @GetMapping(value = "/pointSum")
     @ApiOperation(
             value = "Get total points for all users",
             notes = "This method returns total points for all users"
@@ -42,7 +42,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping(value = "/v1/achieveDetails", consumes = "application/json")
+    @PostMapping(value = "/achieveDetails", consumes = "application/json")
     @ApiOperation(
             value = "Get achievement details for some users",
             notes = "This method returns detailed information for selected users"

@@ -30,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
 
+    private static final String USER_POINT_SUM_URL = "/v1/user/pointSum";
+    private static final String USER_ACHIEVE_DETAILS_URL = "/v1/user/achieveDetails";
     private static final String POINT_SUMS = "[{\"to\":\"max\",\"point\":5},{\"to\":\"john\",\"point\":3}]";
 
     private static final String ACHIEVEMENTS = "[" +
@@ -55,7 +57,7 @@ public class UserControllerTest {
         list.add(new UserPointsSum("max", 5));
         list.add(new UserPointsSum("john", 3));
         when(service.getAllUsersWithPointSum()).thenReturn(list);
-        String result = mockMvc.perform(get("/user/pointSum")
+        String result = mockMvc.perform(get(USER_POINT_SUM_URL)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
@@ -82,7 +84,7 @@ public class UserControllerTest {
         when(service.getUserAchievementsDetails(any(UserIdsRequest.class))).thenReturn(achievements);
 
         String jsonContentRequest = "{\"toIds\":[\"max\",\"john\"]}";
-        String result = mockMvc.perform(post("/user/achieveDetails")
+        String result = mockMvc.perform(post(USER_ACHIEVE_DETAILS_URL)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -97,14 +99,14 @@ public class UserControllerTest {
 
     @Test()
     public void getHttpRequestMethodNotSupportedException() throws Exception {
-        mockMvc.perform(post("/user/pointSum")
+        mockMvc.perform(post(USER_POINT_SUM_URL)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isMethodNotAllowed());
     }
 
     @Test()
     public void getHttpMediaTypeNotSupportedException() throws Exception {
-        mockMvc.perform(post("/user/achieveDetails")
+        mockMvc.perform(post(USER_ACHIEVE_DETAILS_URL)
                 .contentType(APPLICATION_ATOM_XML))
                 .andExpect(status().isUnsupportedMediaType());
     }
