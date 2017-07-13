@@ -17,7 +17,7 @@ import java.util.List;
  * @author Olga Kulykova
  */
 @RestController
-@RequestMapping(value = "/v1/achieve", consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/v1/gamification/achieve", consumes = "application/json", produces = "application/json")
 public class AchievementController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

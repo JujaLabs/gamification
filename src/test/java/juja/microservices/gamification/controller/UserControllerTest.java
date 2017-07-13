@@ -30,8 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
 
-    private static final String USER_POINT_SUM_URL = "/v1/user/pointSum";
-    private static final String USER_ACHIEVE_DETAILS_URL = "/v1/user/achieveDetails";
+    private static final String USER_POINT_SUM_URL = "/v1/gamification/user/pointSum";
+    private static final String USER_ACHIEVE_DETAILS_URL = "/v1/gamification/user/achieveDetails";
     private static final String POINT_SUMS = "[{\"to\":\"max\",\"point\":5},{\"to\":\"john\",\"point\":3}]";
 
     private static final String ACHIEVEMENTS = "[" +

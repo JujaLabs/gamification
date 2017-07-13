@@ -17,12 +17,12 @@ import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 @RunWith(SpringRunner.class)
 public class AchievementAcceptanceTest extends BaseAcceptanceTest {
 
-    private static final String ACHIEVE_DAILY_URL = "/v1/achieve/daily";
-    private static final String ACHIEVE_THANKS_URL = "/v1/achieve/thanks";
-    private static final String ACHIEVE_CODENJOY_URL = "/v1/achieve/codenjoy";
-    private static final String ACHIEVE_INTERVIEW_URL = "/v1/achieve/interview";
-    private static final String ACHIEVE_WELCOME_URL = "/v1/achieve/welcome";
-    private static final String USER_POINT_SUM_URL = "/v1/user/pointSum";
+    private static final String ACHIEVE_DAILY_URL = "/v1/gamification/achieve/daily";
+    private static final String ACHIEVE_THANKS_URL = "/v1/gamification/achieve/thanks";
+    private static final String ACHIEVE_CODENJOY_URL = "/v1/gamification/achieve/codenjoy";
+    private static final String ACHIEVE_INTERVIEW_URL = "/v1/gamification/achieve/interview";
+    private static final String ACHIEVE_WELCOME_URL = "/v1/gamification/achieve/welcome";
+    private static final String USER_POINT_SUM_URL = "/v1/gamification/user/pointSum";
     private static final String EMPTY_JSON_CONTENT_REQUEST = "";
     private static final String ONE_ACHIEVEMENT_ID = "achievement id";
     private static final String TWO_ACHIEVEMENT_ID = "[achievement1 id, achievement2 id]";

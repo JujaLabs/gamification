@@ -17,7 +17,7 @@ import java.net.HttpURLConnection;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/v1/user", produces = "application/json")
+@RequestMapping(value = "/v1/gamification/user", produces = "application/json")
 public class UserController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

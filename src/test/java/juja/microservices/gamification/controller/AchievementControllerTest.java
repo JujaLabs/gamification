@@ -27,12 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AchievementController.class)
 public class AchievementControllerTest {
 
-    private static final String ACHIEVE_DAILY_URL = "/v1/achieve/daily";
-    private static final String ACHIEVE_CODENJOY_URL = "/v1/achieve/codenjoy";
-    private static final String ACHIEVE_INTERVIEW_URL = "/v1/achieve/interview";
-    private static final String ACHIEVE_THANKS_URL = "/v1/achieve/thanks";
-    private static final String ACHIEVE_THANKS_KEEPER_URL = "/v1/achieve/keepers/thanks";
-    private static final String ACHIEVE_WELCOME_URL = "/v1/achieve/welcome";
+    private static final String ACHIEVE_DAILY_URL = "/v1/gamification/achieve/daily";
+    private static final String ACHIEVE_CODENJOY_URL = "/v1/gamification/achieve/codenjoy";
+    private static final String ACHIEVE_INTERVIEW_URL = "/v1/gamification/achieve/interview";
+    private static final String ACHIEVE_THANKS_URL = "/v1/gamification/achieve/thanks";
+    private static final String ACHIEVE_THANKS_KEEPER_URL = "/v1/gamification/achieve/keepers/thanks";
+    private static final String ACHIEVE_WELCOME_URL = "/v1/gamification/achieve/welcome";
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
     private static final String THIRD_ACHIEVEMENT_ID = "3";

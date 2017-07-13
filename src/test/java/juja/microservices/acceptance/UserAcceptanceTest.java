@@ -20,8 +20,8 @@ import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 @RunWith(SpringRunner.class)
 public class UserAcceptanceTest extends BaseAcceptanceTest {
 
-    private static final String USER_POINT_SUM_URL = "/v1/user/pointSum";
-    private static final String USER_ACHIEVE_DETAILS_URL = "/v1/user/achieveDetails";
+    private static final String USER_POINT_SUM_URL = "/v1/gamification/user/pointSum";
+    private static final String USER_ACHIEVE_DETAILS_URL = "/v1/gamification/user/achieveDetails";
     private static final String EMPTY_JSON_CONTENT_REQUEST = "";
 
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
