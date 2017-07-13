@@ -27,13 +27,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
-    private static final String ACHIEVE_DAILY_URL = "/achieve/daily";
-    private static final String ACHIEVE_THANKS_URL = "/achieve/thanks";
-    private static final String ACHIEVE_CODENJOY_URL = "/achieve/codenjoy";
-    private static final String ACHIEVE_INTERVIEW_URL = "/achieve/interview";
-    private static final String ACHIEVE_WELCOME_URL = "/achieve/welcome";
-    private static final String USER_POINT_SUM_URL = "/user/pointSum";
-    private static final String USER_ACHIEVE_DETAILS = "/user/achieveDetails";
+    private static final String ACHIEVE_DAILY_URL = "/v1/gamification/achieve/daily";
+    private static final String ACHIEVE_THANKS_URL = "/v1/gamification/achieve/thanks";
+    private static final String ACHIEVE_CODENJOY_URL = "/v1/gamification/achieve/codenjoy";
+    private static final String ACHIEVE_INTERVIEW_URL = "/v1/gamification/achieve/interview";
+    private static final String ACHIEVE_WELCOME_URL = "/v1/gamification/achieve/welcome";
+    private static final String USER_POINT_SUM_URL = "/v1/gamification/user/pointSum";
+    private static final String USER_ACHIEVE_DETAILS = "/v1/gamification/user/achieveDetails";
 
     private MockMvc mockMvc;
 
