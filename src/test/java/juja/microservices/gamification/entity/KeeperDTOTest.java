@@ -24,6 +24,6 @@ public class KeeperDTOTest {
 
         assertNotNull(keeper);
         assertEquals(expectedUuid, keeper.getUuid());
-        assertEquals(expectedDirection, keeper.getDirection());
+        assertEquals(expectedDirection, keeper.getDirections());
     }
 }

@@ -218,7 +218,7 @@ public class AchievementService {
         } else {
             logger.debug("Sending 'Thanks Keeper' achievements to repository");
             for (KeeperDTO keeper : keepers) {
-                List<String> directions = keeper.getDirection();
+                List<String> directions = keeper.getDirections();
                 directions.forEach(direction -> {
                     String description = String.format(THANKS_DESCRIPTION, direction);
                     Achievement achievement = new Achievement(

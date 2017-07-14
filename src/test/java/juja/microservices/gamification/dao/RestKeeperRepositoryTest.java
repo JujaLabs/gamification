@@ -57,8 +57,8 @@ public class RestKeeperRepositoryTest {
         mockServer.expect(requestTo(urlBase + urlGetKeepers))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(
-                        "[{\"uuid\":\"0002A\",\"direction\":[\"First direction\",\"Second direction\"]}," +
-                                "{\"uuid\":\"0002B\",\"direction\":[\"Third direction\"]}]",
+                        "[{\"uuid\":\"0002A\",\"directions\":[\"First direction\",\"Second direction\"]}," +
+                                "{\"uuid\":\"0002B\",\"directions\":[\"Third direction\"]}]",
                         MediaType.APPLICATION_JSON));
 
         List<String> firstKeeperDirections = new ArrayList<>();

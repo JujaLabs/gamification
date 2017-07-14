@@ -37,6 +37,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
     private static final String ACHIEVE_DAILY_URL = "/v1/gamification/achieve/daily";
     private static final String ACHIEVE_THANKS_URL = "/v1/gamification/achieve/thanks";
+    private static final String ACHIEVE_KEEPERS_THANKS_URL = "/v1/gamification/achieve/keepers/thanks";
     private static final String ACHIEVE_CODENJOY_URL = "/v1/gamification/achieve/codenjoy";
     private static final String ACHIEVE_INTERVIEW_URL = "/v1/gamification/achieve/interview";
     private static final String ACHIEVE_WELCOME_URL = "/v1/gamification/achieve/welcome";

@@ -17,13 +17,13 @@ public class KeeperDTO {
     @NotEmpty
     private String uuid;
     @NotEmpty
-    private List<String> direction;
+    private List<String> directions;
 
     @JsonCreator
     public KeeperDTO(@JsonProperty("uuid") String uuid,
-                     @JsonProperty("directions") List<String> direction) {
+                     @JsonProperty("directions") List<String> directions) {
 
         this.uuid = uuid;
-        this.direction = direction;
+        this.directions = directions;
     }
 }
