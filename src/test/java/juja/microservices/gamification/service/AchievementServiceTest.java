@@ -208,10 +208,22 @@ public class AchievementServiceTest {
         //given
         List<String> expectedList = new ArrayList<>();
         expectedList.add(FIRST_ACHIEVEMENT_ID);
-        List<Keeper> keepersList = new ArrayList<>();
-        keepersList.add(new Keeper("AAA", "thanks for keeper", "alex"));
+        expectedList.add(SECOND_ACHIEVEMENT_ID);
+        expectedList.add(THIRD_ACHIEVEMENT_ID);
+
+        List<String> firstKeeperDirections = new ArrayList<>();
+        List<String> secondKeeperDerections = new ArrayList<>();
+        firstKeeperDirections.add("First direction");
+        firstKeeperDirections.add("Second direction");
+        secondKeeperDerections.add("Third direction");
+
+        List<KeeperDTO> keepersList = new ArrayList<>();
+        keepersList.add(new KeeperDTO("0002A", firstKeeperDirections));
+        keepersList.add(new KeeperDTO("0002B", secondKeeperDerections));
+
         when(keeperService.getKeepers()).thenReturn(keepersList);
-        when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
+        when(repository.addAchievement(any(Achievement.class)))
+                .thenReturn(FIRST_ACHIEVEMENT_ID).thenReturn(SECOND_ACHIEVEMENT_ID).thenReturn(THIRD_ACHIEVEMENT_ID);
 
         //when
         List<String> actualList = service.addThanksKeeper();
@@ -223,10 +235,13 @@ public class AchievementServiceTest {
     @Test
     public void addKeeperThanksTwicePerCurrentWeek() throws Exception {
         //given
-        List<Keeper> keepersList = new ArrayList<>();
-        keepersList.add(new Keeper("AAA", "job", "alex"));
+        List<String> keeperDirections = new ArrayList<>();
+        keeperDirections.add("First direction");
+        List<KeeperDTO> keepersList = new ArrayList<>();
+        keepersList.add(new KeeperDTO("0002A", keeperDirections));
         List<Achievement> achievements = new ArrayList<>();
-        achievements.add(new Achievement("alex","AAA",THANKS_KEEPER, "job", AchievementType.THANKS_KEEPER));
+        achievements.add(new Achievement(
+                "alex","0002A",THANKS_KEEPER, "good job", AchievementType.THANKS_KEEPER));
         String expectedId = achievements.get(0).getId();
 
         when(keeperService.getKeepers()).thenReturn(keepersList);

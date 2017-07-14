@@ -1,7 +1,7 @@
 package juja.microservices.gamification.dao;
 
-import juja.microservices.gamification.entity.Keeper;
-import juja.microservices.gamification.exceptions.UserMicroserviceExchangeException;
+import juja.microservices.gamification.entity.KeeperDTO;
+import juja.microservices.gamification.exceptions.KeepersMicroserviceExchangeException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class RestKeeperRepositoryTest {
     private RestTemplate restTemplate;
     private MockRestServiceServer mockServer;
 
-    @Value("${user.baseURL}")
+    @Value("${keepers.baseURL}")
     private String urlBase;
     @Value("${endpoint.keepers}")
     private String urlGetKeepers;
@@ -57,14 +57,22 @@ public class RestKeeperRepositoryTest {
         mockServer.expect(requestTo(urlBase + urlGetKeepers))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(
-                        "[{\"uuid\":\"AAA\",\"description\":\"codenjoy\",\"from\":\"alex\"}," +
-                        "{\"uuid\":\"BBB\",\"description\":\"job\",\"from\":\"alex\"}]",
+                        "[{\"uuid\":\"0002A\",\"directions\":[\"First direction\",\"Second direction\"]}," +
+                                "{\"uuid\":\"0002B\",\"directions\":[\"Third direction\"]}]",
                         MediaType.APPLICATION_JSON));
-        List<Keeper> expectedList = new ArrayList<>();
-        expectedList.add(new Keeper("AAA", "codenjoy", "alex"));
-        expectedList.add(new Keeper("BBB", "job", "alex"));
+
+        List<String> firstKeeperDirections = new ArrayList<>();
+        List<String> secondKeeperDerections = new ArrayList<>();
+        firstKeeperDirections.add("First direction");
+        firstKeeperDirections.add("Second direction");
+        secondKeeperDerections.add("Third direction");
+
+        List<KeeperDTO> expectedList = new ArrayList<>();
+        expectedList.add(new KeeperDTO("0002A", firstKeeperDirections));
+        expectedList.add(new KeeperDTO("0002B", secondKeeperDerections));
+
         //when
-        List<Keeper> result = keeperRepository.getKeepers();
+        List<KeeperDTO> result = keeperRepository.getKeepers();
 
         //then
         assertThat(result, equalTo(expectedList));
@@ -77,8 +85,8 @@ public class RestKeeperRepositoryTest {
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withBadRequest().body("bad request"));
         //then
-        thrown.expect(UserMicroserviceExchangeException.class);
-        thrown.expectMessage(containsString("User microservice Exchange Error: "));
+        thrown.expect(KeepersMicroserviceExchangeException.class);
+        thrown.expectMessage(containsString("Keepers microservice Exchange Error: "));
 
         //when
         keeperRepository.getKeepers();
