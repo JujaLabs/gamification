@@ -7,5 +7,6 @@ public enum  AchievementType {
     THANKS,
     THANKS_KEEPER,
     WELCOME,
-    START
+    START,
+    TEAM
 }

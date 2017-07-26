@@ -133,4 +133,21 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
+    @PostMapping(value = "/team/users/{uuid}")
+    @ApiOperation(
+            value = "Add team points to active team members",
+            notes = "This method adds points to active team"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Return array of achievement ids"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
+            @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
+    })
+    public ResponseEntity<?> addTeam(@PathVariable String uuid) {
+        logger.debug("Received request on /achieve/team/users/ for user: {}", uuid);
+        List<String> ids = achievementService.addTeam(uuid);
+        logger.info("Added team achievement, id = {}", ids.toString());
+        return ResponseEntity.ok(ids);
+    }
 }

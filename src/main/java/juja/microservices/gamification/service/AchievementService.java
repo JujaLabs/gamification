@@ -270,4 +270,9 @@ public class AchievementService {
             return result;
         }
     }
+
+    public List<String> addTeam(String uuid) {
+        List<String> result = new ArrayList<>();
+        return result;
+    }
 }
