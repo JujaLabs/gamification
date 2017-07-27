@@ -3,7 +3,7 @@ package juja.microservices.gamification.service;
 import java.util.ArrayList;
 import javax.inject.Inject;
 
-import juja.microservices.gamification.dao.AchievementRepository;
+import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.*;
 import org.slf4j.Logger;
@@ -34,6 +34,8 @@ public class AchievementService {
     private AchievementRepository achievementRepository;
     @Inject
     private KeeperService keeperService;
+    @Inject
+    private TeamService teamService;
 
     /**
      * In this method userFromId = userToId because users add DAILY achievements to themselves.
@@ -272,6 +274,8 @@ public class AchievementService {
     }
 
     public List<String> addTeam(String uuid) {
+        Team team = teamService.getTeamByUuid(uuid);
+        List<Achievement> teamAchievements = achievementRepository.getAllTeamAchievementsCurrentWeek(team.getMembers());
         List<String> result = new ArrayList<>();
         return result;
     }

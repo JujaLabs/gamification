@@ -1,6 +1,7 @@
-package juja.microservices.gamification.dao;
+package juja.microservices.gamification.dao.impl;
 
-import juja.microservices.gamification.entity.KeeperDTO;
+import juja.microservices.gamification.dao.TeamRepository;
+import juja.microservices.gamification.entity.Team;
 import juja.microservices.gamification.exceptions.KeepersMicroserviceExchangeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,35 +12,35 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.List;
 
 /**
- * @author Vadim Dyachenko
+ * @author Petro Kramar
  */
 @Repository
-public class RestKeeperRepository implements KeeperRepository {
+public class RestTeamRepository implements TeamRepository {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
     private RestTemplate restTemplate;
 
-    @Value("${keepers.baseURL}")
+    @Value("${teams.baseURL}")
     private String urlBase;
-    @Value("${endpoint.keepers}")
+    @Value("${endpoint.teams}")
     private String urlGetKeepers;
 
     @Override
-    public List<KeeperDTO> getKeepers() {
-        String urlTemplate = urlBase + urlGetKeepers;
-        List<KeeperDTO> result;
+    public Team getTeamByUuid(String uuid) {
+        String urlTemplate = urlBase + urlGetKeepers + "/{" + uuid + "}";
+        Team result;
         logger.debug("Send request to keeper repository");
         try {
-            ResponseEntity<KeeperDTO[]> response = this.restTemplate.getForEntity(urlTemplate, KeeperDTO[].class);
-            result = Arrays.asList(response.getBody());
+            ResponseEntity<Team> response = this.restTemplate.getForEntity(urlTemplate, Team.class);
+            result = response.getBody();
         } catch (HttpClientErrorException ex) {
-            throw new KeepersMicroserviceExchangeException("Keepers microservice Exchange Error: " + ex.getMessage());
+            throw new KeepersMicroserviceExchangeException("Teams microservice Exchange Error: " + ex.getMessage());
         }
-        logger.debug("Received list of active keeper: {}", result);
+        logger.debug("Received active team : {}", result);
         return result;
     }
 }

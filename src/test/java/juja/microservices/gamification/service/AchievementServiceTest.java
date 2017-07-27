@@ -1,6 +1,6 @@
 package juja.microservices.gamification.service;
 
-import juja.microservices.gamification.dao.AchievementRepository;
+import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.*;
 import org.junit.Test;

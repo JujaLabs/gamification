@@ -1,4 +1,4 @@
-package juja.microservices.gamification.dao;
+package juja.microservices.gamification.dao.impl;
 
 import juja.microservices.gamification.entity.*;
 import org.slf4j.Logger;
@@ -93,6 +93,13 @@ public class AchievementRepository {
         return mongoTemplate.find(new Query(
                 Criteria.where("to").is(to)
                         .and("type").is(AchievementType.WELCOME)), Achievement.class);
+    }
+
+    public List<Achievement> getAllTeamAchievementsCurrentWeek(Set<String> uuids) {
+        return null;
+//        return mongoTemplate.find(new Query(
+//                Criteria.where("sendDate").gte(firstDayOfCurrentWeek())
+//                        .and("type").is(AchievementType.THANKS_KEEPER)), Achievement.class);
     }
 
     private Date startCurrentDay() {
