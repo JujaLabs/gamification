@@ -33,12 +33,15 @@ public class AchievementControllerTest {
     private static final String ACHIEVE_THANKS_URL = "/v1/gamification/achieve/thanks";
     private static final String ACHIEVE_THANKS_KEEPER_URL = "/v1/gamification/achieve/keepers/thanks";
     private static final String ACHIEVE_WELCOME_URL = "/v1/gamification/achieve/welcome";
+    private static final String ACHIEVE_TEAM_URL = "/v1/gamification/achieve/team/users";
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
     private static final String THIRD_ACHIEVEMENT_ID = "3";
+    private static final String FOURTH_ACHIEVEMENT_ID = "4";
     private static final String ONE_ID = "[\"1\"]";
     private static final String TWO_ID = "[\"1\",\"2\"]";
     private static final String THREE_ID = "[\"1\",\"2\",\"3\"]";
+    private static final String FOUR_ID = "[\"1\",\"2\",\"3\",\"4\"]";
 
     @Inject
     private MockMvc mockMvc;
@@ -232,6 +235,25 @@ public class AchievementControllerTest {
                 "{\"from\":\"max\",\"to\":\"\"}";
         //then
         checkBadRequest(ACHIEVE_WELCOME_URL, jsonContentRequest);
+    }
+
+    @Test
+    public void addTeam() throws Exception {
+        List<String> ids = new ArrayList<>();
+        ids.add(FIRST_ACHIEVEMENT_ID);
+        ids.add(SECOND_ACHIEVEMENT_ID);
+        ids.add(THIRD_ACHIEVEMENT_ID);
+        ids.add(FOURTH_ACHIEVEMENT_ID);
+        when(service.addTeam(any(String.class))).thenReturn(ids);
+
+
+//        String result = getResult(ACHIEVE_CODENJOY_URL, "");
+
+        String result =  mockMvc.perform(post(ACHIEVE_TEAM_URL+"/111"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        assertEquals(FOUR_ID, result);
     }
 
     private String getResult(String uri, String jsonContentRequest) throws Exception {

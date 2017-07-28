@@ -41,6 +41,8 @@ public class AchievementServiceTest {
     private AchievementRepository repository;
     @MockBean
     private KeeperService keeperService;
+    @MockBean
+    private TeamService teamService;
 
     @Test
     public void addDaily() throws Exception {
