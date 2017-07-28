@@ -96,10 +96,10 @@ public class AchievementRepository {
     }
 
     public List<Achievement> getAllTeamAchievementsCurrentWeek(Set<String> uuids) {
-        return null;
-//        return mongoTemplate.find(new Query(
-//                Criteria.where("sendDate").gte(firstDayOfCurrentWeek())
-//                        .and("type").is(AchievementType.THANKS_KEEPER)), Achievement.class);
+        return mongoTemplate.find(new Query(
+                Criteria.where("sendDate").gte(firstDayOfCurrentWeek())
+                        .and("type").is(AchievementType.TEAM)
+                        .and("to").in(uuids)), Achievement.class);
     }
 
     private Date startCurrentDay() {
