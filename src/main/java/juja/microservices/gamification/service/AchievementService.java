@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AchievementService {
@@ -28,6 +29,8 @@ public class AchievementService {
     private static final String WELCOME_DESCRIPTION = "Welcome to JuJa!";
     private static final String SYSTEM_FROM = "JuJa";
     private static final String THANKS_DESCRIPTION = "Thank you for keeping in the direction of %s";
+    private static final int TEAM_POINTS = 6;
+    private static final String TEAM_DESCRIPTION = "Work in team";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
@@ -274,9 +277,23 @@ public class AchievementService {
     }
 
     public List<String> addTeam(String uuid) {
+        logger.debug("Preparing team achievements for send to repository");
         Team team = teamService.getTeamByUuid(uuid);
-        List<Achievement> teamAchievements = achievementRepository.getAllTeamAchievementsCurrentWeek(team.getMembers());
+        Set<String> members = team.getMembers();
+        List<Achievement> teamAchievements = achievementRepository.getAllTeamAchievementsCurrentWeek(members);
+        if (!teamAchievements.isEmpty() ) {
+            logger.warn("User '{}' tried to give 'Team' achievements but some members have such achievements this week",
+                    uuid);
+            throw new TeamAchievementException("Cannot add 'Team' achievements. Some team members have such " +
+                    " achievements this week.");
+        }
         List<String> result = new ArrayList<>();
+        members.forEach(userUuid -> {
+            result.add(achievementRepository.addAchievement(
+                    new Achievement(uuid, userUuid, TEAM_POINTS,TEAM_DESCRIPTION, AchievementType.TEAM))
+            );
+            logger.debug("Add 'Team' achievement from user '{}' to '{}'", uuid, userUuid);
+        });
         return result;
     }
 }
