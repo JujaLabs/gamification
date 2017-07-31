@@ -12,13 +12,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import javax.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -239,20 +241,21 @@ public class AchievementControllerTest {
 
     @Test
     public void addTeam() throws Exception {
-        List<String> ids = new ArrayList<>();
-        ids.add(FIRST_ACHIEVEMENT_ID);
-        ids.add(SECOND_ACHIEVEMENT_ID);
-        ids.add(THIRD_ACHIEVEMENT_ID);
-        ids.add(FOURTH_ACHIEVEMENT_ID);
-        when(service.addTeam(any(String.class))).thenReturn(ids);
+        //given
+        String uuid = "test-uuid";
+        List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID, SECOND_ACHIEVEMENT_ID, THIRD_ACHIEVEMENT_ID,
+                FOURTH_ACHIEVEMENT_ID);
 
+        //when
+        when(service.addTeam(uuid)).thenReturn(ids);
 
-//        String result = getResult(ACHIEVE_CODENJOY_URL, "");
-
-        String result =  mockMvc.perform(post(ACHIEVE_TEAM_URL+"/111"))
+        //then
+        String result =  mockMvc.perform(post(ACHIEVE_TEAM_URL+"/"+uuid))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-
+        verify(service).addTeam(uuid);
+        verifyNoMoreInteractions(service);
         assertEquals(FOUR_ID, result);
     }
 
