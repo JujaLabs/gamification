@@ -27,13 +27,13 @@ public class RestTeamRepository implements TeamRepository {
     @Value("${teams.baseURL}")
     private String urlBase;
     @Value("${endpoint.teams}")
-    private String urlGetKeepers;
+    private String urlGetTeams;
 
     @Override
     public Team getTeamByUuid(String uuid) {
-        String urlTemplate = urlBase + urlGetKeepers + "/{" + uuid + "}";
+        String urlTemplate = urlBase + urlGetTeams + "/" + uuid;
         Team result;
-        logger.debug("Send request to keeper repository");
+        logger.debug("Send request to team repository");
         try {
             ResponseEntity<Team> response = this.restTemplate.getForEntity(urlTemplate, Team.class);
             result = response.getBody();
