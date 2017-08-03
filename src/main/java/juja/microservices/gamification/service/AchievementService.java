@@ -278,7 +278,7 @@ public class AchievementService {
 
     public List<String> addTeam(String uuid) {
         logger.debug("Preparing team achievements for send to repository");
-        Team team = teamService.getTeamByUuid(uuid);
+        TeamDTO team = teamService.getTeamByUuid(uuid);
         Set<String> members = team.getMembers();
         List<Achievement> teamAchievements = achievementRepository.getAllTeamAchievementsCurrentWeek(members);
         if (!teamAchievements.isEmpty() ) {

@@ -1,8 +1,8 @@
 package juja.microservices.gamification.dao.impl;
 
 import juja.microservices.gamification.dao.TeamRepository;
-import juja.microservices.gamification.entity.Team;
-import juja.microservices.gamification.exceptions.KeepersMicroserviceExchangeException;
+import juja.microservices.gamification.entity.TeamDTO;
+import juja.microservices.gamification.exceptions.TeamsMicroserviceExchangeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +12,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
-import java.util.List;
 
 /**
  * @author Petro Kramar
@@ -26,19 +25,19 @@ public class RestTeamRepository implements TeamRepository {
 
     @Value("${teams.baseURL}")
     private String urlBase;
-    @Value("${endpoint.teams}")
-    private String urlGetTeams;
+    @Value("${endpoint.teams.get.team.by.user.uuid}")
+    private String urlGetTeamByUserUuid;
 
     @Override
-    public Team getTeamByUuid(String uuid) {
-        String urlTemplate = urlBase + urlGetTeams + "/" + uuid;
-        Team result;
+    public TeamDTO getTeamByUuid(String uuid) {
+        String urlTemplate = urlBase + urlGetTeamByUserUuid + uuid;
+        TeamDTO result;
         logger.debug("Send request to team repository");
         try {
-            ResponseEntity<Team> response = this.restTemplate.getForEntity(urlTemplate, Team.class);
+            ResponseEntity<TeamDTO> response = this.restTemplate.getForEntity(urlTemplate, TeamDTO.class);
             result = response.getBody();
         } catch (HttpClientErrorException ex) {
-            throw new KeepersMicroserviceExchangeException("Teams microservice Exchange Error: " + ex.getMessage());
+            throw new TeamsMicroserviceExchangeException("Teams microservice Exchange Error: " + ex.getMessage());
         }
         logger.debug("Received active team : {}", result);
         return result;

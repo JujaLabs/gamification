@@ -1,9 +1,9 @@
 package juja.microservices.gamification.dao;
 
-import juja.microservices.gamification.entity.Team;
+import juja.microservices.gamification.entity.TeamDTO;
 
 public interface TeamRepository {
 
-    Team getTeamByUuid(String uuid);
+    TeamDTO getTeamByUuid(String uuid);
 
 }

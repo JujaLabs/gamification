@@ -310,7 +310,7 @@ public class AchievementServiceTest {
         expectedList.add(SECOND_ACHIEVEMENT_ID);
         expectedList.add(THIRD_ACHIEVEMENT_ID);
         expectedList.add(FOURTH_ACHIEVEMENT_ID);
-        Team team = new Team(new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
+        TeamDTO team = new TeamDTO(new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
 
         //when
         when(teamService.getTeamByUuid("uuid")).thenReturn(team);
@@ -326,7 +326,7 @@ public class AchievementServiceTest {
     @Test(expected = TeamAchievementException.class)
     public void addTeamAchievementsWhenMembersHaveTeamPointsThisWeek() throws Exception {
         //given
-        Team team = new Team(new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
+        TeamDTO team = new TeamDTO(new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
         List<Achievement> achievements = new ArrayList<>();
         achievements.add(any(Achievement.class));
 
