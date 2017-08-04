@@ -33,7 +33,7 @@ public class TeamServiceTest {
         System.out.println(expectedTeam.getMembers());
 
         //when
-        when(repository.getTeamByUuid("uuid")).thenReturn(expectedTeam);
+        when(repository.getTeamByUserUuid("uuid")).thenReturn(expectedTeam);
         TeamDTO actualTeam = service.getTeamByUuid("uuid");
 
         //then

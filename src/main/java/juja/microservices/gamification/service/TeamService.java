@@ -12,6 +12,6 @@ public class TeamService {
     private TeamRepository teamRepository;
 
     public TeamDTO getTeamByUuid(String uuid) {
-        return teamRepository.getTeamByUuid(uuid);
+        return teamRepository.getTeamByUserUuid(uuid);
     }
 }

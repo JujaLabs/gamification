@@ -29,7 +29,7 @@ public class RestTeamRepository implements TeamRepository {
     private String urlGetTeamByUserUuid;
 
     @Override
-    public TeamDTO getTeamByUuid(String uuid) {
+    public TeamDTO getTeamByUserUuid(String uuid) {
         String urlTemplate = urlBase + urlGetTeamByUserUuid + uuid;
         TeamDTO result;
         logger.debug("Send request to team repository");

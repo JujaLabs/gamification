@@ -62,7 +62,7 @@ public class RestTeamRepositoryTest {
         TeamDTO expectedTeam = new TeamDTO(new LinkedHashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
 
         //when
-        TeamDTO result = teamRepository.getTeamByUuid("uuid1");
+        TeamDTO result = teamRepository.getTeamByUserUuid("uuid1");
 
         //then
         assertEquals(expectedTeam.getMembers(), result.getMembers());
@@ -80,7 +80,7 @@ public class RestTeamRepositoryTest {
         thrown.expectMessage(containsString("Teams microservice Exchange Error: "));
 
         //when
-        teamRepository.getTeamByUuid("uuid1");
+        teamRepository.getTeamByUserUuid("uuid1");
     }
 
 
