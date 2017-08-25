@@ -357,6 +357,6 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isBadRequest());
     }
 }
