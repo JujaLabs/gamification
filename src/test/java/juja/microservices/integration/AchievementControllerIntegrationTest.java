@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -330,6 +331,19 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         assertEquals(expectedJson, content);
     }
 
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addTeamShouldReturnTeamAchievementException() throws Exception {
+        //given
+        TeamDTO team = new TeamDTO(new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
+
+        //when
+        when(teamRepository.getTeamByUserUuid("uuid1")).thenReturn(team);
+        addAchievementsIsOk("", ACHIEVE_TEAM_URL);
+        addAchievementsFailed("", ACHIEVE_TEAM_URL);
+    }
+
+
     private void addAchievementsIsOk(String jsonContentRequest, String urlTemplate) throws Exception {
         mockMvc.perform(post(urlTemplate)
                 .contentType(APPLICATION_JSON_UTF8)
@@ -343,6 +357,6 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
     }
 }

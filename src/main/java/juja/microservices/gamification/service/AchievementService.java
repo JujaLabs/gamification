@@ -245,9 +245,7 @@ public class AchievementService {
 
     private List<String> getIds(List<Achievement> achievements) {
         List<String> result = new ArrayList<>();
-        achievements.forEach(achievement -> {
-            result.add(achievement.getId());
-        });
+        achievements.forEach(achievement -> result.add(achievement.getId()));
         return result;
     }
 

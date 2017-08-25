@@ -17,7 +17,7 @@ public class UserService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
-    AchievementRepository repository;
+    private AchievementRepository repository;
 
     public List<UserAchievementDetails> getUserAchievementsDetails(UserIdsRequest ids) {
         logger.debug("Enter to getUserAchievementsDetails method");

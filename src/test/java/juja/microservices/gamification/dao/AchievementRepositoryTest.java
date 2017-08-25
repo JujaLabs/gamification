@@ -120,7 +120,6 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         achievementRepository.addAchievement(testAchievementAnotherDate);
         achievementRepository.addAchievement(testAchievementNotADaily);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String date = currentDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
 
         String lineSeparator = System.lineSeparator();

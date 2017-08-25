@@ -147,7 +147,7 @@ public class AchievementController {
     public ResponseEntity<?> addTeam(@PathVariable String uuid) {
         logger.debug("Received request on /achieve/team/users/ for user: {}", uuid);
         List<String> ids = achievementService.addTeam(uuid);
-        logger.info("Added team achievement, id = {}", ids.toString());
+        logger.info("Added team achievements, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 }

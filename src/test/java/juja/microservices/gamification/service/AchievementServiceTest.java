@@ -296,7 +296,7 @@ public class AchievementServiceTest {
 
         //when
         when(repository.getWelcomeAchievementByUser("john")).thenReturn(welcomeList);
-        List<String> actualList = service.addWelcome(request);
+        service.addWelcome(request);
 
         //then
         fail();
@@ -316,7 +316,7 @@ public class AchievementServiceTest {
         when(teamService.getTeamByUuid("uuid")).thenReturn(team);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID).
                 thenReturn(SECOND_ACHIEVEMENT_ID).thenReturn(THIRD_ACHIEVEMENT_ID).thenReturn(FOURTH_ACHIEVEMENT_ID);
-        when(repository.getAllTeamAchievementsCurrentWeek(any(Set.class))).thenReturn(new ArrayList<>());
+        when(repository.getAllTeamAchievementsCurrentWeek(any(HashSet.class))).thenReturn(new ArrayList<>());
         List<String> actualList = service.addTeam("uuid");
 
         //then
@@ -332,7 +332,7 @@ public class AchievementServiceTest {
 
         //when
         when(teamService.getTeamByUuid("uuid")).thenReturn(team);
-        when(repository.getAllTeamAchievementsCurrentWeek(any(Set.class))).thenReturn(achievements);
+        when(repository.getAllTeamAchievementsCurrentWeek(any(HashSet.class))).thenReturn(achievements);
         service.addTeam("uuid");
 
         //then

@@ -251,7 +251,6 @@ public class AchievementControllerTest {
 
         //then
         String result =  mockMvc.perform(post(ACHIEVE_TEAM_URL+"/"+uuid))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         verify(service).addTeam(uuid);

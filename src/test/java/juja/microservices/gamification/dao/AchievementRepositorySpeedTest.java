@@ -26,7 +26,7 @@ public class AchievementRepositorySpeedTest extends BaseIntegrationTest {
     private final String message = "Execution time more than " + timeBorderInMillis + " milliseconds";
 
     @Inject
-    AchievementRepository achievementRepository;
+    private AchievementRepository achievementRepository;
 
     @Before
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")

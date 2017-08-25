@@ -26,9 +26,6 @@ import static org.mockito.Mockito.when;
 public class UserServiceTest {
 
     @Inject
-    private MockMvc mockMvc;
-
-    @Inject
     private UserService service;
 
     @MockBean
