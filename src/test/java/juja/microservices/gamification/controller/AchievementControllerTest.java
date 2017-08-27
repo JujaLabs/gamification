@@ -12,13 +12,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import javax.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,12 +35,15 @@ public class AchievementControllerTest {
     private static final String ACHIEVE_THANKS_URL = "/v1/gamification/achieve/thanks";
     private static final String ACHIEVE_THANKS_KEEPER_URL = "/v1/gamification/achieve/keepers/thanks";
     private static final String ACHIEVE_WELCOME_URL = "/v1/gamification/achieve/welcome";
+    private static final String ACHIEVE_TEAM_URL = "/v1/gamification/achieve/team/users";
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
     private static final String THIRD_ACHIEVEMENT_ID = "3";
+    private static final String FOURTH_ACHIEVEMENT_ID = "4";
     private static final String ONE_ID = "[\"1\"]";
     private static final String TWO_ID = "[\"1\",\"2\"]";
     private static final String THREE_ID = "[\"1\",\"2\",\"3\"]";
+    private static final String FOUR_ID = "[\"1\",\"2\",\"3\",\"4\"]";
 
     @Inject
     private MockMvc mockMvc;
@@ -232,6 +237,25 @@ public class AchievementControllerTest {
                 "{\"from\":\"max\",\"to\":\"\"}";
         //then
         checkBadRequest(ACHIEVE_WELCOME_URL, jsonContentRequest);
+    }
+
+    @Test
+    public void addTeam() throws Exception {
+        //given
+        String uuid = "test-uuid";
+        List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID, SECOND_ACHIEVEMENT_ID, THIRD_ACHIEVEMENT_ID,
+                FOURTH_ACHIEVEMENT_ID);
+
+        //when
+        when(service.addTeam(uuid)).thenReturn(ids);
+
+        //then
+        String result =  mockMvc.perform(post(ACHIEVE_TEAM_URL+"/"+uuid))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        verify(service).addTeam(uuid);
+        verifyNoMoreInteractions(service);
+        assertEquals(FOUR_ID, result);
     }
 
     private String getResult(String uri, String jsonContentRequest) throws Exception {

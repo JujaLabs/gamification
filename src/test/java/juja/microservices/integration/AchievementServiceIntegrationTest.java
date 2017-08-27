@@ -1,7 +1,8 @@
 package juja.microservices.integration;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import juja.microservices.gamification.dao.AchievementRepository;
+import juja.microservices.gamification.dao.TeamRepository;
+import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.dao.KeeperRepository;
 import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.WelcomeAchievementException;
@@ -16,9 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -39,6 +38,9 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
 
     @MockBean
     private KeeperRepository keeperRepository;
+
+    @MockBean
+    private TeamRepository teamRepository;
 
     @Inject
     private AchievementService achievementService;
@@ -313,5 +315,48 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         achievementService.addWelcome(request);
 
         fail();
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldAddTeamAchievements() {
+        //given
+        int teamPoints = 6;
+        int teamSize = 4;
+        String userFromID = "uuid1";
+        String firstUserToID = "uuid1";
+        String secondUserToID = "uuid2";
+        String thirdUserToID = "uuid3";
+        String fourthUserToID = "uuid4";
+        String description = "Work in team";
+        String expectedType = "TEAM";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String expectedDate = dateFormat.format(new Date(System.currentTimeMillis()));
+        Set<String> expectedMembers = new HashSet<>(
+                Arrays.asList(firstUserToID, secondUserToID, thirdUserToID, fourthUserToID));
+        TeamDTO expectedTeam = new TeamDTO(expectedMembers);
+
+        //when
+        when(teamRepository.getTeamByUserUuid(userFromID)).thenReturn(expectedTeam);
+        achievementService.addTeam(firstUserToID);
+        List<Achievement> achievementList = achievementRepository.getAllTeamAchievementsCurrentWeek(expectedMembers);
+
+        //then
+        Assert.assertTrue(achievementList.size() == teamSize);
+        Set<String> actualMembers = new HashSet<>();
+        achievementList.forEach(achievement -> {
+            actualMembers.add(achievement.getTo());
+            assertEquals(userFromID, achievement.getFrom());
+            assertEquals(expectedType, achievement.getType().toString());
+            assertEquals(expectedDate, dateFormat.format(achievement.getSendDate()));
+            int point = achievement.getPoint();
+            String actualDescription = achievement.getDescription();
+            if (point == teamPoints) {
+                assertEquals(description, actualDescription);
+            } else {
+                fail("Incorrect number of points");
+            }
+        });
+        assertEquals(teamSize, actualMembers.size());
     }
 }

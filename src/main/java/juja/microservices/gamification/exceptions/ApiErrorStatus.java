@@ -46,6 +46,12 @@ public enum ApiErrorStatus {
             "The reason of the exception is 'Welcome' achievement"
     ),
 
+    TEAM_ACHIEVEMENT_EXCEPTION(
+            "GMF-F7-D5",
+            "One or more participants have team achievement this week",
+            "The reason of the exception is 'Team' achievement"
+    ),
+
     OTHER_EXCEPTION(
             "2",
             "Oops something went wrong :(",

@@ -1,6 +1,6 @@
 package juja.microservices.gamification.service;
 
-import juja.microservices.gamification.dao.AchievementRepository;
+import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.UserIdsRequest;
 import juja.microservices.gamification.entity.UserAchievementDetails;
 import juja.microservices.gamification.entity.UserPointsSum;
@@ -17,7 +17,7 @@ public class UserService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
-    AchievementRepository repository;
+    private AchievementRepository repository;
 
     public List<UserAchievementDetails> getUserAchievementsDetails(UserIdsRequest ids) {
         logger.debug("Enter to getUserAchievementsDetails method");

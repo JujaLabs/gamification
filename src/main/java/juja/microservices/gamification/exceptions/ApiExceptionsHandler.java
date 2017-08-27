@@ -121,6 +121,17 @@ public class ApiExceptionsHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(TeamAchievementException.class)
+    public ResponseEntity<ApiErrorMessage> handleTeamException(
+            TeamAchievementException ex) {
+        ApiErrorMessage message =
+                ApiErrorMessage.builder(ApiErrorStatus.TEAM_ACHIEVEMENT_EXCEPTION)
+                        .httpStatus(HttpStatus.BAD_REQUEST.value())
+                        .exceptionMessage(ex.getMessage())
+                        .build();
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+    }
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex,
                                                              Object body, HttpHeaders headers,

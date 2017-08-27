@@ -1,6 +1,6 @@
 package juja.microservices.gamification.service;
 
-import juja.microservices.gamification.dao.AchievementRepository;
+import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.exceptions.*;
 import org.junit.Test;
@@ -11,8 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -25,6 +24,7 @@ public class AchievementServiceTest {
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
     private static final String THIRD_ACHIEVEMENT_ID = "3";
+    private static final String FOURTH_ACHIEVEMENT_ID = "4";
     private static final int CODENJOY_FIRST_PLACE = 5;
     private static final int CODENJOY_SECOND_PLACE = 3;
     private static final int CODENJOY_THIRD_PLACE = 1;
@@ -33,7 +33,6 @@ public class AchievementServiceTest {
     private static final int WELCOME_POINTS = 1;
     private static final String WELCOME_DESCRIPTION = "Welcome to JuJa!";
 
-
     @Inject
     private AchievementService service;
 
@@ -41,6 +40,8 @@ public class AchievementServiceTest {
     private AchievementRepository repository;
     @MockBean
     private KeeperService keeperService;
+    @MockBean
+    private TeamService teamService;
 
     @Test
     public void addDaily() throws Exception {
@@ -295,10 +296,46 @@ public class AchievementServiceTest {
 
         //when
         when(repository.getWelcomeAchievementByUser("john")).thenReturn(welcomeList);
-        List<String> actualList = service.addWelcome(request);
+        service.addWelcome(request);
 
         //then
         fail();
     }
 
+    @Test
+    public void addTeamAchievements() throws Exception {
+        //given
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        expectedList.add(SECOND_ACHIEVEMENT_ID);
+        expectedList.add(THIRD_ACHIEVEMENT_ID);
+        expectedList.add(FOURTH_ACHIEVEMENT_ID);
+        TeamDTO team = new TeamDTO(new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
+
+        //when
+        when(teamService.getTeamByUuid("uuid")).thenReturn(team);
+        when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID).
+                thenReturn(SECOND_ACHIEVEMENT_ID).thenReturn(THIRD_ACHIEVEMENT_ID).thenReturn(FOURTH_ACHIEVEMENT_ID);
+        when(repository.getAllTeamAchievementsCurrentWeek(any(HashSet.class))).thenReturn(new ArrayList<>());
+        List<String> actualList = service.addTeam("uuid");
+
+        //then
+        assertEquals(expectedList, actualList);
+    }
+
+    @Test(expected = TeamAchievementException.class)
+    public void addTeamAchievementsWhenMembersHaveTeamPointsThisWeek() throws Exception {
+        //given
+        TeamDTO team = new TeamDTO(new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
+        List<Achievement> achievements = new ArrayList<>();
+        achievements.add(any(Achievement.class));
+
+        //when
+        when(teamService.getTeamByUuid("uuid")).thenReturn(team);
+        when(repository.getAllTeamAchievementsCurrentWeek(any(HashSet.class))).thenReturn(achievements);
+        service.addTeam("uuid");
+
+        //then
+        fail();
+    }
 }

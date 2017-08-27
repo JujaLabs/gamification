@@ -1,6 +1,7 @@
 package juja.microservices.gamification.dao;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.integration.BaseIntegrationTest;
 import juja.microservices.gamification.entity.*;
 import org.junit.Test;
@@ -14,13 +15,12 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author danil.kuznetsov
@@ -120,7 +120,6 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         achievementRepository.addAchievement(testAchievementAnotherDate);
         achievementRepository.addAchievement(testAchievementNotADaily);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String date = currentDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
 
         String lineSeparator = System.lineSeparator();
@@ -182,6 +181,35 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         List<Achievement> list = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
 
         assertEquals(3, list.size());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/addOldTeamAchievement.json")
+    public void getAllTeamAchievementsCurrentWeekNoAchievements(){
+        //given
+        Set<String> uuids = new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4"));
+
+        //when
+        List<Achievement> list = achievementRepository.getAllTeamAchievementsCurrentWeek(uuids);
+
+        //then
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/addOldTeamAchievement.json")
+    public void getAllTeamAchievementsCurrentWeekExistAchievements(){
+        //given
+        Achievement achievement = new Achievement("uuidFrom", "uuid1", 6,
+                "Team activity", AchievementType.TEAM);
+        achievementRepository.addAchievement(achievement);
+        Set<String> uuids = new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4"));
+
+        //when
+        List<Achievement> list = achievementRepository.getAllTeamAchievementsCurrentWeek(uuids);
+
+        //then
+        assertTrue(!list.isEmpty());
     }
 
     @Test

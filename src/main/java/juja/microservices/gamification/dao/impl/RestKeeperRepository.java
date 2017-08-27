@@ -1,5 +1,6 @@
-package juja.microservices.gamification.dao;
+package juja.microservices.gamification.dao.impl;
 
+import juja.microservices.gamification.dao.KeeperRepository;
 import juja.microservices.gamification.entity.KeeperDTO;
 import juja.microservices.gamification.exceptions.KeepersMicroserviceExchangeException;
 import org.slf4j.Logger;

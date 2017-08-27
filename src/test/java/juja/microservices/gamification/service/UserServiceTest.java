@@ -1,6 +1,6 @@
 package juja.microservices.gamification.service;
 
-import juja.microservices.gamification.dao.AchievementRepository;
+import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.UserAchievementDetails;
 import juja.microservices.gamification.entity.UserIdsRequest;
 import juja.microservices.gamification.entity.UserPointsSum;
@@ -24,9 +24,6 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserService.class)
 public class UserServiceTest {
-
-    @Inject
-    private MockMvc mockMvc;
 
     @Inject
     private UserService service;
