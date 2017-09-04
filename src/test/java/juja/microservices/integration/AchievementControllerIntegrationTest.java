@@ -2,9 +2,7 @@ package juja.microservices.integration;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import juja.microservices.gamification.dao.KeeperRepository;
-import juja.microservices.gamification.dao.TeamRepository;
 import juja.microservices.gamification.entity.KeeperDTO;
-import juja.microservices.gamification.entity.TeamDTO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,13 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -46,7 +41,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     private static final String ACHIEVE_CODENJOY_URL = "/v1/gamification/achieve/codenjoy";
     private static final String ACHIEVE_INTERVIEW_URL = "/v1/gamification/achieve/interview";
     private static final String ACHIEVE_WELCOME_URL = "/v1/gamification/achieve/welcome";
-    private static final String ACHIEVE_TEAM_URL = "/v1/gamification/achieve/team/users/uuid1";
+    private static final String ACHIEVE_TEAM_URL = "/v1/gamification/achieve/team";
     private static final String USER_POINT_SUM_URL = "/v1/gamification/user/pointSum";
     private static final String USER_ACHIEVE_DETAILS = "/v1/gamification/user/achieveDetails";
 
@@ -54,9 +49,6 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
     @MockBean
     private KeeperRepository keeperRepository;
-
-    @MockBean
-    private TeamRepository teamRepository;
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -316,14 +308,15 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addTeamShouldReturnValidJson() throws Exception {
+
         //given
+        String jsonContentRequest =
+                "{\"from\":\"uuid1\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
         String expectedJson = "[{\"to\":\"uuid1\",\"point\":6},{\"to\":\"uuid2\",\"point\":6}," +
                 "{\"to\":\"uuid3\",\"point\":6},{\"to\":\"uuid4\",\"point\":6}]";
-        TeamDTO team = new TeamDTO(new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
 
         //when
-        when(teamRepository.getTeamByUserUuid("uuid1")).thenReturn(team);
-        addAchievementsIsOk("", ACHIEVE_TEAM_URL);
+        addAchievementsIsOk(jsonContentRequest, ACHIEVE_TEAM_URL);
         MvcResult result = getMvcResultUserAchieveSum();
         String content = result.getResponse().getContentAsString();
 
@@ -335,12 +328,12 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addTeamShouldReturnTeamAchievementException() throws Exception {
         //given
-        TeamDTO team = new TeamDTO(new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
+        String jsonContentRequest =
+                "{\"from\":\"uuid1\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
 
         //when
-        when(teamRepository.getTeamByUserUuid("uuid1")).thenReturn(team);
-        addAchievementsIsOk("", ACHIEVE_TEAM_URL);
-        addAchievementsFailed("", ACHIEVE_TEAM_URL);
+        addAchievementsIsOk(jsonContentRequest, ACHIEVE_TEAM_URL);
+        addAchievementsFailed(jsonContentRequest, ACHIEVE_TEAM_URL);
     }
 
 

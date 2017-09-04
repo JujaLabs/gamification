@@ -37,8 +37,6 @@ public class AchievementService {
     private AchievementRepository achievementRepository;
     @Inject
     private KeeperService keeperService;
-    @Inject
-    private TeamService teamService;
 
     /**
      * In this method userFromId = userToId because users add DAILY achievements to themselves.
@@ -274,23 +272,23 @@ public class AchievementService {
         }
     }
 
-    public List<String> addTeam(String uuid) {
+    public List<String> addTeam(TeamRequest request) {
         logger.debug("Preparing team achievements for send to repository");
-        TeamDTO team = teamService.getTeamByUuid(uuid);
-        Set<String> members = team.getMembers();
+        String userFromId = request.getFrom();
+        Set<String> members = request.getMembers();
         List<Achievement> teamAchievements = achievementRepository.getAllTeamAchievementsCurrentWeek(members);
         if (!teamAchievements.isEmpty() ) {
             logger.warn("User '{}' tried to give 'Team' achievements but some members have such achievements this week",
-                    uuid);
+                userFromId);
             throw new TeamAchievementException("Cannot add 'Team' achievements. Some team members have such " +
                     " achievements this week.");
         }
         List<String> result = new ArrayList<>();
-        members.forEach(userUuid -> {
+        members.forEach(userId -> {
             result.add(achievementRepository.addAchievement(
-                    new Achievement(uuid, userUuid, TEAM_POINTS,TEAM_DESCRIPTION, AchievementType.TEAM))
+                    new Achievement(userFromId, userId, TEAM_POINTS,TEAM_DESCRIPTION, AchievementType.TEAM))
             );
-            logger.debug("Add 'Team' achievement from user '{}' to '{}'", uuid, userUuid);
+            logger.debug("Add 'Team' achievement from user '{}' to '{}'", userFromId, userId);
         });
         return result;
     }

@@ -32,6 +32,7 @@ public class AchievementServiceTest {
     private static final int THANKS_KEEPER = 2;
     private static final int WELCOME_POINTS = 1;
     private static final String WELCOME_DESCRIPTION = "Welcome to JuJa!";
+    private static final int TEAM_POINTS = 6;
 
     @Inject
     private AchievementService service;
@@ -40,8 +41,6 @@ public class AchievementServiceTest {
     private AchievementRepository repository;
     @MockBean
     private KeeperService keeperService;
-    @MockBean
-    private TeamService teamService;
 
     @Test
     public void addDaily() throws Exception {
@@ -305,19 +304,16 @@ public class AchievementServiceTest {
     @Test
     public void addTeamAchievements() throws Exception {
         //given
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(FIRST_ACHIEVEMENT_ID);
-        expectedList.add(SECOND_ACHIEVEMENT_ID);
-        expectedList.add(THIRD_ACHIEVEMENT_ID);
-        expectedList.add(FOURTH_ACHIEVEMENT_ID);
-        TeamDTO team = new TeamDTO(new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
+        List<String> expectedList = new ArrayList<>(Arrays.asList(FIRST_ACHIEVEMENT_ID, SECOND_ACHIEVEMENT_ID,
+                THIRD_ACHIEVEMENT_ID, FOURTH_ACHIEVEMENT_ID));
+        TeamRequest request = new TeamRequest("uuid1",
+                new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
 
         //when
-        when(teamService.getTeamByUuid("uuid")).thenReturn(team);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID).
                 thenReturn(SECOND_ACHIEVEMENT_ID).thenReturn(THIRD_ACHIEVEMENT_ID).thenReturn(FOURTH_ACHIEVEMENT_ID);
         when(repository.getAllTeamAchievementsCurrentWeek(any(HashSet.class))).thenReturn(new ArrayList<>());
-        List<String> actualList = service.addTeam("uuid");
+        List<String> actualList = service.addTeam(request);
 
         //then
         assertEquals(expectedList, actualList);
@@ -326,14 +322,15 @@ public class AchievementServiceTest {
     @Test(expected = TeamAchievementException.class)
     public void addTeamAchievementsWhenMembersHaveTeamPointsThisWeek() throws Exception {
         //given
-        TeamDTO team = new TeamDTO(new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
+        TeamRequest request = new TeamRequest("uuid1",
+                new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
         List<Achievement> achievements = new ArrayList<>();
-        achievements.add(any(Achievement.class));
+        achievements.add(new Achievement(
+                "uuid1","uuid2",TEAM_POINTS, "team work", AchievementType.TEAM));
 
         //when
-        when(teamService.getTeamByUuid("uuid")).thenReturn(team);
         when(repository.getAllTeamAchievementsCurrentWeek(any(HashSet.class))).thenReturn(achievements);
-        service.addTeam("uuid");
+        service.addTeam(request);
 
         //then
         fail();

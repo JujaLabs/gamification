@@ -17,14 +17,14 @@ import java.util.List;
  * @author Olga Kulykova
  */
 @RestController
-@RequestMapping(value = "/v1/gamification/achieve", produces = "application/json")
+@RequestMapping(value = "/v1/gamification/achieve", consumes = "application/json", produces = "application/json")
 public class AchievementController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
     private AchievementService achievementService;
 
-    @PostMapping(value = "/daily", consumes = "application/json")
+    @PostMapping(value = "/daily")
     @ApiOperation(
             value = "Add points for daily report",
             notes = "This method adds points for daily report"
@@ -42,7 +42,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "/thanks", consumes = "application/json")
+    @PostMapping(value = "/thanks")
     @ApiOperation(
             value = "Add points for thanks one user by another",
             notes = "This method adds points for help one user by another"
@@ -62,7 +62,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "/codenjoy", consumes = "application/json")
+    @PostMapping(value = "/codenjoy")
     @ApiOperation(
             value = "Add points for codenjoy winners",
             notes = "This method adds points for winners in codenjoy tournament"
@@ -80,7 +80,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "/interview", consumes = "application/json")
+    @PostMapping(value = "/interview")
     @ApiOperation(
             value = "Add points for interview",
             notes = "This method adds points for successful or unsuccessful interview"
@@ -98,7 +98,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "/keepers/thanks", consumes = "application/json")
+    @PostMapping(value = "/keepers/thanks")
     @ApiOperation(
             value = "Add points for thanks keeper",
             notes = "This method adds points for successful or unsuccessful thanks keeper"
@@ -115,7 +115,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "/welcome", consumes = "application/json")
+    @PostMapping(value = "/welcome")
     @ApiOperation(
             value = "Add welcome points to new user",
             notes = "This method adds points to new user"
@@ -133,7 +133,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "/team/users/{uuid}")
+    @PostMapping(value = "/team")
     @ApiOperation(
             value = "Add team points to active team members",
             notes = "This method adds points to active team"
@@ -144,9 +144,9 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
-    public ResponseEntity<?> addTeam(@PathVariable String uuid) {
-        logger.debug("Received request on /achieve/team/users/ for user: {}", uuid);
-        List<String> ids = achievementService.addTeam(uuid);
+    public ResponseEntity<?> addTeam(@Valid @RequestBody TeamRequest request) {
+        logger.debug("Received request on /achieve/team: {}", request);
+        List<String> ids = achievementService.addTeam(request);
         logger.info("Added team achievements, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }

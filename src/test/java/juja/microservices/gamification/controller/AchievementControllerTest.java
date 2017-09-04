@@ -35,7 +35,7 @@ public class AchievementControllerTest {
     private static final String ACHIEVE_THANKS_URL = "/v1/gamification/achieve/thanks";
     private static final String ACHIEVE_THANKS_KEEPER_URL = "/v1/gamification/achieve/keepers/thanks";
     private static final String ACHIEVE_WELCOME_URL = "/v1/gamification/achieve/welcome";
-    private static final String ACHIEVE_TEAM_URL = "/v1/gamification/achieve/team/users";
+    private static final String ACHIEVE_TEAM_URL = "/v1/gamification/achieve/team";
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
     private static final String THIRD_ACHIEVEMENT_ID = "3";
@@ -242,20 +242,35 @@ public class AchievementControllerTest {
     @Test
     public void addTeam() throws Exception {
         //given
-        String uuid = "test-uuid";
         List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID, SECOND_ACHIEVEMENT_ID, THIRD_ACHIEVEMENT_ID,
                 FOURTH_ACHIEVEMENT_ID);
 
         //when
-        when(service.addTeam(uuid)).thenReturn(ids);
+        when(service.addTeam(any(TeamRequest.class))).thenReturn(ids);
 
         //then
-        String result =  mockMvc.perform(post(ACHIEVE_TEAM_URL+"/"+uuid))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        verify(service).addTeam(uuid);
+        String jsonContentRequest =
+                "{\"from\":\"uuid1\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
+        String result = getResult(ACHIEVE_TEAM_URL, jsonContentRequest);
+        verify(service).addTeam(any(TeamRequest.class));
         verifyNoMoreInteractions(service);
         assertEquals(FOUR_ID, result);
+    }
+
+    @Test
+    public void addTeamWithEmptyFrom() throws Exception {
+        //given
+        String jsonContentRequest = "{\"from\":\"\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
+        //then
+        checkBadRequest(ACHIEVE_TEAM_URL, jsonContentRequest);
+    }
+
+    @Test
+    public void addTeamWithEmptyMembers() throws Exception {
+        //given
+        String jsonContentRequest = "{\"from\":\"uuid1\",\"members\":[]}";
+        //then
+        checkBadRequest(ACHIEVE_TEAM_URL, jsonContentRequest);
     }
 
     private String getResult(String uri, String jsonContentRequest) throws Exception {

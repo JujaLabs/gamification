@@ -8,13 +8,16 @@ import org.hibernate.validator.constraints.NotEmpty;
 import java.util.Set;
 
 @Getter
-public class TeamDTO {
+public class TeamRequest {
 
     @NotEmpty
-    private final Set<String> members;
+    private String from;
+    @NotEmpty
+    private Set<String> members;
 
     @JsonCreator
-    public TeamDTO(@JsonProperty("members") Set<String> members) {
+    public TeamRequest(@JsonProperty("from") String from, @JsonProperty("members") Set<String> members) {
+        this.from = from;
         this.members = members;
     }
 }
