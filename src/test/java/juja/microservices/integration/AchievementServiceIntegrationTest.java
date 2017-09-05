@@ -1,7 +1,6 @@
 package juja.microservices.integration;
 
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import juja.microservices.gamification.dao.TeamRepository;
 import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.dao.KeeperRepository;
 import juja.microservices.gamification.entity.*;
@@ -38,9 +37,6 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
 
     @MockBean
     private KeeperRepository keeperRepository;
-
-    @MockBean
-    private TeamRepository teamRepository;
 
     @Inject
     private AchievementService achievementService;
@@ -334,11 +330,10 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         String expectedDate = dateFormat.format(new Date(System.currentTimeMillis()));
         Set<String> expectedMembers = new HashSet<>(
                 Arrays.asList(firstUserToID, secondUserToID, thirdUserToID, fourthUserToID));
-        TeamDTO expectedTeam = new TeamDTO(expectedMembers);
+        TeamRequest request = new TeamRequest(userFromID, expectedMembers);
 
         //when
-        when(teamRepository.getTeamByUserUuid(userFromID)).thenReturn(expectedTeam);
-        achievementService.addTeam(firstUserToID);
+        achievementService.addTeam(request);
         List<Achievement> achievementList = achievementRepository.getAllTeamAchievementsCurrentWeek(expectedMembers);
 
         //then
