@@ -12,7 +12,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Vadim Dyachenko
@@ -24,18 +25,15 @@ public class RestKeeperRepository implements KeeperRepository {
     @Inject
     private RestTemplate restTemplate;
 
-    @Value("${keepers.baseURL}")
-    private String urlBase;
-    @Value("${endpoint.keepers}")
-    private String urlGetKeepers;
+    @Value("${keepers.endpoint.getKeepers}")
+    private String keepersGetKeepersUrl;
 
     @Override
     public List<KeeperDTO> getKeepers() {
-        String urlTemplate = urlBase + urlGetKeepers;
         List<KeeperDTO> result;
         logger.debug("Send request to keeper repository");
         try {
-            ResponseEntity<KeeperDTO[]> response = this.restTemplate.getForEntity(urlTemplate, KeeperDTO[].class);
+            ResponseEntity<KeeperDTO[]> response = this.restTemplate.getForEntity(keepersGetKeepersUrl, KeeperDTO[].class);
             result = Arrays.asList(response.getBody());
         } catch (HttpClientErrorException ex) {
             throw new KeepersMicroserviceExchangeException("Keepers microservice Exchange Error: " + ex.getMessage());

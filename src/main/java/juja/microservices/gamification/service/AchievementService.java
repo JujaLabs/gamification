@@ -1,16 +1,29 @@
 package juja.microservices.gamification.service;
 
-import java.util.ArrayList;
-import javax.inject.Inject;
-
 import juja.microservices.gamification.dao.impl.AchievementRepository;
-import juja.microservices.gamification.entity.*;
-import juja.microservices.gamification.exceptions.*;
+import juja.microservices.gamification.entity.Achievement;
+import juja.microservices.gamification.entity.AchievementType;
+import juja.microservices.gamification.entity.CodenjoyRequest;
+import juja.microservices.gamification.entity.DailyRequest;
+import juja.microservices.gamification.entity.InterviewRequest;
+import juja.microservices.gamification.entity.KeeperDTO;
+import juja.microservices.gamification.entity.TeamRequest;
+import juja.microservices.gamification.entity.ThanksRequest;
+import juja.microservices.gamification.entity.WelcomeRequest;
+import juja.microservices.gamification.exceptions.CodenjoyAchievementException;
+import juja.microservices.gamification.exceptions.CodenjoyAchievementTwiceInOneDayException;
+import juja.microservices.gamification.exceptions.TeamAchievementException;
+import juja.microservices.gamification.exceptions.ThanksAchievementMoreThanOneException;
+import juja.microservices.gamification.exceptions.ThanksAchievementMoreThanTwoException;
+import juja.microservices.gamification.exceptions.ThanksAchievementTryToThanksYourselfException;
+import juja.microservices.gamification.exceptions.WelcomeAchievementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -179,7 +192,6 @@ public class AchievementService {
     }
 
     public List<String> addInterview(InterviewRequest request) {
-
         String userFromId = request.getFrom();
         String description = request.getDescription();
         Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description,
@@ -191,9 +203,10 @@ public class AchievementService {
         return result;
     }
 
-    @Scheduled(cron = "${cron.expression}")
-    private void addScheduledThanksKeeper() {
-        if (getThanksKeeperAchievements().isEmpty()) {
+    @Scheduled(cron = "${keeper.thanks.cron.expression}")
+    private void addThanksKeeperScheduled() {
+        List<Achievement> achievements = getThanksKeeperAchievements();
+        if (achievements.isEmpty()) {
             List<String> achievementIds = createThanksKeeperAchievements();
             logger.info("Added Thanks Keeper achievement from scheduled task. Ids: {}", achievementIds);
         }
@@ -201,7 +214,13 @@ public class AchievementService {
 
     public List<String> addThanksKeeper() {
         List<Achievement> achievements = getThanksKeeperAchievements();
-        return achievements.isEmpty() ? createThanksKeeperAchievements() : getIdsCreatedAchievement(achievements);
+        List<String> achievementIds;
+        if (achievements.isEmpty()) {
+            achievementIds = createThanksKeeperAchievements();
+        } else {
+            achievementIds = getIdsCreatedAchievement(achievements);
+        }
+        return achievementIds;
     }
 
     private List<Achievement> getThanksKeeperAchievements() {
@@ -248,7 +267,6 @@ public class AchievementService {
     }
 
     public List<String> addWelcome(WelcomeRequest request) {
-
         String userFromId = request.getFrom();
         String userToId = request.getTo();
 
@@ -277,16 +295,16 @@ public class AchievementService {
         String userFromId = request.getFrom();
         Set<String> members = request.getMembers();
         List<Achievement> teamAchievements = achievementRepository.getAllTeamAchievementsCurrentWeek(members);
-        if (!teamAchievements.isEmpty() ) {
+        if (!teamAchievements.isEmpty()) {
             logger.warn("User '{}' tried to give 'Team' achievements but some members have such achievements this week",
-                userFromId);
+                    userFromId);
             throw new TeamAchievementException("Cannot add 'Team' achievements. Some team members have such " +
                     " achievements this week.");
         }
         List<String> result = new ArrayList<>();
         members.forEach(userId -> {
             result.add(achievementRepository.addAchievement(
-                    new Achievement(userFromId, userId, TEAM_POINTS,TEAM_DESCRIPTION, AchievementType.TEAM))
+                    new Achievement(userFromId, userId, TEAM_POINTS, TEAM_DESCRIPTION, AchievementType.TEAM))
             );
             logger.debug("Add 'Team' achievement from user '{}' to '{}'", userFromId, userId);
         });

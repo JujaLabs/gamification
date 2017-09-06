@@ -4,8 +4,10 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -21,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-@EnableScheduling
 public class Gamification {
 
     public static void main(String[] args) {
@@ -62,5 +63,13 @@ public class Gamification {
         converters.add(new MappingJackson2HttpMessageConverter());
         converters.add(new StringHttpMessageConverter());
         return converters;
+    }
+
+    @ConditionalOnProperty(
+            value = "app.scheduling.enable", havingValue = "true", matchIfMissing = true
+    )
+    @Configuration
+    @EnableScheduling
+    public static class SchedulingConfiguration {
     }
 }
