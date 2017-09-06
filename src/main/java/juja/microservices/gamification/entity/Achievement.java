@@ -3,6 +3,7 @@ package juja.microservices.gamification.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -13,6 +14,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Getter
+@EqualsAndHashCode
 public class Achievement {
 
     @Id

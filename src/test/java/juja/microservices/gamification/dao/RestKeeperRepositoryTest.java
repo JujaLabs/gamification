@@ -1,5 +1,6 @@
 package juja.microservices.gamification.dao;
 
+import juja.microservices.WithoutScheduling;
 import juja.microservices.gamification.entity.KeeperDTO;
 import juja.microservices.gamification.exceptions.KeepersMicroserviceExchangeException;
 import org.junit.Before;
@@ -16,7 +17,6 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,21 +30,18 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class RestKeeperRepositoryTest {
+public class RestKeeperRepositoryTest implements WithoutScheduling {
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
     @Inject
     private KeeperRepository keeperRepository;
     @Inject
     private RestTemplate restTemplate;
     private MockRestServiceServer mockServer;
 
-    @Value("${keepers.baseURL}")
-    private String urlBase;
-    @Value("${endpoint.keepers}")
-    private String urlGetKeepers;
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    @Value("${keepers.endpoint.getKeepers}")
+    private String keepersGetKeepersUrl;
 
     @Before
     public void setup() {
@@ -53,8 +50,7 @@ public class RestKeeperRepositoryTest {
 
     @Test
     public void getKeepers() {
-        //given
-        mockServer.expect(requestTo(urlBase + urlGetKeepers))
+        mockServer.expect(requestTo(keepersGetKeepersUrl))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(
                         "[{\"uuid\":\"0002A\",\"directions\":[\"First direction\",\"Second direction\"]}," +
@@ -71,24 +67,20 @@ public class RestKeeperRepositoryTest {
         expectedList.add(new KeeperDTO("0002A", firstKeeperDirections));
         expectedList.add(new KeeperDTO("0002B", secondKeeperDerections));
 
-        //when
         List<KeeperDTO> result = keeperRepository.getKeepers();
 
-        //then
         assertThat(result, equalTo(expectedList));
     }
 
     @Test
     public void shouldThrowExceptionWhenUserServiceThrowExceptinon() {
-        //given
-        mockServer.expect(requestTo(urlBase + urlGetKeepers))
+        mockServer.expect(requestTo(keepersGetKeepersUrl))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withBadRequest().body("bad request"));
-        //then
+
         thrown.expect(KeepersMicroserviceExchangeException.class);
         thrown.expectMessage(containsString("Keepers microservice Exchange Error: "));
 
-        //when
         keeperRepository.getKeepers();
     }
 }
