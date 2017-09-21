@@ -5,6 +5,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
+import juja.microservices.WithoutScheduling;
 import juja.microservices.gamification.Gamification;
 import org.eclipse.jetty.http.HttpMethod;
 import org.junit.Before;
@@ -26,7 +27,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = {Gamification.class})
 @DirtiesContext
-public class BaseAcceptanceTest {
+public class BaseAcceptanceTest  implements WithoutScheduling {
 
     @LocalServerPort
     int localPort;

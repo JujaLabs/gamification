@@ -1,23 +1,37 @@
 package juja.microservices.gamification.dao;
 
-import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import juja.microservices.gamification.dao.impl.AchievementRepository;
+import juja.microservices.gamification.entity.Achievement;
+import juja.microservices.gamification.entity.AchievementType;
+import juja.microservices.gamification.entity.UserAchievementDetails;
+import juja.microservices.gamification.entity.UserIdsRequest;
+import juja.microservices.gamification.entity.UserPointsSum;
 import juja.microservices.integration.BaseIntegrationTest;
-import juja.microservices.gamification.entity.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
- * @author danil.kuznetsov
+ * @author Danil Kuznetsov
  */
 @RunWith(SpringRunner.class)
 public class AchievementRepositoryTest extends BaseIntegrationTest {
@@ -27,14 +41,15 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
-    @ShouldMatchDataSet(location = "/datasets/addNewAchievement.json")
     public void shouldAddNewAchievementAndReturnNotNullId() {
-        Achievement testAchievement = new Achievement("sasha", "ira", 2,
+        Achievement achievement = new Achievement("sasha", "ira", 1,
                 "good work", AchievementType.DAILY);
-        testAchievement.setSendDate("1917-02-09");
-        String actualId = achievementRepository.addAchievement(testAchievement);
+
+        String actualId = achievementRepository.addAchievement(achievement);
+        List<Achievement> achievements = achievementRepository.getAllAchievementsByUserToId("ira");
 
         assertThat(actualId, notNullValue());
+        assertThat(achievements, contains(achievement));
     }
 
     @Test
@@ -74,15 +89,15 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         ids.add("sasha");
         ids.add("ira");
         UserIdsRequest request = new UserIdsRequest(ids);
+
         List<UserAchievementDetails> list = achievementRepository.getUserAchievementsDetails(request);
+
         assertEquals(2, list.size());
     }
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void getAllAchievementsByUserFromIdCurrentDateTypeTest() {
-        String sendDate = achievementRepository.getFormattedCurrentDate();
-        String lineSeparator = System.lineSeparator();
 
         Achievement testAchievement =
                 new Achievement("oleg", "oleg", 1, "Old daily report", AchievementType.DAILY);
@@ -91,27 +106,103 @@ public class AchievementRepositoryTest extends BaseIntegrationTest {
         Achievement testAchievementNotADaily =
                 new Achievement("oleg", "olga", 1, "Not a daily report", AchievementType.THANKS);
 
-        testAchievement.setSendDate(sendDate);
-        testAchievementAnotherDate.setSendDate("1917-02-09");
+        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime anotherDate = LocalDateTime.of(2017, Month.APRIL, 1, 12, 0);
 
-        String id = achievementRepository.addAchievement(testAchievement);
+        testAchievement.setSendDate(currentDate);
+        testAchievementAnotherDate.setSendDate(anotherDate);
+
+        achievementRepository.addAchievement(testAchievement);
         achievementRepository.addAchievement(testAchievementAnotherDate);
         achievementRepository.addAchievement(testAchievementNotADaily);
-
-        List<Achievement> list = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType("oleg",
+        List<Achievement> achievements = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType("oleg",
                 AchievementType.DAILY);
 
-        String shouldMuchRetrievedAchievement =
-                "Achievement:".concat(lineSeparator)
-                        .concat("id = ").concat(id).concat(lineSeparator)
-                        .concat("from = ").concat("oleg").concat(lineSeparator)
-                        .concat("to = ").concat("oleg").concat(lineSeparator)
-                        .concat("sendDate = ").concat(sendDate).concat(lineSeparator)
-                        .concat("point = ").concat("1").concat(lineSeparator)
-                        .concat("description = ").concat("Old daily report").concat(lineSeparator)
-                        .concat("type = ").concat("DAILY").concat(lineSeparator);
+        assertEquals(1, achievements.size());
+        assertThat(achievements, contains(testAchievement));
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void getAllThanksKeepersAchievementsCurrentWeekTest() {
+        Achievement achievement =
+                new Achievement("sasha", "ira", 2, "keeper thanks", AchievementType.THANKS_KEEPER);
+        achievement.setSendDate(getDateOfMondayOfCurrentWeek());
+        achievementRepository.addAchievement(achievement);
+        List<Achievement> achievements = achievementRepository.getAllThanksKeepersAchievementsCurrentWeek();
+
+        assertEquals(1, achievements.size());
+        assertThat(achievements, contains(achievement));
+    }
+
+    private LocalDateTime getDateOfMondayOfCurrentWeek() {
+        return LocalDateTime.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void getAllCodenjoyAchievementsCurrentDateTest() {
+        String userFromId = "sasha";
+        String userFirstPlace = "ira";
+        String userSecondPlace = "max";
+        String userThirdPlace = "ben";
+
+        Achievement firstPlace = new Achievement(userFromId, userFirstPlace, 3,
+                "Codenjoy first place", AchievementType.CODENJOY);
+        Achievement secondPlace = new Achievement(userFromId, userSecondPlace, 2,
+                "Codenjoy second place", AchievementType.CODENJOY);
+        Achievement thirdPlace = new Achievement(userFromId, userThirdPlace, 1,
+                "Codenjoy third place", AchievementType.CODENJOY);
+
+        achievementRepository.addAchievement(firstPlace);
+        achievementRepository.addAchievement(secondPlace);
+        achievementRepository.addAchievement(thirdPlace);
+        List<Achievement> achievements = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
+
+        assertEquals(3, achievements.size());
+        assertThat(achievements, contains(firstPlace, secondPlace, thirdPlace));
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/addOldTeamAchievement.json")
+    public void getAllTeamAchievementsCurrentWeekNoAchievements() {
+        Set<String> uuids = new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4"));
+
+        List<Achievement> list = achievementRepository.getAllTeamAchievementsCurrentWeek(uuids);
+
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/addOldTeamAchievement.json")
+    public void getAllTeamAchievementsCurrentWeekExistAchievements() {
+        List<Achievement> expected = new ArrayList<>();
+        for (int i = 1; i <= 4; i++) {
+            Achievement achievement = new Achievement("uuidFrom", "uuid" + i, 6,
+                    "Team activity", AchievementType.TEAM);
+            expected.add(achievement);
+            achievementRepository.addAchievement(achievement);
+        }
+
+        Set<String> uuids = new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4"));
+        List<Achievement> actual = achievementRepository.getAllTeamAchievementsCurrentWeek(uuids);
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void getEmptyWelcomeAchievementsByUserTest() {
+        List<Achievement> list = achievementRepository.getWelcomeAchievementByUser("max");
+
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/addWelcomeAchievement.json")
+    public void getWelcomeAchievementsByUserTest() {
+        List<Achievement> list = achievementRepository.getWelcomeAchievementByUser("max");
 
         assertEquals(1, list.size());
-        assertEquals(shouldMuchRetrievedAchievement, list.get(0).toString());
     }
 }

@@ -1,11 +1,11 @@
 {
-  "achievement": [
+  "achievements": [
     {
       "from":"sasha",
       "to":"ira",
       "point":2,
       "description":"good work",
-      "sendDate":"1917-02-09",
+      "sendDate":{ "$date" : "2017-02-07T00:00:00.000Z"},
       "type":"DAILY"
     }
   ]

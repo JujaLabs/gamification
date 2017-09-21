@@ -7,6 +7,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import org.eclipse.jetty.http.HttpMethod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -20,23 +21,20 @@ import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 @RunWith(SpringRunner.class)
 public class UserAcceptanceTest extends BaseAcceptanceTest {
 
-    private static final String USER_POINT_SUM_URL = "/user/pointSum";
-    private static final String USER_ACHIEVE_DETAILS_URL = "/user/achieveDetails";
     private static final String EMPTY_JSON_CONTENT_REQUEST = "";
+    @Value("${endpoint.users.getPointSum}")
+    private String usersGetPointSum;
+    @Value("${endpoint.users.getAchievementDetails}")
+    private String usersGetAchievementDetails;
 
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
     public void testUrlPointSum() throws IOException {
-
-        //given
-        String url = USER_POINT_SUM_URL;
         String expectedResponse = convertToString(resource("acceptance/response/responseUserPointSum.json"));
 
-        //when
-        Response actualResponse = getResponse(url, EMPTY_JSON_CONTENT_REQUEST, HttpMethod.GET);
-        printConsoleReport(url, expectedResponse, actualResponse.body());
+        Response actualResponse = getResponse(usersGetPointSum, EMPTY_JSON_CONTENT_REQUEST, HttpMethod.GET);
+        printConsoleReport(usersGetPointSum, expectedResponse, actualResponse.body());
 
-        //then
         assertThatJson(actualResponse.asString())
                 .when(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(expectedResponse);
@@ -45,17 +43,12 @@ public class UserAcceptanceTest extends BaseAcceptanceTest {
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
     public void testUrlAchieveDetails() throws IOException {
-
-        //given
-        String url = USER_ACHIEVE_DETAILS_URL;
         String jsonContentRequest = convertToString(resource("acceptance/request/selectAchieveDetails.json"));
         String expectedResponse = convertToString(resource("acceptance/response/responseUserAchieveDetails.json"));
 
-        //when
-        Response actualResponse = getResponse(url, jsonContentRequest, HttpMethod.POST);
-        printConsoleReport(url, expectedResponse, actualResponse.body());
+        Response actualResponse = getResponse(usersGetAchievementDetails, jsonContentRequest, HttpMethod.POST);
+        printConsoleReport(usersGetAchievementDetails, expectedResponse, actualResponse.body());
 
-        //then
         assertThatJson(actualResponse.asString())
                 .when(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(expectedResponse);

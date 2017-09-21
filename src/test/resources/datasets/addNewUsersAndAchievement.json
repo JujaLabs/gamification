@@ -1,11 +1,11 @@
 {
-  "achievement" : [
+  "achievements" : [
     {
       "from" : "sasha",
       "to" : "peter",
       "point" : 1,
       "description" : "good work",
-      "sendDate":"2016-04-09",
+      "sendDate":{ "$date" : "2016-04-09T00:00:00.000Z"},
       "type":"THANKS"
     },
     {
@@ -13,7 +13,7 @@
       "to" : "peter",
       "point" : 2,
       "description" : "good work",
-      "sendDate":"2016-03-09",
+      "sendDate":{ "$date" : "2016-03-09T00:00:00.000Z"},
       "type":"CODENJOY"
     },
     {
@@ -21,7 +21,7 @@
       "to" : "peter",
       "point" : 3,
       "description" : "good work",
-      "sendDate":"2016-04-09",
+      "sendDate":{ "$date" : "2016-04-09T00:00:00.000Z"},
       "type":"DAILY"
     },
     {
@@ -29,7 +29,7 @@
       "to" : "max",
       "point" : 1,
       "description" : "good work",
-      "sendDate":"2016-04-09",
+      "sendDate":{ "$date" : "2016-04-09T00:00:00.000Z"},
       "type":"THANKS"
     },
     {
@@ -37,7 +37,7 @@
       "to" : "max",
       "point" : 1,
       "description" : "good work",
-      "sendDate":"2016-04-09",
+      "sendDate":{ "$date" : "2016-04-09T00:00:00.000Z"},
       "type":"CODENJOY"
     },
     {
@@ -45,7 +45,7 @@
       "to": "max",
       "point": 2,
       "description": "good work",
-      "sendDate":"2016-04-09",
+      "sendDate":{ "$date" : "2016-04-09T00:00:00.000Z"},
       "type":"DAILY"
     }
   ]
