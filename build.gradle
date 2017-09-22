@@ -5,33 +5,51 @@ buildscript {
     }
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE'
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
     }
-}
-
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'spring-boot'
-
-group = 'ua.com.juja'
-version = '1.0-SNAPSHOT'
-
-jar {
-    baseName = "gamification"
-    version = "1"
-}
-
-description = "microservices-gamification"
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
 }
 
 repositories {
     mavenCentral()
     mavenLocal()
 }
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: 'docker'
+
+jar {
+    baseName = "gamification"
+    version = "0.1.0"
+}
+
+group = 'juja'
+description = "gamification"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+import org.gradle.internal.os.OperatingSystem
+
+task buildDocker(type: Docker, dependsOn: build) {
+    if(OperatingSystem.current().isLinux()){
+        dockerBinary = "sudo docker"
+    }
+    applicationName = jar.baseName
+    dockerfile = file('docker/Dockerfile')
+    doFirst {
+        copy {
+            from jar
+            into "${stageDir}/target"
+        }
+    }
+}
+
 
 test.testLogging {
     events "skipped", "failed"
