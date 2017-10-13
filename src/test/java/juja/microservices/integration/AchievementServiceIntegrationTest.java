@@ -3,6 +3,7 @@ package juja.microservices.integration;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
+import juja.microservices.gamification.exceptions.WelcomeAchievementException;
 import juja.microservices.gamification.service.AchievementService;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -168,9 +169,9 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         achievementService.addThanks(firstRequest);
         achievementService.addThanks(secondRequest);
 
-        String expectedDescription = "Issued two thanks";
+        String expectedDescription = "You got 'thanks' achievement for thanking to other two users";
         String expectedType = "THANKS";
-        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("sasha");
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId(userFrom);
         String actualDescription = achievementList.get(0).getDescription();
         String actualType = String.valueOf(achievementList.get(0).getType());
 
@@ -181,6 +182,8 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addCodenjoy() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
         String userFrom = "max";
         String firstUserTo = "john";
         String secondUserTo = "bob";
@@ -189,7 +192,7 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         String secondDescription = "Codenjoy second place";
         String thirdDescription = "Codenjoy third place";
         String expectedType = "CODENJOY";
-        String expectedDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
+        String expectedDate = dateFormat.format(new Date(System.currentTimeMillis()));
         CodenjoyRequest request = new CodenjoyRequest(userFrom, firstUserTo, secondUserTo, thirdUserTo);
         achievementService.addCodenjoy(request);
         List<Achievement> achievementList = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
@@ -197,7 +200,7 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         achievementList.forEach(achievement -> {
             assertEquals(userFrom, achievement.getFrom());
             assertEquals(expectedType, achievement.getType().toString());
-            assertEquals(expectedDate, achievement.getSendDate());
+            assertEquals(expectedDate, dateFormat.format(achievement.getSendDate()));
             int point = achievement.getPoint();
             String actualDescription = achievement.getDescription();
             if (point == 5) {
@@ -227,5 +230,44 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         String actualDescription = achievementList.get(0).getDescription();
 
         assertEquals(shouldMuchDescription, actualDescription);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldAddWelcomeAchievement() {
+        String userFromId = "max";
+        String userToId = "john";
+        int expectedPoints = 1;
+        AchievementType expectedType = AchievementType.WELCOME;
+        String expectedDescription = "Welcome to JuJa!";
+        WelcomeRequest request = new WelcomeRequest(userFromId, userToId);
+
+        achievementService.addWelcome(request);
+        List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId("john");
+        Achievement achievement = achievementList.get(0);
+        String actualFromId = achievement.getFrom();
+        String actualToId = achievement.getTo();
+        int actualPoints = achievement.getPoint();
+        AchievementType actualType = achievement.getType();
+        String actualDescription = achievement.getDescription();
+
+        assertEquals(userFromId, actualFromId);
+        assertEquals(userToId, actualToId);
+        assertEquals(expectedPoints, actualPoints);
+        assertEquals(expectedType, actualType);
+        assertEquals(expectedDescription, actualDescription);
+    }
+
+    @Test(expected = WelcomeAchievementException.class)
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void shouldAddTwoWelcomeAchievement() {
+        String userFromId = "max";
+        String userToId = "john";
+        WelcomeRequest request = new WelcomeRequest(userFromId, userToId);
+
+        achievementService.addWelcome(request);
+        achievementService.addWelcome(request);
+
+        fail();
     }
 }

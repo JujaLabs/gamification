@@ -2,15 +2,12 @@ package juja.microservices.gamification.service;
 
 import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.*;
-import juja.microservices.gamification.exceptions.UnsupportedAchievementException;
+import juja.microservices.gamification.exceptions.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
 
@@ -32,29 +29,30 @@ public class AchievementServiceTest {
     private static final int CODENJOY_SECOND_PLACE = 3;
     private static final int CODENJOY_THIRD_PLACE = 1;
     private static final int ONE_POINT = 1;
+    private static final int THANKS_KEEPER = 2;
+    private static final int WELCOME_POINTS = 1;
+    private static final String WELCOME_DESCRIPTION = "Welcome to JuJa!";
+
 
     @Inject
-    private MockMvc mockMvc;
-
-    @Mock
-    private RequestValidator validator;
-
-    @Inject
-    @InjectMocks
     private AchievementService service;
 
     @MockBean
     private AchievementRepository repository;
+    @MockBean
+    private KeeperService keeperService;
 
     @Test
     public void addDaily() throws Exception {
         List<Achievement> userFromIdList = new ArrayList<>();
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.DAILY))
                 .thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         DailyRequest request = new DailyRequest("max", "Daily");
-        String id = service.addDaily(request);
-        assertEquals(FIRST_ACHIEVEMENT_ID, id);
+        List<String> actualList = service.addDaily(request);
+        assertEquals(expectedList, actualList);
     }
 
     @Test
@@ -63,12 +61,14 @@ public class AchievementServiceTest {
         Achievement achievement = new Achievement("max", "max", ONE_POINT, "Daily",
                 AchievementType.DAILY );
         userFromIdList.add(achievement);
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.DAILY))
                 .thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         DailyRequest request = new DailyRequest("max", "Second daily");
-        String id = service.addDaily(request);
-        assertEquals(FIRST_ACHIEVEMENT_ID, id);
+        List<String> actualList = service.addDaily(request);
+        assertEquals(expectedList, actualList);
     }
 
     @Test
@@ -79,12 +79,19 @@ public class AchievementServiceTest {
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         ThanksRequest request = new ThanksRequest("max", "john", "Thanks");
         List<String> actualList = service.addThanks(request);
-        List<String> expectedlist = new ArrayList<>();
-        expectedlist.add(FIRST_ACHIEVEMENT_ID);
-        assertEquals(expectedlist, actualList);
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        assertEquals(expectedList, actualList);
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = ThanksAchievementTryToThanksYourselfException.class)
+    public void addThanksToYourself() throws Exception {
+        ThanksRequest request = new ThanksRequest("max", "max", "Thanks");
+        service.addThanks(request);
+        fail();
+    }
+
+    @Test(expected = ThanksAchievementMoreThanOneException.class)
     public void addSecondThanksToOneUser() throws Exception {
         List<Achievement> userFromIdList = new ArrayList<>();
         Achievement achievement = new Achievement("max", "john", ONE_POINT, "Thanks",
@@ -115,7 +122,7 @@ public class AchievementServiceTest {
         assertEquals(expectedList, actualList);
     }
 
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = ThanksAchievementMoreThanTwoException.class)
     public void addThirdThanks() throws Exception {
         Achievement firstAchievement = new Achievement("max", "john", ONE_POINT, "Thanks",
                 AchievementType.THANKS );
@@ -126,7 +133,7 @@ public class AchievementServiceTest {
         userFromIdList.add(secondAchievement);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS))
                 .thenReturn(userFromIdList);
-        when(repository.addAchievement(any(Achievement.class))).thenThrow(UnsupportedAchievementException.class);
+        when(repository.addAchievement(any(Achievement.class))).thenThrow(ThanksAchievementMoreThanTwoException.class);
         ThanksRequest request = new ThanksRequest("max", "bill","Third thanks");
         service.addThanks(request);
         fail();
@@ -147,21 +154,7 @@ public class AchievementServiceTest {
         assertEquals(expectedList, actualList);
     }
 
-    @Test
-    public void addCodenjoyTwoPlaces() throws Exception {
-        List<Achievement> userFromIdList = new ArrayList<>();
-        when(repository.getAllCodenjoyAchievementsCurrentDate()).thenReturn(userFromIdList);
-        when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID).
-                thenReturn(SECOND_ACHIEVEMENT_ID).thenReturn(THIRD_ACHIEVEMENT_ID);
-        CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "");
-        List<String> actualList = service.addCodenjoy(request);
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(FIRST_ACHIEVEMENT_ID);
-        expectedList.add(SECOND_ACHIEVEMENT_ID);
-        assertEquals(expectedList, actualList);
-    }
-
-    @Test(expected = UnsupportedAchievementException.class)
+    @Test(expected = CodenjoyAchievementTwiceInOneDayException.class)
     public void addSecondCodenjoy() throws Exception {
         Achievement firstAchievement = new Achievement("max", "john", CODENJOY_FIRST_PLACE, "First place codenjoy",
                 AchievementType.CODENJOY );
@@ -179,11 +172,118 @@ public class AchievementServiceTest {
         fail();
     }
 
+    @Test(expected = CodenjoyAchievementException.class)
+    public void addCodenjoyWithSameFirstAndSecondPlaces() throws Exception {
+        CodenjoyRequest request = new CodenjoyRequest("max", "john", "john", "bill");
+        service.addCodenjoy(request);
+        fail();
+    }
+
+    @Test(expected = CodenjoyAchievementException.class)
+    public void addCodenjoyWithSameFirstAndThirdPlaces() throws Exception {
+        CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "john");
+        service.addCodenjoy(request);
+        fail();
+    }
+
+    @Test(expected = CodenjoyAchievementException.class)
+    public void addCodenjoyWithSameSecondAndThirdPlaces() throws Exception {
+        CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "bill");
+        service.addCodenjoy(request);
+        fail();
+    }
+
     @Test
     public void addInterview() throws Exception {
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         InterviewRequest request = new InterviewRequest("max", "Interview");
-        String id = service.addInterview(request);
-        assertEquals(FIRST_ACHIEVEMENT_ID, id);
+        List<String> actualList = service.addInterview(request);
+        assertEquals(expectedList, actualList);
     }
+
+    @Test
+    public void addKeeperThanks() throws Exception {
+        //given
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        List<Keeper> keepersList = new ArrayList<>();
+        keepersList.add(new Keeper("AAA", "thanks for keeper", "alex"));
+        when(keeperService.getKeepers()).thenReturn(keepersList);
+        when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
+
+        //when
+        List<String> actualList = service.addThanksKeeper();
+
+        //then
+        assertEquals(expectedList, actualList);
+    }
+
+    @Test
+    public void addKeeperThanksTwicePerCurrentWeek() throws Exception {
+        //given
+        List<Keeper> keepersList = new ArrayList<>();
+        keepersList.add(new Keeper("AAA", "job", "alex"));
+        List<Achievement> achievements = new ArrayList<>();
+        achievements.add(new Achievement("alex","AAA",THANKS_KEEPER, "job", AchievementType.THANKS_KEEPER));
+        String expectedId = achievements.get(0).getId();
+
+        when(keeperService.getKeepers()).thenReturn(keepersList);
+        when(repository.getAllThanksKeepersAchievementsCurrentWeek()).thenReturn(achievements);
+
+        //when
+        List<String> actualList = service.addThanksKeeper();
+
+        //then
+        assertEquals(expectedId, actualList.get(0));
+    }
+
+    @Test
+    public void addKeeperThanksWithoutActiveKeeperTest() throws Exception {
+        //given
+        when(keeperService.getKeepers()).thenReturn(new ArrayList<>());
+        when(repository.getAllThanksKeepersAchievementsCurrentWeek()).thenReturn(new ArrayList<>());
+
+        //when
+        List<String> actualList = service.addThanksKeeper();
+
+        //then
+        assertTrue(actualList.isEmpty());
+    }
+
+    @Test
+    public void addWelcome() throws Exception {
+        //given
+        List<Achievement> welcomeList = new ArrayList<>();
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        WelcomeRequest request = new WelcomeRequest("max", "john");
+
+        //when
+        when(repository.getWelcomeAchievementByUser("John")).thenReturn(welcomeList);
+        when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
+        List<String> actualList = service.addWelcome(request);
+
+        //then
+        assertEquals(expectedList, actualList);
+    }
+
+    @Test(expected = WelcomeAchievementException.class)
+    public void addSecondWelcome() throws Exception {
+        //given
+        List<Achievement> welcomeList = new ArrayList<>();
+        Achievement achievement = new Achievement("max", "john", WELCOME_POINTS, WELCOME_DESCRIPTION,
+                AchievementType.WELCOME );
+        welcomeList.add(achievement);
+        WelcomeRequest request = new WelcomeRequest("max", "john");
+
+        //when
+        when(repository.getWelcomeAchievementByUser("john")).thenReturn(welcomeList);
+        List<String> actualList = service.addWelcome(request);
+
+        //then
+        fail();
+    }
+
 }

@@ -27,6 +27,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
+    private static final String ACHIEVE_DAILY_URL = "/achieve/daily";
+    private static final String ACHIEVE_THANKS_URL = "/achieve/thanks";
+    private static final String ACHIEVE_CODENJOY_URL = "/achieve/codenjoy";
+    private static final String ACHIEVE_INTERVIEW_URL = "/achieve/interview";
+    private static final String ACHIEVE_WELCOME_URL = "/achieve/welcome";
+    private static final String USER_POINT_SUM_URL = "/user/pointSum";
+    private static final String USER_ACHIEVE_DETAILS = "/user/achieveDetails";
+
     private MockMvc mockMvc;
 
     @Rule
@@ -40,7 +48,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
     public void getAllUsersWithAchievementAndReturnJson() throws Exception {
-        mockMvc.perform(get("/user/pointSum")
+        mockMvc.perform(get(USER_POINT_SUM_URL)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
@@ -50,7 +58,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")
     public void getUsersAchievementDetailsAndReturnJson() throws Exception {
         String json = "{\"toIds\":[\"sasha\", \"ira\"]}";
-        mockMvc.perform(post("/user/achieveDetails")
+        mockMvc.perform(post(USER_ACHIEVE_DETAILS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -65,7 +73,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String jsonContentRequest =
                 "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"good work\"}";
 
-        addThanksIsOk(jsonContentRequest);
+        addAchievementsIsOk(jsonContentRequest, ACHIEVE_THANKS_URL);
 
         MvcResult result = getMvcResultUserAchieveSum();
 
@@ -79,7 +87,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String jsonContentRequest =
                 "{\"from\":\"sasha\",\"to\":\"sasha\",\"description\":\"thanks\"}";
 
-        addThanksFailed(jsonContentRequest);
+        addAchievementsFailed(jsonContentRequest, ACHIEVE_THANKS_URL);
     }
 
     @Test
@@ -90,8 +98,8 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String secondContentRequest =
                 "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
 
-        addThanksIsOk(firstContentRequest);
-        addThanksFailed(secondContentRequest);
+        addAchievementsIsOk(firstContentRequest, ACHIEVE_THANKS_URL);
+        addAchievementsFailed(secondContentRequest, ACHIEVE_THANKS_URL);
     }
 
     @Test
@@ -104,9 +112,9 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String thirdContentRequest =
                 "{\"from\":\"sasha\",\"to\":\"peter\",\"description\":\"thanks\"}";
 
-        addThanksIsOk(firstContentRequest);
-        addThanksIsOk(secondContentRequest);
-        addThanksFailed(thirdContentRequest);
+        addAchievementsIsOk(firstContentRequest, ACHIEVE_THANKS_URL);
+        addAchievementsIsOk(secondContentRequest, ACHIEVE_THANKS_URL);
+        addAchievementsFailed(thirdContentRequest, ACHIEVE_THANKS_URL);
     }
 
     @Test
@@ -121,29 +129,13 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String secondContentRequest =
                 "{\"from\":\"sasha\",\"to\":\"max\",\"description\":\"thanks\"}";
 
-        addThanksIsOk(firstContentRequest);
-        addThanksIsOk(secondContentRequest);
+        addAchievementsIsOk(firstContentRequest, ACHIEVE_THANKS_URL);
+        addAchievementsIsOk(secondContentRequest, ACHIEVE_THANKS_URL);
 
         MvcResult result = getMvcResultUserAchieveSum();
 
         String content = result.getResponse().getContentAsString();
         JSONAssert.assertEquals(expectedJson, content, false);
-    }
-
-    private void addThanksIsOk(String jsonContentRequest) throws Exception {
-        mockMvc.perform(post("/achieve/thanks")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(jsonContentRequest))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
-    }
-
-    private void addThanksFailed(String jsonContentRequest) throws Exception {
-        mockMvc.perform(post("/achieve/thanks")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(jsonContentRequest))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -153,7 +145,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
         String expectedJson =
                 "[{\"to\":\"alex\",\"point\":5},{\"to\":\"jack\",\"point\":3},{\"to\":\"tomas\",\"point\":1}]";
-        addCodenjoyIsOk(jsonContentRequest);
+        addAchievementsIsOk(jsonContentRequest, ACHIEVE_CODENJOY_URL);
         MvcResult result = getMvcResultUserAchieveSum();
         String content = result.getResponse().getContentAsString();
         JSONAssert.assertEquals(expectedJson, content, false);
@@ -164,28 +156,12 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     public void addCodenjoyShouldReturnExceptionFromMissed() throws Exception {
         String jsonContentRequest =
                 "{\"from\":\"\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
-        addCodenjoyFailed(jsonContentRequest);
-    }
-
-    private void addCodenjoyIsOk(String jsonContentRequest) throws Exception {
-        mockMvc.perform(post("/achieve/codenjoy")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(jsonContentRequest))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
-    }
-
-    private void addCodenjoyFailed(String jsonContentRequest) throws Exception {
-        mockMvc.perform(post("/achieve/codenjoy")
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(jsonContentRequest))
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(status().isBadRequest());
+        addAchievementsFailed(jsonContentRequest, ACHIEVE_CODENJOY_URL);
     }
 
     private MvcResult getMvcResultUserAchieveSum() throws Exception {
         return mockMvc
-                .perform(MockMvcRequestBuilders.get("/user/pointSum").contentType(APPLICATION_JSON_UTF8))
+                .perform(MockMvcRequestBuilders.get(USER_POINT_SUM_URL).contentType(APPLICATION_JSON_UTF8))
                 .andReturn();
     }
 
@@ -195,7 +171,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"interview report\"}";
         String expectedJson = "[{\"to\":\"sasha\",\"point\":10}]";
 
-        mockMvc.perform(post("/achieve/interview")
+        mockMvc.perform(post(ACHIEVE_INTERVIEW_URL)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -212,7 +188,97 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     public void addInterviewShouldReturnExceptionFromMissed() throws Exception {
         String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
 
-        mockMvc.perform(post("/achieve/interview")
+        mockMvc.perform(post(ACHIEVE_INTERVIEW_URL)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addDailyReturnValidJson() throws Exception {
+        String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"text\"}";
+        String expectedJson = "[{\"to\":\"sasha\",\"point\":1}]";
+
+        mockMvc.perform(post(ACHIEVE_DAILY_URL)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+        MvcResult result = getMvcResultUserAchieveSum();
+        String content = result.getResponse().getContentAsString();
+
+        assertEquals(expectedJson, content);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addSecondDailyReturnValidJson() throws Exception {
+        String expectedJson = "[{\"to\":\"sasha\",\"point\":1}]";
+        String firstContentRequest = "{\"from\":\"sasha\",\"description\":\"text\"}";
+        String secondContentRequest = "{\"from\":\"sasha\",\"description\":\"add text\"}";
+
+        addAchievementsIsOk(firstContentRequest, ACHIEVE_DAILY_URL);
+        addAchievementsIsOk(secondContentRequest, ACHIEVE_DAILY_URL);
+
+        MvcResult result = getMvcResultUserAchieveSum();
+
+        String content = result.getResponse().getContentAsString();
+        JSONAssert.assertEquals(expectedJson, content, false);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addDailyShouldReturnExceptionFromMissed() throws Exception {
+        String jsonContentRequest = "{\"from\":\"\",\"description\":\"daily description\"}";
+
+        mockMvc.perform(post(ACHIEVE_DAILY_URL)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addDailyShouldReturnExceptionDescriptionMissed() throws Exception {
+        String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
+
+        mockMvc.perform(post(ACHIEVE_DAILY_URL)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addWelcomeShouldReturnValidJson() throws Exception {
+        String expectedJson =
+                "[{\"to\":\"john\",\"point\":1}]";
+        String jsonContentRequest =
+                "{\"from\":\"max\",\"to\":\"john\"}";
+
+        addAchievementsIsOk(jsonContentRequest, ACHIEVE_WELCOME_URL);
+
+        MvcResult result = getMvcResultUserAchieveSum();
+
+        String content = result.getResponse().getContentAsString();
+        assertEquals(expectedJson, content);
+    }
+
+    private void addAchievementsIsOk(String jsonContentRequest, String urlTemplate) throws Exception {
+        mockMvc.perform(post(urlTemplate)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+    }
+
+    private void addAchievementsFailed(String jsonContentRequest, String urlTemplate) throws Exception {
+        mockMvc.perform(post(urlTemplate)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))

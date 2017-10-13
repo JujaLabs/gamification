@@ -20,15 +20,19 @@ public class UserService {
     AchievementRepository repository;
 
     public List<UserAchievementDetails> getUserAchievementsDetails(UserIdsRequest ids) {
+        logger.debug("Enter to getUserAchievementsDetails method");
         return repository.getUserAchievementsDetails(ids);
     }
 
     public List<UserPointsSum> getAllUsersWithPointSum() {
+        logger.debug("Enter to getAllUsersWithPointSum method");
+        logger.debug("Send request to repository");
         List<UserPointsSum> userPointsSums = repository.getAllUsersWithPointSum();
         if (userPointsSums.isEmpty()) {
             logger.warn("User list with points is empty");
             throw new IllegalStateException("User list with points is empty");
         }
+        logger.debug("Return from getAllUsersWithPointSum method");
         return userPointsSums;
     }
 }

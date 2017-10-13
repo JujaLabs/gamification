@@ -20,7 +20,7 @@ class ApiErrorMessage {
     /**
      * The code is internal error code for this exception
      */
-    private int internalErrorCode;
+    private String internalErrorCode;
     /**
      * The message for user
      */
@@ -42,7 +42,7 @@ class ApiErrorMessage {
         return new ApiErrorMessageBuilder(apiStatus);
     }
 
-    private ApiErrorMessage(int code, String clientMessage, String developerMessage) {
+    private ApiErrorMessage(String code, String clientMessage, String developerMessage) {
         this.httpStatus = 0;
         this.internalErrorCode = code;
         this.clientMessage = clientMessage;
