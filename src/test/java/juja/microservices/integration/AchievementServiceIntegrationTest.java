@@ -11,6 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -28,6 +29,9 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(SpringRunner.class)
 public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
+
+    @Value("${system.from.uuid}")
+    private String systemFrom;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -268,7 +272,6 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void shouldAddThanksKeeperAchievement() {
         //given
-        String expectedFrom = "JuJa";
         String expectedUuid = "0002A";
         int expectedPoints = 2;
         AchievementType expectedType = AchievementType.THANKS_KEEPER;
@@ -293,7 +296,7 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         String actualDescription = achievement.getDescription();
 
         //Then
-        assertEquals(expectedFrom, actualFrom);
+        assertEquals(systemFrom, actualFrom);
         assertEquals(expectedUuid, actualUuid);
         assertEquals(expectedPoints, actualPoints);
         assertEquals(expectedType, actualType);
