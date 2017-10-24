@@ -19,6 +19,7 @@ import juja.microservices.gamification.exceptions.ThanksAchievementTryToThanksYo
 import juja.microservices.gamification.exceptions.WelcomeAchievementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -40,11 +41,13 @@ public class AchievementService {
     private static final int KEEPER_THANKS = 2;
     private static final int WELCOME_POINTS = 1;
     private static final String WELCOME_DESCRIPTION = "Welcome to JuJa!";
-    private static final String SYSTEM_FROM = "JuJa";
     private static final String THANKS_DESCRIPTION = "Thank you for keeping in the direction of %s";
     private static final int TEAM_POINTS = 6;
     private static final String TEAM_DESCRIPTION = "Work in team";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Value("${system.from.uuid}")
+    private String systemFrom;
 
     @Inject
     private AchievementRepository achievementRepository;
@@ -244,7 +247,7 @@ public class AchievementService {
                 directions.forEach(direction -> {
                     String description = String.format(THANKS_DESCRIPTION, direction);
                     Achievement achievement = new Achievement(
-                            SYSTEM_FROM, keeper.getUuid(), KEEPER_THANKS, description, AchievementType.THANKS_KEEPER);
+                            systemFrom, keeper.getUuid(), KEEPER_THANKS, description, AchievementType.THANKS_KEEPER);
                     result.add(achievementRepository.addAchievement(achievement));
                 });
             }
