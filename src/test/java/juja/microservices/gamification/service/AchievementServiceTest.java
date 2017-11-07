@@ -1,6 +1,5 @@
 package juja.microservices.gamification.service;
 
-import juja.microservices.WithoutScheduling;
 import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
@@ -44,7 +43,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AchievementService.class)
-public class AchievementServiceTest implements WithoutScheduling {
+public class AchievementServiceTest {
 
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";

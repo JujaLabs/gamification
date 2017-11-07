@@ -1,6 +1,5 @@
 package juja.microservices.gamification.dao;
 
-import juja.microservices.WithoutScheduling;
 import juja.microservices.gamification.entity.KeeperDTO;
 import juja.microservices.gamification.exceptions.KeepersMicroserviceExchangeException;
 import org.junit.Before;
@@ -31,7 +30,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class RestKeeperRepositoryTest implements WithoutScheduling {
+public class RestKeeperRepositoryTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();

@@ -1,6 +1,5 @@
 package juja.microservices.gamification.controller;
 
-import juja.microservices.WithoutScheduling;
 import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.InterviewRequest;
@@ -35,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AchievementController.class)
-public class AchievementControllerTest implements WithoutScheduling {
+public class AchievementControllerTest {
 
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";

@@ -1,6 +1,5 @@
 package juja.microservices.gamification.controller;
 
-import juja.microservices.WithoutScheduling;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
 import juja.microservices.gamification.entity.UserAchievementDetails;
@@ -37,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
-public class UserControllerTest implements WithoutScheduling {
+public class UserControllerTest {
 
     private static final String POINT_SUMS = "[{\"to\":\"max\",\"point\":5},{\"to\":\"john\",\"point\":3}]";
     private static final String ACHIEVEMENTS = "[" +

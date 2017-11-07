@@ -1,6 +1,5 @@
 package juja.microservices.gamification.entity;
 
-import juja.microservices.WithoutScheduling;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -12,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Vadim Dyachenko
  */
-public class KeeperDTOTest implements WithoutScheduling {
+public class KeeperDTOTest {
     @Test
     public void shouldReturnKeeperDTO() {
         String expectedUuid = "000A2";
