@@ -66,9 +66,5 @@ public class UserServiceTest implements WithoutScheduling {
         when(repository.getAllUsersWithPointSum()).thenReturn(expectedList);
 
         service.getAllUsersWithPointSum();
-
-        fail();
-        verify(repository).getAllUsersWithPointSum();
-        verifyNoMoreInteractions(repository);
     }
 }

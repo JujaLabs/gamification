@@ -131,8 +131,6 @@ public class AchievementServiceTest implements WithoutScheduling {
         ThanksRequest request = new ThanksRequest("max", "max", "Thanks");
 
         service.addThanks(request);
-
-        fail();
     }
 
     @Test(expected = ThanksAchievementMoreThanOneException.class)
@@ -146,10 +144,6 @@ public class AchievementServiceTest implements WithoutScheduling {
         ThanksRequest request = new ThanksRequest("max", "john", "Thanks");
 
         service.addThanks(request);
-
-        fail();
-        verify(repository).getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS);
-        verifyNoMoreInteractions(repository);
     }
 
     @Test
@@ -186,11 +180,6 @@ public class AchievementServiceTest implements WithoutScheduling {
         ThanksRequest request = new ThanksRequest("max", "bill", "Third thanks");
 
         service.addThanks(request);
-
-        fail();
-        verify(repository).getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS);
-        verify(repository).addAchievement(any(Achievement.class));
-        verifyNoMoreInteractions(repository);
     }
 
     @Test
@@ -225,10 +214,6 @@ public class AchievementServiceTest implements WithoutScheduling {
         CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "bob");
 
         service.addCodenjoy(request);
-
-        fail();
-        verify(repository).getAllCodenjoyAchievementsCurrentDate();
-        verifyNoMoreInteractions(repository);
     }
 
     @Test(expected = CodenjoyAchievementException.class)
@@ -236,8 +221,6 @@ public class AchievementServiceTest implements WithoutScheduling {
         CodenjoyRequest request = new CodenjoyRequest("max", "john", "john", "bill");
 
         service.addCodenjoy(request);
-
-        fail();
     }
 
     @Test(expected = CodenjoyAchievementException.class)
@@ -245,8 +228,6 @@ public class AchievementServiceTest implements WithoutScheduling {
         CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "john");
 
         service.addCodenjoy(request);
-
-        fail();
     }
 
     @Test(expected = CodenjoyAchievementException.class)
@@ -254,8 +235,6 @@ public class AchievementServiceTest implements WithoutScheduling {
         CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "bill");
 
         service.addCodenjoy(request);
-
-        fail();
     }
 
     @Test
@@ -348,10 +327,6 @@ public class AchievementServiceTest implements WithoutScheduling {
         when(repository.getWelcomeAchievementByUser("john")).thenReturn(welcomeList);
 
         service.addWelcome(request);
-
-        fail();
-        verify(repository).getWelcomeAchievementByUser("john");
-        verifyNoMoreInteractions(repository);
     }
 
     @Test
@@ -382,9 +357,5 @@ public class AchievementServiceTest implements WithoutScheduling {
         when(repository.getAllTeamAchievementsCurrentWeek(eq(members))).thenReturn(achievements);
 
         service.addTeam(request);
-
-        fail();
-        verify(repository).getAllTeamAchievementsCurrentWeek(eq(members));
-        verifyNoMoreInteractions(repository);
     }
 }

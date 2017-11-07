@@ -310,8 +310,6 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
 
         achievementService.addWelcome(request);
         achievementService.addWelcome(request);
-
-        fail();
     }
 
     @Test
