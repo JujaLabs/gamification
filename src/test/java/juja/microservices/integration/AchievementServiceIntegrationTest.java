@@ -277,11 +277,9 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         AchievementType expectedType = AchievementType.THANKS_KEEPER;
         String expectedDescription = "Thank you for keeping in the direction of Codenjoy";
 
-        List<KeeperDTO> keepers = new ArrayList<>();
-        List<String> directions = new ArrayList<>();
-        directions.add("Codenjoy");
+        List<String> directions = Arrays.asList("Codenjoy");
         KeeperDTO keeper = new KeeperDTO("0002A", directions);
-        keepers.add(keeper);
+        List<KeeperDTO> keepers = Arrays.asList(keeper);
         when(keeperRepository.getKeepers()).thenReturn(keepers);
 
         //when

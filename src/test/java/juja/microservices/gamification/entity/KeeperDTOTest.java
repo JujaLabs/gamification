@@ -3,7 +3,7 @@ package juja.microservices.gamification.entity;
 import juja.microservices.WithoutScheduling;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -16,11 +16,8 @@ public class KeeperDTOTest implements WithoutScheduling {
     @Test
     public void shouldReturnKeeperDTO() {
         String expectedUuid = "000A2";
-        List<String> expectedDirection = new ArrayList<>();
-        expectedDirection.add("first direction");
-
-        List<String> direction = new ArrayList<>();
-        direction.add("first direction");
+        List<String> expectedDirection = Collections.singletonList("first direction");
+        List<String> direction = Collections.singletonList("first direction");
         KeeperDTO keeper = new KeeperDTO("000A2", direction);
 
         assertNotNull(keeper);
