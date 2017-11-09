@@ -17,3 +17,20 @@ script:
   - ./gradlew test
   - ./gradlew test --tests "juja.microservices.integration.*"
   - ./gradlew test --tests "juja.microservices.acceptance.*"
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" = "master" ]; then
+        TAG="stable";
+    else
+        TAG="$TRAVIS_BRANCH";
+    fi
+
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+      REPO_NAME="gamification";
+
+      ./gradlew clean build buildDocker;
+
+      docker tag juja/gamification $DOCKER_USERNAME/$REPO_NAME:$TAG;
+      docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
+      docker push $DOCKER_USERNAME/$REPO_NAME;
+    fi
