@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -62,16 +63,15 @@ public class AchievementService {
     public List<String> addDaily(DailyRequest request) {
         String userFromId = request.getFrom();
         String description = request.getDescription();
-        logger.debug("Send request to repository: get daily achievement by user <{}> for current date", userFromId);
+        logger.debug("Request to the repository of created DAILY achievement by user <{}> for current date", userFromId);
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(
                 userFromId, AchievementType.DAILY);
-        List<String> result = new ArrayList<>();
         Achievement achievement;
         if (userFromIdList.size() == 0) {
-            logger.debug("Received empty data from repository");
+            logger.debug("Received empty data from repository. Creating new DAILY achievement.");
             achievement = new Achievement(userFromId, userFromId, DAILY_POINTS, description, AchievementType.DAILY);
         } else {
-            logger.debug("Received achievement id from repository: [{}]", userFromIdList.get(0).getId());
+            logger.debug("Received existing achievement. Id: [{}]", userFromIdList.get(0).getId());
             achievement = userFromIdList.get(0);
             String oldDescription = achievement.getDescription();
             description = oldDescription
@@ -79,11 +79,10 @@ public class AchievementService {
                     .concat(description);
             achievement.setDescription(description);
         }
-        logger.debug("Send 'Daily' achievement to repository");
-        result.add(achievementRepository.addAchievement(achievement));
-        logger.debug("Received id from repository: {}", result);
-
-        return result;
+        logger.debug("Send new DAILY achievement to repository");
+        String id = achievementRepository.addAchievement(achievement);
+        logger.info("Added DAILY achievement from user: {}, id: {}", request.getFrom(), id);
+        return Collections.singletonList(id);
     }
 
     public List<String> addThanks(ThanksRequest request) {

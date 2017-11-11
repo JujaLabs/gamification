@@ -46,11 +46,9 @@ public class AchievementRepository {
         if (achievement.getSendDate() == null) {
             LocalDateTime time = LocalDateTime.now();
             achievement.setSendDate(time);
-            logger.debug("Set send date [{}] to achievement", time);
         }
-        logger.debug("Save achievement to database");
         mongoTemplate.save(achievement, mongoCollectionName);
-        logger.debug("Received id from database [{}]", achievement.getId());
+        logger.debug("Successfully added achievement to database. Type: {}, id: [{}]", achievement.getType(), achievement.getId());
         return achievement.getId();
     }
 

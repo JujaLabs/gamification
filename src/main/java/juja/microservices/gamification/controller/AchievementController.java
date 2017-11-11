@@ -46,9 +46,8 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addDaily(@Valid @RequestBody DailyRequest request) {
-        logger.debug("Received request on /achievements/daily : {}", request);
+        logger.debug("Received request on /achievements/daily from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
         List<String> ids = achievementService.addDaily(request);
-        logger.info("Added 'Daily' achievement, id = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
