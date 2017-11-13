@@ -1,0 +1,9 @@
+.git
+.idea
+Dockerfile
+.gitignore
+.travis.yml
+*.iml
+*.md
+build
+logs
