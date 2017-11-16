@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -90,10 +90,8 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addThanksShouldReturnValidJson() throws Exception {
-        String expectedJson =
-                "[{\"to\":\"ira\",\"point\":1}]";
-        String jsonContentRequest =
-                "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"good work\"}";
+        String expectedJson = "[{\"to\":\"ira\",\"point\":1}]";
+        String jsonContentRequest = "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"good work\"}";
 
         addAchievementsIsOk(jsonContentRequest, achievementsAddThanksUrl);
 
@@ -106,8 +104,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addThanksShouldReturnExceptionCannotThankYourself() throws Exception {
-        String jsonContentRequest =
-                "{\"from\":\"sasha\",\"to\":\"sasha\",\"description\":\"thanks\"}";
+        String jsonContentRequest = "{\"from\":\"sasha\",\"to\":\"sasha\",\"description\":\"thanks\"}";
 
         addAchievementsFailed(jsonContentRequest, achievementsAddThanksUrl);
     }
@@ -115,10 +112,8 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addThanksShouldReturnExceptionOneThanksOnePersonInDay() throws Exception {
-        String firstContentRequest =
-                "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
-        String secondContentRequest =
-                "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
+        String firstContentRequest = "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
+        String secondContentRequest = "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
 
         addAchievementsIsOk(firstContentRequest, achievementsAddThanksUrl);
         addAchievementsFailed(secondContentRequest, achievementsAddThanksUrl);
@@ -127,12 +122,9 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addNewThanksShouldReturnExceptionNotMoreTwoThanks() throws Exception {
-        String firstContentRequest =
-                "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
-        String secondContentRequest =
-                "{\"from\":\"sasha\",\"to\":\"max\",\"description\":\"thanks\"}";
-        String thirdContentRequest =
-                "{\"from\":\"sasha\",\"to\":\"peter\",\"description\":\"thanks\"}";
+        String firstContentRequest = "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
+        String secondContentRequest = "{\"from\":\"sasha\",\"to\":\"max\",\"description\":\"thanks\"}";
+        String thirdContentRequest = "{\"from\":\"sasha\",\"to\":\"peter\",\"description\":\"thanks\"}";
 
         addAchievementsIsOk(firstContentRequest, achievementsAddThanksUrl);
         addAchievementsIsOk(secondContentRequest, achievementsAddThanksUrl);
@@ -277,10 +269,8 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addWelcomeShouldReturnValidJson() throws Exception {
-        String expectedJson =
-                "[{\"to\":\"john\",\"point\":1}]";
-        String jsonContentRequest =
-                "{\"from\":\"max\",\"to\":\"john\"}";
+        String expectedJson = "[{\"to\":\"john\",\"point\":1}]";
+        String jsonContentRequest = "{\"from\":\"max\",\"to\":\"john\"}";
 
         addAchievementsIsOk(jsonContentRequest, achievementsAddWelcomeUrl);
 
@@ -293,14 +283,11 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addThanksKeeperShouldReturnValidJson() throws Exception {
-        String expectedJson =
-                "[{\"to\":\"0002A\",\"point\":2}]";
+        String expectedJson = "[{\"to\":\"0002A\",\"point\":2}]";
 
-        List<KeeperDTO> keepers = new ArrayList<>();
-        List<String> directions = new ArrayList<>();
-        directions.add("direction");
+        List<String> directions = Arrays.asList("direction");
         KeeperDTO keeper = new KeeperDTO("0002A", directions);
-        keepers.add(keeper);
+        List<KeeperDTO> keepers = Arrays.asList(keeper);
         when(keeperRepository.getKeepers()).thenReturn(keepers);
 
         addAchievementsIsOk("", achievementsAddKeeperThanksUrl);
@@ -315,8 +302,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addTeamShouldReturnValidJson() throws Exception {
-        String jsonContentRequest =
-                "{\"from\":\"uuid1\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
+        String jsonContentRequest = "{\"from\":\"uuid1\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
         String expectedJson = "[{\"to\":\"uuid1\",\"point\":6},{\"to\":\"uuid2\",\"point\":6}," +
                 "{\"to\":\"uuid3\",\"point\":6},{\"to\":\"uuid4\",\"point\":6}]";
 
@@ -330,8 +316,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addTeamShouldReturnTeamAchievementException() throws Exception {
-        String jsonContentRequest =
-                "{\"from\":\"uuid1\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
+        String jsonContentRequest = "{\"from\":\"uuid1\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
 
         addAchievementsIsOk(jsonContentRequest, achievementsAddTeamUrl);
         addAchievementsFailed(jsonContentRequest, achievementsAddTeamUrl);

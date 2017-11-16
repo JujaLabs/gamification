@@ -6,7 +6,6 @@ import com.lordofthejars.nosqlunit.mongodb.MongoDbRule;
 import com.lordofthejars.nosqlunit.mongodb.SpringMongoDbRule;
 import com.mongodb.MockMongoClient;
 import com.mongodb.MongoClient;
-import juja.microservices.WithoutScheduling;
 import juja.microservices.gamification.Gamification;
 import org.junit.Rule;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +19,7 @@ import static juja.microservices.integration.GamificationTestConfig.TEST_DATABAS
  * @author danil.kuznetsov
  */
 @SpringBootTest(classes = {GamificationTestConfig.class, Gamification.class})
-public class BaseIntegrationTest implements WithoutScheduling {
+public class BaseIntegrationTest {
 
     @Rule
     public MongoDbRule mongoDbRule = getSpringFongoMongoDbRule();

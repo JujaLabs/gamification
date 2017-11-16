@@ -1,6 +1,5 @@
 package juja.microservices.gamification.service;
 
-import juja.microservices.WithoutScheduling;
 import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.UserAchievementDetails;
 import juja.microservices.gamification.entity.UserIdsRequest;
@@ -25,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserService.class)
-public class UserServiceTest implements WithoutScheduling {
+public class UserServiceTest {
 
     @Inject
     private UserService service;
@@ -66,9 +65,5 @@ public class UserServiceTest implements WithoutScheduling {
         when(repository.getAllUsersWithPointSum()).thenReturn(expectedList);
 
         service.getAllUsersWithPointSum();
-
-        fail();
-        verify(repository).getAllUsersWithPointSum();
-        verifyNoMoreInteractions(repository);
     }
 }

@@ -1,6 +1,5 @@
 package juja.microservices.gamification.service;
 
-import juja.microservices.WithoutScheduling;
 import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
@@ -44,7 +43,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AchievementService.class)
-public class AchievementServiceTest implements WithoutScheduling {
+public class AchievementServiceTest {
 
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
@@ -70,8 +69,7 @@ public class AchievementServiceTest implements WithoutScheduling {
     @Test
     public void addDaily() throws Exception {
         List<Achievement> userFromIdList = new ArrayList<>();
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        List<String> expectedList = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.DAILY))
                 .thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
@@ -89,12 +87,10 @@ public class AchievementServiceTest implements WithoutScheduling {
 
     @Test
     public void addSecondDaily() throws Exception {
-        List<Achievement> userFromIdList = new ArrayList<>();
         Achievement achievement = new Achievement("max", "max", ONE_POINT, "Daily",
                 AchievementType.DAILY);
-        userFromIdList.add(achievement);
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        List<Achievement> userFromIdList = Arrays.asList(achievement);
+        List<String> expectedList = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.DAILY))
                 .thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
@@ -117,11 +113,10 @@ public class AchievementServiceTest implements WithoutScheduling {
                 .thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         ThanksRequest request = new ThanksRequest("max", "john", "Thanks");
+        List<String> expectedList = Arrays.asList(FIRST_ACHIEVEMENT_ID);
 
         List<String> actualList = service.addThanks(request);
 
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(FIRST_ACHIEVEMENT_ID);
         assertEquals(expectedList, actualList);
         ArgumentCaptor<Achievement> captor = ArgumentCaptor.forClass(Achievement.class);
         verify(repository).getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS);
@@ -135,8 +130,6 @@ public class AchievementServiceTest implements WithoutScheduling {
         ThanksRequest request = new ThanksRequest("max", "max", "Thanks");
 
         service.addThanks(request);
-
-        fail();
     }
 
     @Test(expected = ThanksAchievementMoreThanOneException.class)
@@ -150,27 +143,21 @@ public class AchievementServiceTest implements WithoutScheduling {
         ThanksRequest request = new ThanksRequest("max", "john", "Thanks");
 
         service.addThanks(request);
-
-        fail();
-        verify(repository).getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS);
-        verifyNoMoreInteractions(repository);
     }
 
     @Test
     public void addSecondThanks() throws Exception {
-        List<Achievement> userFromIdList = new ArrayList<>();
         Achievement achievement = new Achievement("max", "john", ONE_POINT, "Thanks",
                 AchievementType.THANKS);
-        userFromIdList.add(achievement);
+        List<Achievement> userFromIdList = Arrays.asList(achievement);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS))
                 .thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(SECOND_ACHIEVEMENT_ID)
                 .thenReturn(THIRD_ACHIEVEMENT_ID);
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(SECOND_ACHIEVEMENT_ID);
-        expectedList.add(THIRD_ACHIEVEMENT_ID);
-        ThanksRequest request = new ThanksRequest("max", "bill", "Second thanks");
 
+        List<String> expectedList = Arrays.asList(SECOND_ACHIEVEMENT_ID, THIRD_ACHIEVEMENT_ID);
+
+        ThanksRequest request = new ThanksRequest("max", "bill", "Second thanks");
         List<String> actualList = service.addThanks(request);
 
         assertEquals(expectedList, actualList);
@@ -185,28 +172,19 @@ public class AchievementServiceTest implements WithoutScheduling {
                 AchievementType.THANKS);
         Achievement secondAchievement = new Achievement("max", "bob", ONE_POINT, "Thanks",
                 AchievementType.THANKS);
-        List<Achievement> userFromIdList = new ArrayList<>();
-        userFromIdList.add(firstAchievement);
-        userFromIdList.add(secondAchievement);
+        List<Achievement> userFromIdList = Arrays.asList(firstAchievement, secondAchievement);
         when(repository.getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS))
                 .thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenThrow(ThanksAchievementMoreThanTwoException.class);
         ThanksRequest request = new ThanksRequest("max", "bill", "Third thanks");
 
         service.addThanks(request);
-
-        fail();
-        verify(repository).getAllAchievementsByUserFromIdCurrentDateType("max", AchievementType.THANKS);
-        verify(repository).addAchievement(any(Achievement.class));
-        verifyNoMoreInteractions(repository);
     }
 
     @Test
     public void addCodenjoy() throws Exception {
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(FIRST_ACHIEVEMENT_ID);
-        expectedList.add(SECOND_ACHIEVEMENT_ID);
-        expectedList.add(THIRD_ACHIEVEMENT_ID);
+        List<String> expectedList = Arrays.asList(FIRST_ACHIEVEMENT_ID, SECOND_ACHIEVEMENT_ID, THIRD_ACHIEVEMENT_ID);
+
         List<Achievement> userFromIdList = new ArrayList<>();
         when(repository.getAllCodenjoyAchievementsCurrentDate()).thenReturn(userFromIdList);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID).
@@ -229,18 +207,12 @@ public class AchievementServiceTest implements WithoutScheduling {
                 AchievementType.CODENJOY);
         Achievement thirdAchievement = new Achievement("max", "bob", CODENJOY_THIRD_PLACE, "Third place codenjoy",
                 AchievementType.CODENJOY);
-        List<Achievement> userFromIdList = new ArrayList<>();
-        userFromIdList.add(firstAchievement);
-        userFromIdList.add(secondAchievement);
-        userFromIdList.add(thirdAchievement);
+        List<Achievement> userFromIdList = Arrays.asList(firstAchievement, secondAchievement, thirdAchievement);
+
         when(repository.getAllCodenjoyAchievementsCurrentDate()).thenReturn(userFromIdList);
         CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "bob");
 
         service.addCodenjoy(request);
-
-        fail();
-        verify(repository).getAllCodenjoyAchievementsCurrentDate();
-        verifyNoMoreInteractions(repository);
     }
 
     @Test(expected = CodenjoyAchievementException.class)
@@ -248,8 +220,6 @@ public class AchievementServiceTest implements WithoutScheduling {
         CodenjoyRequest request = new CodenjoyRequest("max", "john", "john", "bill");
 
         service.addCodenjoy(request);
-
-        fail();
     }
 
     @Test(expected = CodenjoyAchievementException.class)
@@ -257,8 +227,6 @@ public class AchievementServiceTest implements WithoutScheduling {
         CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "john");
 
         service.addCodenjoy(request);
-
-        fail();
     }
 
     @Test(expected = CodenjoyAchievementException.class)
@@ -266,14 +234,11 @@ public class AchievementServiceTest implements WithoutScheduling {
         CodenjoyRequest request = new CodenjoyRequest("max", "john", "bill", "bill");
 
         service.addCodenjoy(request);
-
-        fail();
     }
 
     @Test
     public void addInterview() throws Exception {
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        List<String> expectedList = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         when(repository.addAchievement(any(Achievement.class))).thenReturn(FIRST_ACHIEVEMENT_ID);
         InterviewRequest request = new InterviewRequest("max", "Interview");
 
@@ -286,20 +251,13 @@ public class AchievementServiceTest implements WithoutScheduling {
 
     @Test
     public void addKeeperThanks() throws Exception {
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(FIRST_ACHIEVEMENT_ID);
-        expectedList.add(SECOND_ACHIEVEMENT_ID);
-        expectedList.add(THIRD_ACHIEVEMENT_ID);
-
-        List<String> firstKeeperDirections = new ArrayList<>();
-        List<String> secondKeeperDerections = new ArrayList<>();
-        firstKeeperDirections.add("First direction");
-        firstKeeperDirections.add("Second direction");
-        secondKeeperDerections.add("Third direction");
+        List<String> expectedList = Arrays.asList(FIRST_ACHIEVEMENT_ID, SECOND_ACHIEVEMENT_ID, THIRD_ACHIEVEMENT_ID);
+        List<String> firstKeeperDirections = Arrays.asList("First direction", "Second direction");
+        List<String> secondKeeperDirections = Arrays.asList("Third direction");
 
         List<KeeperDTO> keepersList = new ArrayList<>();
         keepersList.add(new KeeperDTO("0002A", firstKeeperDirections));
-        keepersList.add(new KeeperDTO("0002B", secondKeeperDerections));
+        keepersList.add(new KeeperDTO("0002B", secondKeeperDirections));
 
         when(keeperService.getKeepers()).thenReturn(keepersList);
         when(repository.addAchievement(any(Achievement.class)))
@@ -316,9 +274,9 @@ public class AchievementServiceTest implements WithoutScheduling {
 
     @Test
     public void addKeeperThanksTwicePerCurrentWeek() throws Exception {
-        List<Achievement> achievements = new ArrayList<>();
-        achievements.add(new Achievement(
-                "alex", "0002A", THANKS_KEEPER, "good job", AchievementType.THANKS_KEEPER));
+        Achievement achievement = new Achievement(
+                "alex", "0002A", THANKS_KEEPER, "good job", AchievementType.THANKS_KEEPER);
+        List<Achievement> achievements = Arrays.asList(achievement);
         String expectedId = achievements.get(0).getId();
         when(repository.getAllThanksKeepersAchievementsCurrentWeek()).thenReturn(achievements);
 
@@ -361,18 +319,13 @@ public class AchievementServiceTest implements WithoutScheduling {
 
     @Test(expected = WelcomeAchievementException.class)
     public void addSecondWelcome() throws Exception {
-        List<Achievement> welcomeList = new ArrayList<>();
         Achievement achievement = new Achievement("max", "john", WELCOME_POINTS, WELCOME_DESCRIPTION,
                 AchievementType.WELCOME);
-        welcomeList.add(achievement);
+        List<Achievement> welcomeList = Arrays.asList(achievement);
         WelcomeRequest request = new WelcomeRequest("max", "john");
         when(repository.getWelcomeAchievementByUser("john")).thenReturn(welcomeList);
 
         service.addWelcome(request);
-
-        fail();
-        verify(repository).getWelcomeAchievementByUser("john");
-        verifyNoMoreInteractions(repository);
     }
 
     @Test
@@ -403,9 +356,5 @@ public class AchievementServiceTest implements WithoutScheduling {
         when(repository.getAllTeamAchievementsCurrentWeek(eq(members))).thenReturn(achievements);
 
         service.addTeam(request);
-
-        fail();
-        verify(repository).getAllTeamAchievementsCurrentWeek(eq(members));
-        verifyNoMoreInteractions(repository);
     }
 }
