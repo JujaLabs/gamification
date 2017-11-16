@@ -1,3 +1,10 @@
+FROM java:8 as GRADLE
+COPY . /app-src
+WORKDIR /app-src
+
+RUN ls -a /app-src/
+RUN /app-src/gradlew clean build
+
 FROM frolvlad/alpine-oraclejdk8:slim
 MAINTAINER Danil Kuznetsov <kuznetsov.danil.v@gmail.com>
 
@@ -17,7 +24,7 @@ RUN apk del tzdata && \
     rm -rf /var/cache/apk/*
 
 WORKDIR /data/
-ADD target/gamification-0.1.0.jar /data/app.jar
+COPY --from=GRADLE /app-src/build/libs/gamification-0.1.0.jar /data/app.jar
 RUN sh -c 'touch /data/app.jar'
 
 ENV JAVA_OPTS=""
