@@ -193,14 +193,15 @@ public class AchievementService {
     public List<String> addInterview(InterviewRequest request) {
         String userFromId = request.getFrom();
         String description = request.getDescription();
-        Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description,
+        Achievement achievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description,
                 AchievementType.INTERVIEW);
-        List<String> result = new ArrayList<>();
-        logger.debug("Send 'Interview' achievement to repository");
-        result.add(achievementRepository.addAchievement(newAchievement));
-        logger.debug("Received id from repository: {}", result);
-        return result;
+
+        logger.debug("Send INTERVIEW achievement to repository");
+        String id = achievementRepository.addAchievement(achievement);
+        logger.info("Added INTERVIEW achievement from user: '{}', id: [{}]", request.getFrom(), id);
+        return Collections.singletonList(id);
     }
+
 
     @Scheduled(cron = "${keeper.thanks.cron.expression}")
     private void addThanksKeeperScheduled() {

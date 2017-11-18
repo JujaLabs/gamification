@@ -101,9 +101,8 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addInterview(@Valid @RequestBody InterviewRequest request) {
-        logger.debug("Received request on /achievements/interview : {}", request);
+        logger.debug("Received request on /achievements/interview from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
         List<String> ids = achievementService.addInterview(request);
-        logger.info("Added 'Interview' achievement, id = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
