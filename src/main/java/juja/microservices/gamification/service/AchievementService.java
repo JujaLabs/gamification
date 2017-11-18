@@ -63,7 +63,7 @@ public class AchievementService {
     public List<String> addDaily(DailyRequest request) {
         String userFromId = request.getFrom();
         String description = request.getDescription();
-        logger.debug("Request to the repository of created DAILY achievement by user <{}> for current date", userFromId);
+        logger.debug("Request to repository of created DAILY achievement by user '{}' for current date", userFromId);
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(
                 userFromId, AchievementType.DAILY);
         Achievement achievement;
@@ -79,9 +79,9 @@ public class AchievementService {
                     .concat(description);
             achievement.setDescription(description);
         }
-        logger.debug("Send new DAILY achievement to repository");
+        logger.debug("Send DAILY achievement to repository");
         String id = achievementRepository.addAchievement(achievement);
-        logger.info("Added DAILY achievement from user: {}, id: {}", request.getFrom(), id);
+        logger.info("Added DAILY achievement from user: '{}', id: [{}]", request.getFrom(), id);
         return Collections.singletonList(id);
     }
 
@@ -91,43 +91,43 @@ public class AchievementService {
         String description = request.getDescription();
 
         if (fromId.equalsIgnoreCase(toId)) {
-            logger.warn("User '{}' tried to put 'Thanks' achievement to yourself", request.getTo());
-            throw new ThanksAchievementTryToThanksYourselfException("User tried to put 'Thanks' achievement to yourself");
+            logger.warn("User '{}' tried to put THANKS achievement to yourself", request.getTo());
+            throw new ThanksAchievementTryToThanksYourselfException("User tried to put THANKS achievement to yourself");
         }
-        logger.debug("Send request to repository: get thanks achievements by user <{}> for current date", fromId);
+        logger.debug("Request to repository of created THANKS achievements by user '{}' for current date", fromId);
         List<Achievement> userFromThanksAchievementToday = achievementRepository
                 .getAllAchievementsByUserFromIdCurrentDateType(fromId, AchievementType.THANKS);
-        logger.debug("Received list of achievements, size = {}", userFromThanksAchievementToday.size());
+        logger.debug("Received list of THANKS achievements, size = {}", userFromThanksAchievementToday.size());
         if (userFromThanksAchievementToday.size() >= TWO_THANKS) {
-            logger.warn("User '{}' tried to give 'Thanks' achievement more than two times per day", fromId);
+            logger.warn("User '{}' tried to give THANKS achievement more than two times per day", fromId);
             throw new ThanksAchievementMoreThanTwoException(
-                    "User tried to give 'Thanks' achievement more than two times per day");
+                    "User tried to give THANKS achievement more than two times per day");
         }
 
         for (Achievement achievement : userFromThanksAchievementToday) {
             if (achievement.getTo().equals(toId)) {
-                logger.warn("User '{}' tried to give 'Thanks' achievement more than one times to person '{}'", fromId,
+                logger.warn("User '{}' tried to give THANKS achievement more than one times to person '{}'", fromId,
                         toId);
                 throw new ThanksAchievementMoreThanOneException(
-                        "User tried to give 'Thanks' achievement more than one times to person");
+                        "User tried to give THANKS achievement more than one times to person");
             }
         }
 
-        List<String> result = new ArrayList<>();
         Achievement achievement = new Achievement(fromId, toId, THANKS_POINTS, description, AchievementType.THANKS);
-        logger.debug("Send 'Thanks' achievement to repository");
+        logger.debug("Send THANKS achievement to repository");
+        List<String> result = new ArrayList<>();
         result.add(achievementRepository.addAchievement(achievement));
 
         if (!userFromThanksAchievementToday.isEmpty()) {
-            String descriptionTwoThanks = ("You got 'thanks' achievement for thanking to other two users");
+            String descriptionTwoThanks = ("You got THANKS achievement for thanking to other two users");
 
             Achievement achievementTwoThanks = new Achievement(fromId, fromId, THANKS_POINTS, descriptionTwoThanks,
                     AchievementType.THANKS);
-            logger.debug("Send additional 'Thanks' achievement to repository");
+            logger.debug("Send additional THANKS achievement to repository");
             result.add(achievementRepository.addAchievement(achievementTwoThanks));
         }
 
-        logger.debug("Received id from repository: {}", result);
+        logger.info("Added THANKS achievements from user: '{}', ids: {}", fromId, result);
         return result;
     }
 

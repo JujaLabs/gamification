@@ -25,6 +25,7 @@ import java.util.List;
 
 /**
  * @author Olga Kulykova
+ * @author Vadim Dyachenko
  */
 @RestController
 @RequestMapping(consumes = "application/json", produces = "application/json")
@@ -65,9 +66,8 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addThanks(@Valid @RequestBody ThanksRequest request) {
-        logger.debug("Received request on /achievements/thanks : {}", request);
+        logger.debug("Received request on /achievements/thanks from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
         List<String> ids = achievementService.addThanks(request);
-        logger.info("Added 'Thanks' achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
