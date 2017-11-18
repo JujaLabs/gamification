@@ -83,9 +83,9 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addCodenjoy(@Valid @RequestBody CodenjoyRequest request) {
-        logger.debug("Received request on /achievements/codenjoy : {}", request);
+        logger.debug("Received request on /achievements/codenjoy from user: '{}', places: 1st-'{}', 2nd-'{}', 3rd-'{}'",
+                request.getFrom(), request.getFirstPlace(), request.getSecondPlace(), request.getThirdPlace());
         List<String> ids = achievementService.addCodenjoy(request);
-        logger.info("Added 'Codenjoy' achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 

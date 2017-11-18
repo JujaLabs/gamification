@@ -63,7 +63,7 @@ public class AchievementService {
     public List<String> addDaily(DailyRequest request) {
         String userFromId = request.getFrom();
         String description = request.getDescription();
-        logger.debug("Request to repository of created DAILY achievement by user '{}' for current date", userFromId);
+        logger.debug("Send request to repository of created DAILY achievement by user '{}' for current date", userFromId);
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(
                 userFromId, AchievementType.DAILY);
         Achievement achievement;
@@ -94,7 +94,7 @@ public class AchievementService {
             logger.warn("User '{}' tried to put THANKS achievement to yourself", request.getTo());
             throw new ThanksAchievementTryToThanksYourselfException("User tried to put THANKS achievement to yourself");
         }
-        logger.debug("Request to repository of created THANKS achievements by user '{}' for current date", fromId);
+        logger.debug("Send request to repository of created THANKS achievements by user '{}' for current date", fromId);
         List<Achievement> userFromThanksAchievementToday = achievementRepository
                 .getAllAchievementsByUserFromIdCurrentDateType(fromId, AchievementType.THANKS);
         logger.debug("Received list of THANKS achievements, size = {}", userFromThanksAchievementToday.size());
@@ -134,16 +134,16 @@ public class AchievementService {
     public List<String> addCodenjoy(CodenjoyRequest request) {
         checkUsers(request);
         String userFromId = request.getFrom();
-        logger.debug("Send request to repository: get all codenjoy achievements for current date");
+        logger.debug("Send request to repository of created CODENJOY achievements for current date");
         List<Achievement> codenjoyUsersToday = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
-        logger.debug("Received list of achievements, size = {}", codenjoyUsersToday.size());
+        logger.debug("Received list of CODENJOY achievements, size = {}", codenjoyUsersToday.size());
         if (!codenjoyUsersToday.isEmpty()) {
-            logger.warn("User '{}' tried to give 'Codenjoy' achievement points twice a day", userFromId);
-            throw new CodenjoyAchievementTwiceInOneDayException("User tried to give 'Codenjoy' achievement points twice a day");
+            logger.warn("User '{}' tried to give CODENJOY achievement points twice a day", userFromId);
+            throw new CodenjoyAchievementTwiceInOneDayException("User tried to give CODENJOY achievement points twice a day");
         }
 
         List<String> result = addCodenjoyAchievement(request);
-        logger.debug("Received id from repository: {}", result);
+        logger.info("Added CODENJOY achievements, ids: {}", result);
         return result;
     }
 
@@ -154,15 +154,15 @@ public class AchievementService {
         String thirdUserId = request.getThirdPlace();
 
         if (firstUserId.equalsIgnoreCase(secondUserId)) {
-            logger.warn("Codenjoy request rejected: first and second place users is same");
+            logger.warn("CODENJOY request rejected: first and second place users is same");
             throw new CodenjoyAchievementException("First and second users is same");
         }
         if (firstUserId.equalsIgnoreCase(thirdUserId)) {
-            logger.warn("Codenjoy request rejected: first and third place users is same");
+            logger.warn("CODENJOY request rejected: first and third place users is same");
             throw new CodenjoyAchievementException("First and third users is same");
         }
         if (secondUserId.equalsIgnoreCase(thirdUserId)) {
-            logger.warn("Codenjoy request rejected: second and third place users is same");
+            logger.warn("CODENJOY request rejected: second and third place users is same");
             throw new CodenjoyAchievementException("Second and third users is same");
         }
         logger.debug("Verification was successful");
@@ -184,11 +184,8 @@ public class AchievementService {
 
         List<String> result = new ArrayList<>();
         result.add(achievementRepository.addAchievement(firstPlace));
-        logger.debug("Add fist place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userFirstPlace);
         result.add(achievementRepository.addAchievement(secondPlace));
-        logger.debug("Add second place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userSecondPlace);
         result.add(achievementRepository.addAchievement(thirdPlace));
-        logger.debug("Add third place 'Codenjoy' achievement from user '{}' to '{}'", userFromId, userThirdPlace);
 
         return result;
     }
