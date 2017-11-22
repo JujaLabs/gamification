@@ -152,9 +152,8 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addTeam(@Valid @RequestBody TeamRequest request) {
-        logger.debug("Received request on /achievements/team: {}", request);
+        logger.debug("Received request on /achievements/team from user: '{}'", request.getFrom());
         List<String> ids = achievementService.addTeam(request);
-        logger.info("Added team achievements, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 }

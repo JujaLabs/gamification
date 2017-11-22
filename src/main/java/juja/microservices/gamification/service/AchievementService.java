@@ -224,7 +224,7 @@ public class AchievementService {
             achievementIds = achievements.stream()
                     .map(Achievement::getId)
                     .collect(Collectors.toList());
-             logger.info("Returned already created THANKS KEEPER achievements in current week {}", achievementIds);
+            logger.info("Returned already created THANKS KEEPER achievements in current week {}", achievementIds);
         }
         return achievementIds;
     }
@@ -297,13 +297,13 @@ public class AchievementService {
             throw new TeamAchievementException("Cannot add 'Team' achievements. Some team members have such " +
                     " achievements this week.");
         }
-        List<String> result = new ArrayList<>();
-        members.forEach(userId -> {
-            result.add(achievementRepository.addAchievement(
-                    new Achievement(userFromId, userId, TEAM_POINTS, TEAM_DESCRIPTION, AchievementType.TEAM))
-            );
-            logger.debug("Add 'Team' achievement from user '{}' to '{}'", userFromId, userId);
-        });
-        return result;
+
+        List<String> ids = members.stream()
+                .map(userId -> achievementRepository.addAchievement(
+                        new Achievement(userFromId, userId, TEAM_POINTS, TEAM_DESCRIPTION, AchievementType.TEAM)))
+                .collect(Collectors.toList());
+
+        logger.info("Added TEAM achievements from user '{}' to '{}'", userFromId, ids);
+        return ids;
     }
 }
