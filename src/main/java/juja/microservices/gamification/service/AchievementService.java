@@ -268,23 +268,21 @@ public class AchievementService {
         String userFromId = request.getFrom();
         String userToId = request.getTo();
 
-        logger.debug("Send request to repository: get welcome achievement by user <{}>", userToId);
+        logger.debug("Send request to repository: get already created  WELCOME achievement by user '{}'", userToId);
         List<Achievement> welcome = achievementRepository.getWelcomeAchievementByUser(userToId);
 
         if (!welcome.isEmpty()) {
             logger.warn("User '{}' tried to give 'Welcome' achievement more than one time to {}",
                     userFromId, userToId);
             throw new WelcomeAchievementException(
-                    "User tried to give 'Welcome' achievement more than one time to one person");
+                    "User tried to give WELCOME achievement more than one time to one person");
         } else {
-            List<String> result = new ArrayList<>();
-            Achievement newAchievement = new Achievement(userFromId, userToId, WELCOME_POINTS, WELCOME_DESCRIPTION,
+            Achievement achievement = new Achievement(userFromId, userToId, WELCOME_POINTS, WELCOME_DESCRIPTION,
                     AchievementType.WELCOME);
-            logger.debug("Send new 'Welcome' achievement to repository");
-            result.add(achievementRepository.addAchievement(newAchievement));
-            logger.debug("Received id from repository: {}", result);
-
-            return result;
+            logger.debug("Send new WELCOME achievement to repository");
+            String id = achievementRepository.addAchievement(achievement);
+            logger.info("Added WELCOME achievement from user: '{}', id: [{}]", request.getFrom(), id);
+            return Collections.singletonList(id);
         }
     }
 

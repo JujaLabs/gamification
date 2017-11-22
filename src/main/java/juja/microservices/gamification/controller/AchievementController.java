@@ -135,9 +135,8 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addWelcome(@Valid @RequestBody WelcomeRequest request) {
-        logger.debug("Received request on /achievements/welcome : {}", request);
+        logger.debug("Received request on /achievements/welcome from user: '{}'", request.getFrom());
         List<String> ids = achievementService.addWelcome(request);
-        logger.info("Added welcome achievement, id = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
