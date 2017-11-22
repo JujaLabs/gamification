@@ -25,9 +25,11 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AchievementService {
@@ -208,7 +210,7 @@ public class AchievementService {
         List<Achievement> achievements = getThanksKeeperAchievements();
         if (achievements.isEmpty()) {
             List<String> achievementIds = createThanksKeeperAchievements();
-            logger.info("Added Thanks Keeper achievement from scheduled task. Ids: {}", achievementIds);
+            logger.info("Added THANKS KEEPER achievement from scheduled task. Ids: {}", achievementIds);
         }
     }
 
@@ -217,53 +219,49 @@ public class AchievementService {
         List<String> achievementIds;
         if (achievements.isEmpty()) {
             achievementIds = createThanksKeeperAchievements();
+            logger.info("Added new THANKS KEEPER achievement. Ids: {}", achievementIds);
         } else {
-            achievementIds = getIdsCreatedAchievement(achievements);
+            achievementIds = achievements.stream()
+                    .map(Achievement::getId)
+                    .collect(Collectors.toList());
+             logger.info("Returned already created THANKS KEEPER achievements in current week {}", achievementIds);
         }
         return achievementIds;
     }
 
     private List<Achievement> getThanksKeeperAchievements() {
-        logger.debug("Send request to repository: get all thanks_keepers achievements for current week");
+        logger.debug("Send request to repository of created THANKS KEEPER achievements for current week");
         List<Achievement> achievements = achievementRepository.getAllThanksKeepersAchievementsCurrentWeek();
-        logger.debug("Received list of achievements, size = {}", achievements.size());
+        logger.debug("Received list of THANKS KEEPER achievements, size = {}", achievements.size());
         return achievements;
     }
 
     private List<String> createThanksKeeperAchievements() {
-        List<String> result = new ArrayList<>();
         logger.debug("Request to keepers repository: get all active keepers");
         List<KeeperDTO> keepers = keeperService.getKeepers();
         logger.debug("Received list of active keepers, size = {} ", keepers.size());
+        List<String> result = new ArrayList<>();
         if (keepers.isEmpty()) {
             logger.debug("No any active keepers received from user service");
         } else {
-            logger.debug("Sending 'Thanks Keeper' achievements to repository");
-            for (KeeperDTO keeper : keepers) {
-                List<String> directions = keeper.getDirections();
-                directions.forEach(direction -> {
-                    String description = String.format(THANKS_DESCRIPTION, direction);
-                    Achievement achievement = new Achievement(
-                            systemFrom, keeper.getUuid(), KEEPER_THANKS, description, AchievementType.THANKS_KEEPER);
-                    result.add(achievementRepository.addAchievement(achievement));
-                });
-            }
-            logger.debug("Received ids from repository: {}", result);
+            result = keepers.stream()
+                    .map(this::getNewThanksKeeperAchievements)
+                    .flatMap(Collection::stream)
+                    .map(achievementRepository::addAchievement)
+                    .collect(Collectors.toList());
         }
         return result;
     }
 
-    private List<String> getIdsCreatedAchievement(List<Achievement> achievements) {
-        List<String> result = getIds(achievements);
-        logger.info("Returned already created 'Thanks Keeper' achievements in current week {}", result.toString());
-
-        return result;
+    private List<Achievement> getNewThanksKeeperAchievements(KeeperDTO keeper) {
+        return keeper.getDirections().stream()
+                .map(direction -> getAchievement(keeper.getUuid(), direction))
+                .collect(Collectors.toList());
     }
 
-    private List<String> getIds(List<Achievement> achievements) {
-        List<String> result = new ArrayList<>();
-        achievements.forEach(achievement -> result.add(achievement.getId()));
-        return result;
+    private Achievement getAchievement(String uuid, String direction) {
+        String description = String.format(THANKS_DESCRIPTION, direction);
+        return new Achievement(systemFrom, uuid, KEEPER_THANKS, description, AchievementType.THANKS_KEEPER);
     }
 
     public List<String> addWelcome(WelcomeRequest request) {

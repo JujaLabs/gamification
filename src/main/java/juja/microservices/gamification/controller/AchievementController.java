@@ -120,7 +120,6 @@ public class AchievementController {
     public ResponseEntity<?> addThanksKeeper() {
         logger.debug("Received request on /achievements/keepers/thanks");
         List<String> ids = achievementService.addThanksKeeper();
-        logger.info("Added 'Thanks keeper' achievement, id = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
