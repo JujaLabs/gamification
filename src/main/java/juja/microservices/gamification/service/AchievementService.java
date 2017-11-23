@@ -254,7 +254,7 @@ public class AchievementService {
     }
 
     private List<Achievement> prepareThanksKeeperAchievements(KeeperDTO keeper) {
-        logger.debug("Preparing THANKS KEEPER achievements for send to repository");
+        logger.debug("Preparing THANKS KEEPER achievements for send to repository. {}", keeper);
         return keeper.getDirections().stream()
                 .map(direction -> createAchievement(keeper.getUuid(), direction))
                 .collect(Collectors.toList());
