@@ -1,6 +1,5 @@
 package juja.microservices.gamification.dao;
 
-import juja.microservices.WithoutScheduling;
 import juja.microservices.gamification.entity.KeeperDTO;
 import juja.microservices.gamification.exceptions.KeepersMicroserviceExchangeException;
 import org.junit.Before;
@@ -18,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class RestKeeperRepositoryTest implements WithoutScheduling {
+public class RestKeeperRepositoryTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -57,11 +57,8 @@ public class RestKeeperRepositoryTest implements WithoutScheduling {
                                 "{\"uuid\":\"0002B\",\"directions\":[\"Third direction\"]}]",
                         MediaType.APPLICATION_JSON));
 
-        List<String> firstKeeperDirections = new ArrayList<>();
-        List<String> secondKeeperDerections = new ArrayList<>();
-        firstKeeperDirections.add("First direction");
-        firstKeeperDirections.add("Second direction");
-        secondKeeperDerections.add("Third direction");
+        List<String> firstKeeperDirections = Arrays.asList("First direction", "Second direction");
+        List<String> secondKeeperDerections = Arrays.asList("Third direction");
 
         List<KeeperDTO> expectedList = new ArrayList<>();
         expectedList.add(new KeeperDTO("0002A", firstKeeperDirections));

@@ -1,6 +1,5 @@
 package juja.microservices.gamification.controller;
 
-import juja.microservices.WithoutScheduling;
 import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.InterviewRequest;
@@ -18,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AchievementController.class)
-public class AchievementControllerTest implements WithoutScheduling {
+public class AchievementControllerTest {
 
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
@@ -68,8 +66,7 @@ public class AchievementControllerTest implements WithoutScheduling {
 
     @Test
     public void addDaily() throws Exception {
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        List<String> expectedList = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         when(service.addDaily(any(DailyRequest.class))).thenReturn(expectedList);
         String jsonContentRequest = "{\"from\":\"max\",\"description\":\"Daily report\"}";
 
@@ -99,8 +96,7 @@ public class AchievementControllerTest implements WithoutScheduling {
 
     @Test
     public void addFirstThanks() throws Exception {
-        List<String> ids = new ArrayList<>();
-        ids.add(FIRST_ACHIEVEMENT_ID);
+        List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         when(service.addThanks(any(ThanksRequest.class))).thenReturn(ids);
         String jsonContentRequest = "{\"from\":\"max\",\"to\":\"john\",\"description\":\"thanks\"}";
 
@@ -117,9 +113,7 @@ public class AchievementControllerTest implements WithoutScheduling {
 
     @Test
     public void addSecondThanks() throws Exception {
-        List<String> ids = new ArrayList<>();
-        ids.add(FIRST_ACHIEVEMENT_ID);
-        ids.add(SECOND_ACHIEVEMENT_ID);
+        List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID, SECOND_ACHIEVEMENT_ID);
         when(service.addThanks(any(ThanksRequest.class))).thenReturn(ids);
         String jsonContentRequest = "{\"from\":\"max\",\"to\":\"john\",\"description\":\"thanks\"}";
 
@@ -157,8 +151,7 @@ public class AchievementControllerTest implements WithoutScheduling {
 
     @Test
     public void addThanksKeeper() throws Exception {
-        List<String> ids = new ArrayList<>();
-        ids.add(FIRST_ACHIEVEMENT_ID);
+        List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         when(service.addThanksKeeper()).thenReturn(ids);
 
         String result = getResult(achievementsAddKeeperThanksUrl, "");
@@ -170,11 +163,9 @@ public class AchievementControllerTest implements WithoutScheduling {
 
     @Test
     public void addCodenjoy() throws Exception {
-        List<String> ids = new ArrayList<>();
         CodenjoyRequest expected = new CodenjoyRequest("max", "alex", "jack", "tomas");
-        ids.add(FIRST_ACHIEVEMENT_ID);
-        ids.add(SECOND_ACHIEVEMENT_ID);
-        ids.add(THIRD_ACHIEVEMENT_ID);
+        List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID, SECOND_ACHIEVEMENT_ID, THIRD_ACHIEVEMENT_ID);
+
         when(service.addCodenjoy(any(CodenjoyRequest.class))).thenReturn(ids);
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
@@ -225,8 +216,7 @@ public class AchievementControllerTest implements WithoutScheduling {
 
     @Test
     public void addInterview() throws Exception {
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        List<String> expectedList = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         InterviewRequest expected = new InterviewRequest("max", "Interview report");
         when(service.addInterview((any(InterviewRequest.class)))).thenReturn(expectedList);
         String jsonContentRequest = "{\"from\":\"max\",\"description\":\"Interview report\"}";
@@ -257,8 +247,7 @@ public class AchievementControllerTest implements WithoutScheduling {
 
     @Test
     public void addWelcome() throws Exception {
-        List<String> ids = new ArrayList<>();
-        ids.add(FIRST_ACHIEVEMENT_ID);
+        List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         String jsonContentRequest = "{\"from\":\"max\",\"to\":\"john\"}";
         when(service.addWelcome(any(WelcomeRequest.class))).thenReturn(ids);
 
