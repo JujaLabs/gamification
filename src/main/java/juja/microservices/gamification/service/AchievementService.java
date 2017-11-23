@@ -256,11 +256,11 @@ public class AchievementService {
     private List<Achievement> prepareThanksKeeperAchievements(KeeperDTO keeper) {
         logger.debug("Preparing THANKS KEEPER achievements for send to repository");
         return keeper.getDirections().stream()
-                .map(direction -> getAchievement(keeper.getUuid(), direction))
+                .map(direction -> createAchievement(keeper.getUuid(), direction))
                 .collect(Collectors.toList());
     }
 
-    private Achievement getAchievement(String uuid, String direction) {
+    private Achievement createAchievement(String uuid, String direction) {
         String description = String.format(THANKS_DESCRIPTION, direction);
         return new Achievement(systemFrom, uuid, KEEPER_THANKS, description, AchievementType.THANKS_KEEPER);
     }
