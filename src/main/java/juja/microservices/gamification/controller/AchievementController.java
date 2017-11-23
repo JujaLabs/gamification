@@ -47,7 +47,7 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addDaily(@Valid @RequestBody DailyRequest request) {
-        logger.debug("Received request on /achievements/daily from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
+        logger.info("Received request on /achievements/daily from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
         List<String> ids = achievementService.addDaily(request);
         return ResponseEntity.ok(ids);
     }
@@ -66,7 +66,7 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addThanks(@Valid @RequestBody ThanksRequest request) {
-        logger.debug("Received request on /achievements/thanks from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
+        logger.info("Received request on /achievements/thanks from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
         List<String> ids = achievementService.addThanks(request);
         return ResponseEntity.ok(ids);
     }
@@ -83,7 +83,7 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addCodenjoy(@Valid @RequestBody CodenjoyRequest request) {
-        logger.debug("Received request on /achievements/codenjoy from user: '{}', places: 1st-'{}', 2nd-'{}', 3rd-'{}'",
+        logger.info("Received request on /achievements/codenjoy from user: '{}', places: 1st-'{}', 2nd-'{}', 3rd-'{}'",
                 request.getFrom(), request.getFirstPlace(), request.getSecondPlace(), request.getThirdPlace());
         List<String> ids = achievementService.addCodenjoy(request);
         return ResponseEntity.ok(ids);
@@ -101,7 +101,7 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addInterview(@Valid @RequestBody InterviewRequest request) {
-        logger.debug("Received request on /achievements/interview from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
+        logger.info("Received request on /achievements/interview from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
         List<String> ids = achievementService.addInterview(request);
         return ResponseEntity.ok(ids);
     }
@@ -118,7 +118,7 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addThanksKeeper() {
-        logger.debug("Received request on /achievements/keepers/thanks");
+        logger.info("Received request on /achievements/keepers/thanks");
         List<String> ids = achievementService.addThanksKeeper();
         return ResponseEntity.ok(ids);
     }
@@ -135,7 +135,7 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addWelcome(@Valid @RequestBody WelcomeRequest request) {
-        logger.debug("Received request on /achievements/welcome from user: '{}'", request.getFrom());
+        logger.info("Received request on /achievements/welcome from user: '{}'", request.getFrom());
         List<String> ids = achievementService.addWelcome(request);
         return ResponseEntity.ok(ids);
     }
@@ -152,7 +152,7 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addTeam(@Valid @RequestBody TeamRequest request) {
-        logger.debug("Received request on /achievements/team from user: '{}'", request.getFrom());
+        logger.info("Received request on /achievements/team from user: '{}'", request.getFrom());
         List<String> ids = achievementService.addTeam(request);
         return ResponseEntity.ok(ids);
     }

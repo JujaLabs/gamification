@@ -65,7 +65,7 @@ public class AchievementService {
     public List<String> addDaily(DailyRequest request) {
         String userFromId = request.getFrom();
         String description = request.getDescription();
-        logger.debug("Send request to repository of created DAILY achievement by user '{}' for current date", userFromId);
+        logger.debug("Send request to repository: get already created DAILY achievement by user '{}' for current date", userFromId);
         List<Achievement> userFromIdList = achievementRepository.getAllAchievementsByUserFromIdCurrentDateType(
                 userFromId, AchievementType.DAILY);
         Achievement achievement;
@@ -96,7 +96,7 @@ public class AchievementService {
             logger.warn("User '{}' tried to put THANKS achievement to yourself", request.getTo());
             throw new ThanksAchievementTryToThanksYourselfException("User tried to put THANKS achievement to yourself");
         }
-        logger.debug("Send request to repository of created THANKS achievements by user '{}' for current date", fromId);
+        logger.debug("Send request to repository: get already created THANKS achievements by user '{}' for current date", fromId);
         List<Achievement> userFromThanksAchievementToday = achievementRepository
                 .getAllAchievementsByUserFromIdCurrentDateType(fromId, AchievementType.THANKS);
         logger.debug("Received list of THANKS achievements, size = {}", userFromThanksAchievementToday.size());
@@ -136,7 +136,7 @@ public class AchievementService {
     public List<String> addCodenjoy(CodenjoyRequest request) {
         checkUsers(request);
         String userFromId = request.getFrom();
-        logger.debug("Send request to repository of created CODENJOY achievements for current date");
+        logger.debug("Send request to repository: get already created CODENJOY achievements for current date");
         List<Achievement> codenjoyUsersToday = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
         logger.debug("Received list of CODENJOY achievements, size = {}", codenjoyUsersToday.size());
         if (!codenjoyUsersToday.isEmpty()) {
@@ -230,7 +230,7 @@ public class AchievementService {
     }
 
     private List<Achievement> getThanksKeeperAchievements() {
-        logger.debug("Send request to repository of created THANKS KEEPER achievements for current week");
+        logger.debug("Send request to repository: get already created THANKS KEEPER achievements for current week");
         List<Achievement> achievements = achievementRepository.getAllThanksKeepersAchievementsCurrentWeek();
         logger.debug("Received list of THANKS KEEPER achievements, size = {}", achievements.size());
         return achievements;
@@ -245,7 +245,7 @@ public class AchievementService {
             logger.debug("No any active keepers received from user service");
         } else {
             result = keepers.stream()
-                    .map(this::getNewThanksKeeperAchievements)
+                    .map(this::prepareThanksKeeperAchievements)
                     .flatMap(Collection::stream)
                     .map(achievementRepository::addAchievement)
                     .collect(Collectors.toList());
@@ -253,7 +253,8 @@ public class AchievementService {
         return result;
     }
 
-    private List<Achievement> getNewThanksKeeperAchievements(KeeperDTO keeper) {
+    private List<Achievement> prepareThanksKeeperAchievements(KeeperDTO keeper) {
+        logger.debug("Preparing THANKS KEEPER achievements for send to repository");
         return keeper.getDirections().stream()
                 .map(direction -> getAchievement(keeper.getUuid(), direction))
                 .collect(Collectors.toList());
@@ -287,12 +288,12 @@ public class AchievementService {
     }
 
     public List<String> addTeam(TeamRequest request) {
-        logger.debug("Preparing team achievements for send to repository");
+        logger.debug("Preparing TEAM achievements for send to repository");
         String userFromId = request.getFrom();
         Set<String> members = request.getMembers();
         List<Achievement> teamAchievements = achievementRepository.getAllTeamAchievementsCurrentWeek(members);
         if (!teamAchievements.isEmpty()) {
-            logger.warn("User '{}' tried to give 'Team' achievements but some members have such achievements this week",
+            logger.warn("User '{}' tried to give TEAM achievements but some members have such achievements this week",
                     userFromId);
             throw new TeamAchievementException("Cannot add 'Team' achievements. Some team members have such " +
                     " achievements this week.");
@@ -303,7 +304,7 @@ public class AchievementService {
                         new Achievement(userFromId, userId, TEAM_POINTS, TEAM_DESCRIPTION, AchievementType.TEAM)))
                 .collect(Collectors.toList());
 
-        logger.info("Added TEAM achievements from user '{}' to '{}'", userFromId, ids);
+        logger.info("Added TEAM achievements from user '{}', ids: '{}'", userFromId, ids);
         return ids;
     }
 }
