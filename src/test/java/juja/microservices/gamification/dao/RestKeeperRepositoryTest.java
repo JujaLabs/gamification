@@ -1,7 +1,8 @@
 package juja.microservices.gamification.dao;
 
-import juja.microservices.gamification.entity.Keeper;
-import juja.microservices.gamification.exceptions.UserMicroserviceExchangeException;
+import juja.microservices.WithoutScheduling;
+import juja.microservices.gamification.entity.KeeperDTO;
+import juja.microservices.gamification.exceptions.KeepersMicroserviceExchangeException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,7 +17,6 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,21 +30,18 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class RestKeeperRepositoryTest {
+public class RestKeeperRepositoryTest implements WithoutScheduling {
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
     @Inject
     private KeeperRepository keeperRepository;
     @Inject
     private RestTemplate restTemplate;
     private MockRestServiceServer mockServer;
 
-    @Value("${user.baseURL}")
-    private String urlBase;
-    @Value("${endpoint.keepers}")
-    private String urlGetKeepers;
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    @Value("${keepers.endpoint.getKeepers}")
+    private String keepersGetKeepersUrl;
 
     @Before
     public void setup() {
@@ -53,34 +50,37 @@ public class RestKeeperRepositoryTest {
 
     @Test
     public void getKeepers() {
-        //given
-        mockServer.expect(requestTo(urlBase + urlGetKeepers))
+        mockServer.expect(requestTo(keepersGetKeepersUrl))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(
-                        "[{\"uuid\":\"AAA\",\"description\":\"codenjoy\",\"from\":\"alex\"}," +
-                        "{\"uuid\":\"BBB\",\"description\":\"job\",\"from\":\"alex\"}]",
+                        "[{\"uuid\":\"0002A\",\"directions\":[\"First direction\",\"Second direction\"]}," +
+                                "{\"uuid\":\"0002B\",\"directions\":[\"Third direction\"]}]",
                         MediaType.APPLICATION_JSON));
-        List<Keeper> expectedList = new ArrayList<>();
-        expectedList.add(new Keeper("AAA", "codenjoy", "alex"));
-        expectedList.add(new Keeper("BBB", "job", "alex"));
-        //when
-        List<Keeper> result = keeperRepository.getKeepers();
 
-        //then
+        List<String> firstKeeperDirections = new ArrayList<>();
+        List<String> secondKeeperDerections = new ArrayList<>();
+        firstKeeperDirections.add("First direction");
+        firstKeeperDirections.add("Second direction");
+        secondKeeperDerections.add("Third direction");
+
+        List<KeeperDTO> expectedList = new ArrayList<>();
+        expectedList.add(new KeeperDTO("0002A", firstKeeperDirections));
+        expectedList.add(new KeeperDTO("0002B", secondKeeperDerections));
+
+        List<KeeperDTO> result = keeperRepository.getKeepers();
+
         assertThat(result, equalTo(expectedList));
     }
 
     @Test
     public void shouldThrowExceptionWhenUserServiceThrowExceptinon() {
-        //given
-        mockServer.expect(requestTo(urlBase + urlGetKeepers))
+        mockServer.expect(requestTo(keepersGetKeepersUrl))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withBadRequest().body("bad request"));
-        //then
-        thrown.expect(UserMicroserviceExchangeException.class);
-        thrown.expectMessage(containsString("User microservice Exchange Error: "));
 
-        //when
+        thrown.expect(KeepersMicroserviceExchangeException.class);
+        thrown.expectMessage(containsString("Keepers microservice Exchange Error: "));
+
         keeperRepository.getKeepers();
     }
 }

@@ -1,8 +1,13 @@
-package juja.microservices.gamification.dao;
+package juja.microservices.gamification.dao.impl;
 
-import juja.microservices.gamification.entity.*;
+import juja.microservices.gamification.entity.Achievement;
+import juja.microservices.gamification.entity.AchievementType;
+import juja.microservices.gamification.entity.UserAchievementDetails;
+import juja.microservices.gamification.entity.UserIdsRequest;
+import juja.microservices.gamification.entity.UserPointsSum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -17,9 +22,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
 @Repository
 public class AchievementRepository {
@@ -27,6 +37,9 @@ public class AchievementRepository {
 
     @Inject
     private MongoTemplate mongoTemplate;
+
+    @Value("${spring.data.mongodb.collection}")
+    private String mongoCollectionName;
 
     public String addAchievement(Achievement achievement) {
 
@@ -36,7 +49,7 @@ public class AchievementRepository {
             logger.debug("Set send date [{}] to achievement", time);
         }
         logger.debug("Save achievement to database");
-        mongoTemplate.save(achievement);
+        mongoTemplate.save(achievement, mongoCollectionName);
         logger.debug("Received id from database [{}]", achievement.getId());
         return achievement.getId();
     }
@@ -53,14 +66,14 @@ public class AchievementRepository {
     }
 
     public List<Achievement> getAllAchievementsByUserToId(String to) {
-        return mongoTemplate.find(new Query(Criteria.where("to").is(to)), Achievement.class);
+        return mongoTemplate.find(new Query(Criteria.where("to").is(to)), Achievement.class, mongoCollectionName);
     }
 
     public List<Achievement> getAllAchievementsByUserFromIdCurrentDateType(String from, AchievementType type) {
         return mongoTemplate.find(new Query(
                 Criteria.where("from").is(from)
                         .and("sendDate").gte(startCurrentDay())
-                        .and("type").is(type.toString())), Achievement.class);
+                        .and("type").is(type.toString())), Achievement.class, mongoCollectionName);
     }
 
     public List<UserPointsSum> getAllUsersWithPointSum() {
@@ -72,7 +85,7 @@ public class AchievementRepository {
         );
         logger.debug("Request data from database");
         AggregationResults<UserPointsSum> result =
-                mongoTemplate.aggregate(aggregation, Achievement.class, UserPointsSum.class);
+                mongoTemplate.aggregate(aggregation, mongoCollectionName, UserPointsSum.class);
         logger.debug("Received data from database");
         return result.getMappedResults();
     }
@@ -80,19 +93,26 @@ public class AchievementRepository {
     public List<Achievement> getAllCodenjoyAchievementsCurrentDate() {
         return mongoTemplate.find(new Query(
                 Criteria.where("sendDate").gte(startCurrentDay())
-                        .and("type").is(AchievementType.CODENJOY)), Achievement.class);
+                        .and("type").is(AchievementType.CODENJOY)), Achievement.class, mongoCollectionName);
     }
 
     public List<Achievement> getAllThanksKeepersAchievementsCurrentWeek() {
         return mongoTemplate.find(new Query(
                 Criteria.where("sendDate").gte(firstDayOfCurrentWeek())
-                        .and("type").is(AchievementType.THANKS_KEEPER)), Achievement.class);
+                        .and("type").is(AchievementType.THANKS_KEEPER)), Achievement.class, mongoCollectionName);
     }
 
     public List<Achievement> getWelcomeAchievementByUser(String to) {
         return mongoTemplate.find(new Query(
                 Criteria.where("to").is(to)
-                        .and("type").is(AchievementType.WELCOME)), Achievement.class);
+                        .and("type").is(AchievementType.WELCOME)), Achievement.class, mongoCollectionName);
+    }
+
+    public List<Achievement> getAllTeamAchievementsCurrentWeek(Set<String> uuids) {
+        return mongoTemplate.find(new Query(
+                Criteria.where("sendDate").gte(firstDayOfCurrentWeek())
+                        .and("type").is(AchievementType.TEAM)
+                        .and("to").in(uuids)), Achievement.class, mongoCollectionName);
     }
 
     private Date startCurrentDay() {

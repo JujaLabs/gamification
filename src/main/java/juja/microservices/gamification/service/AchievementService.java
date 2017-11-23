@@ -1,16 +1,32 @@
 package juja.microservices.gamification.service;
 
-import java.util.ArrayList;
-import javax.inject.Inject;
-
-import juja.microservices.gamification.dao.AchievementRepository;
-import juja.microservices.gamification.entity.*;
-import juja.microservices.gamification.exceptions.*;
+import juja.microservices.gamification.dao.impl.AchievementRepository;
+import juja.microservices.gamification.entity.Achievement;
+import juja.microservices.gamification.entity.AchievementType;
+import juja.microservices.gamification.entity.CodenjoyRequest;
+import juja.microservices.gamification.entity.DailyRequest;
+import juja.microservices.gamification.entity.InterviewRequest;
+import juja.microservices.gamification.entity.KeeperDTO;
+import juja.microservices.gamification.entity.TeamRequest;
+import juja.microservices.gamification.entity.ThanksRequest;
+import juja.microservices.gamification.entity.WelcomeRequest;
+import juja.microservices.gamification.exceptions.CodenjoyAchievementException;
+import juja.microservices.gamification.exceptions.CodenjoyAchievementTwiceInOneDayException;
+import juja.microservices.gamification.exceptions.TeamAchievementException;
+import juja.microservices.gamification.exceptions.ThanksAchievementMoreThanOneException;
+import juja.microservices.gamification.exceptions.ThanksAchievementMoreThanTwoException;
+import juja.microservices.gamification.exceptions.ThanksAchievementTryToThanksYourselfException;
+import juja.microservices.gamification.exceptions.WelcomeAchievementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AchievementService {
@@ -25,7 +41,13 @@ public class AchievementService {
     private static final int KEEPER_THANKS = 2;
     private static final int WELCOME_POINTS = 1;
     private static final String WELCOME_DESCRIPTION = "Welcome to JuJa!";
+    private static final String THANKS_DESCRIPTION = "Thank you for keeping in the direction of %s";
+    private static final int TEAM_POINTS = 6;
+    private static final String TEAM_DESCRIPTION = "Work in team";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Value("${system.from.uuid}")
+    private String systemFrom;
 
     @Inject
     private AchievementRepository achievementRepository;
@@ -173,7 +195,6 @@ public class AchievementService {
     }
 
     public List<String> addInterview(InterviewRequest request) {
-
         String userFromId = request.getFrom();
         String description = request.getDescription();
         Achievement newAchievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description,
@@ -185,25 +206,51 @@ public class AchievementService {
         return result;
     }
 
+    @Scheduled(cron = "${keeper.thanks.cron.expression}")
+    private void addThanksKeeperScheduled() {
+        List<Achievement> achievements = getThanksKeeperAchievements();
+        if (achievements.isEmpty()) {
+            List<String> achievementIds = createThanksKeeperAchievements();
+            logger.info("Added Thanks Keeper achievement from scheduled task. Ids: {}", achievementIds);
+        }
+    }
+
     public List<String> addThanksKeeper() {
+        List<Achievement> achievements = getThanksKeeperAchievements();
+        List<String> achievementIds;
+        if (achievements.isEmpty()) {
+            achievementIds = createThanksKeeperAchievements();
+        } else {
+            achievementIds = getIdsCreatedAchievement(achievements);
+        }
+        return achievementIds;
+    }
+
+    private List<Achievement> getThanksKeeperAchievements() {
         logger.debug("Send request to repository: get all thanks_keepers achievements for current week");
         List<Achievement> achievements = achievementRepository.getAllThanksKeepersAchievementsCurrentWeek();
         logger.debug("Received list of achievements, size = {}", achievements.size());
-        return achievements.isEmpty() ? createThanksKeeperAchievements() : getIdsCreatedAchievement(achievements);
+        return achievements;
     }
 
     private List<String> createThanksKeeperAchievements() {
         List<String> result = new ArrayList<>();
         logger.debug("Request to keepers repository: get all active keepers");
-        List<Keeper> keepers = keeperService.getKeepers();
+        List<KeeperDTO> keepers = keeperService.getKeepers();
         logger.debug("Received list of active keepers, size = {} ", keepers.size());
         if (keepers.isEmpty()) {
             logger.debug("No any active keepers received from user service");
         } else {
-            logger.debug("Send 'Thanks Keeper' achievements to repository");
-            keepers.forEach(keeper -> {
-                result.add(achievementRepository.addAchievement(getAchievement(keeper)));
-            });
+            logger.debug("Sending 'Thanks Keeper' achievements to repository");
+            for (KeeperDTO keeper : keepers) {
+                List<String> directions = keeper.getDirections();
+                directions.forEach(direction -> {
+                    String description = String.format(THANKS_DESCRIPTION, direction);
+                    Achievement achievement = new Achievement(
+                            systemFrom, keeper.getUuid(), KEEPER_THANKS, description, AchievementType.THANKS_KEEPER);
+                    result.add(achievementRepository.addAchievement(achievement));
+                });
+            }
             logger.debug("Received ids from repository: {}", result);
         }
         return result;
@@ -216,25 +263,13 @@ public class AchievementService {
         return result;
     }
 
-    private Achievement getAchievement(Keeper keeper) {
-        return new Achievement(
-                keeper.getFrom(),
-                keeper.getUuid(),
-                KEEPER_THANKS,
-                keeper.getDescription(),
-                AchievementType.THANKS_KEEPER);
-    }
-
     private List<String> getIds(List<Achievement> achievements) {
         List<String> result = new ArrayList<>();
-        achievements.forEach(achievement -> {
-            result.add(achievement.getId());
-        });
+        achievements.forEach(achievement -> result.add(achievement.getId()));
         return result;
     }
 
     public List<String> addWelcome(WelcomeRequest request) {
-
         String userFromId = request.getFrom();
         String userToId = request.getTo();
 
@@ -256,5 +291,26 @@ public class AchievementService {
 
             return result;
         }
+    }
+
+    public List<String> addTeam(TeamRequest request) {
+        logger.debug("Preparing team achievements for send to repository");
+        String userFromId = request.getFrom();
+        Set<String> members = request.getMembers();
+        List<Achievement> teamAchievements = achievementRepository.getAllTeamAchievementsCurrentWeek(members);
+        if (!teamAchievements.isEmpty()) {
+            logger.warn("User '{}' tried to give 'Team' achievements but some members have such achievements this week",
+                    userFromId);
+            throw new TeamAchievementException("Cannot add 'Team' achievements. Some team members have such " +
+                    " achievements this week.");
+        }
+        List<String> result = new ArrayList<>();
+        members.forEach(userId -> {
+            result.add(achievementRepository.addAchievement(
+                    new Achievement(userFromId, userId, TEAM_POINTS, TEAM_DESCRIPTION, AchievementType.TEAM))
+            );
+            logger.debug("Add 'Team' achievement from user '{}' to '{}'", userFromId, userId);
+        });
+        return result;
     }
 }

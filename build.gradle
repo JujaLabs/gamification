@@ -8,29 +8,28 @@ buildscript {
     }
 }
 
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
-group = 'ua.com.juja'
-version = '1.0-SNAPSHOT'
-
 jar {
     baseName = "gamification"
-    version = "1"
+    version = "0.1.0"
 }
 
-description = "microservices-gamification"
+group = 'juja'
+description = "gamification"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
-}
-
-repositories {
-    mavenCentral()
-    mavenLocal()
 }
 
 test.testLogging {

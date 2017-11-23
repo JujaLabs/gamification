@@ -1,0 +1,12 @@
+{
+  "achievements": [
+    {
+      "from":"uuidFrom",
+      "to":"uuidTo",
+      "point":6,
+      "description":"team work",
+      "sendDate":{ "$date" : "2017-02-07T00:00:00.000Z"},
+      "type":"TEAM"
+    }
+  ]
+}
