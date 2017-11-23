@@ -54,12 +54,10 @@ public class AchievementRepository {
 
     public List<UserAchievementDetails> getUserAchievementsDetails(UserIdsRequest ids) {
         List<UserAchievementDetails> resultList = new ArrayList<>();
-        logger.debug("Request data from database");
         for (String userId : ids.getToIds()) {
             List<Achievement> details = getAllAchievementsByUserToId(userId);
             resultList.add(new UserAchievementDetails(userId, details));
         }
-        logger.debug("Received data from database");
         return resultList;
     }
 
@@ -81,10 +79,8 @@ public class AchievementRepository {
                         .sum("point").as("point"),
                 sort(Sort.Direction.ASC, "to")
         );
-        logger.debug("Request data from database");
         AggregationResults<UserPointsSum> result =
                 mongoTemplate.aggregate(aggregation, mongoCollectionName, UserPointsSum.class);
-        logger.debug("Received data from database");
         return result.getMappedResults();
     }
 
@@ -119,7 +115,6 @@ public class AchievementRepository {
 
     private Date firstDayOfCurrentWeek() {
         LocalDate localDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 }
