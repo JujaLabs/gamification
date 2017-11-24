@@ -179,7 +179,7 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         achievementService.addThanks(firstRequest);
         achievementService.addThanks(secondRequest);
 
-        String expectedDescription = "You got 'thanks' achievement for thanking to other two users";
+        String expectedDescription = "You got THANKS achievement for thanking to other two users";
         String expectedType = "THANKS";
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId(userFrom);
         String actualDescription = achievementList.get(0).getDescription();

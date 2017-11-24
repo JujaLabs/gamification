@@ -59,8 +59,7 @@ public class UserController {
     })
     public ResponseEntity<?> getUsersWithAchievementDetails(@RequestBody UserIdsRequest toIds) {
         logger.debug("Received request /achievementDetails");
-        List<UserAchievementDetails> result =
-                userService.getUserAchievementsDetails(toIds);
+        List<UserAchievementDetails> result = userService.getUserAchievementsDetails(toIds);
         logger.debug("Response data: users with achievement details, quantity = {}", result.size());
         return ResponseEntity.ok(result);
     }

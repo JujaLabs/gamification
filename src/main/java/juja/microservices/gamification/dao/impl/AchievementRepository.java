@@ -46,22 +46,18 @@ public class AchievementRepository {
         if (achievement.getSendDate() == null) {
             LocalDateTime time = LocalDateTime.now();
             achievement.setSendDate(time);
-            logger.debug("Set send date [{}] to achievement", time);
         }
-        logger.debug("Save achievement to database");
         mongoTemplate.save(achievement, mongoCollectionName);
-        logger.debug("Received id from database [{}]", achievement.getId());
+        logger.debug("Successfully added achievement to database. Type: {}, id: [{}]", achievement.getType(), achievement.getId());
         return achievement.getId();
     }
 
     public List<UserAchievementDetails> getUserAchievementsDetails(UserIdsRequest ids) {
         List<UserAchievementDetails> resultList = new ArrayList<>();
-        logger.debug("Request data from database");
         for (String userId : ids.getToIds()) {
             List<Achievement> details = getAllAchievementsByUserToId(userId);
             resultList.add(new UserAchievementDetails(userId, details));
         }
-        logger.debug("Received data from database");
         return resultList;
     }
 
@@ -83,10 +79,8 @@ public class AchievementRepository {
                         .sum("point").as("point"),
                 sort(Sort.Direction.ASC, "to")
         );
-        logger.debug("Request data from database");
         AggregationResults<UserPointsSum> result =
                 mongoTemplate.aggregate(aggregation, mongoCollectionName, UserPointsSum.class);
-        logger.debug("Received data from database");
         return result.getMappedResults();
     }
 
@@ -121,7 +115,6 @@ public class AchievementRepository {
 
     private Date firstDayOfCurrentWeek() {
         LocalDate localDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 }
