@@ -1,6 +1,7 @@
 ### Java template
 *.class
 .idea
+.gitignore
 
 # Package Files #
 *.jar
@@ -9,6 +10,8 @@
 /gamification.iws
 /gamification.ipr
 /gamification.iml
+*.log
+/out
 !/gradle/wrapper/gradle-wrapper.jar
 .gradle/
 build/
