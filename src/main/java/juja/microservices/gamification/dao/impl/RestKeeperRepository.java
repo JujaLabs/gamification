@@ -17,7 +17,7 @@ import java.util.List;
 @Repository
 @Slf4j
 public class RestKeeperRepository implements KeeperRepository {
-    private KeeperClient keeperClient;
+    private final KeeperClient keeperClient;
 
     public RestKeeperRepository(KeeperClient keeperClient) {
         this.keeperClient = keeperClient;

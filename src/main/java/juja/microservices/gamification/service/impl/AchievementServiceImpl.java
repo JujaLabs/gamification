@@ -56,10 +56,13 @@ public class AchievementServiceImpl implements AchievementService {
     @Value("${system.from.uuid}")
     private String systemFrom;
 
-    @Inject
-    private AchievementRepository achievementRepository;
-    @Inject
-    private KeeperService keeperService;
+    private final AchievementRepository achievementRepository;
+    private final KeeperService keeperService;
+
+    public AchievementServiceImpl(KeeperService keeperService, AchievementRepository achievementRepository) {
+        this.keeperService = keeperService;
+        this.achievementRepository = achievementRepository;
+    }
 
     /**
      * In this method userFromId = userToId because users add DAILY achievements to themselves.

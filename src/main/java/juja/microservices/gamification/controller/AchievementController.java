@@ -32,8 +32,11 @@ import java.util.List;
 public class AchievementController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Inject
-    private AchievementService achievementService;
+    private final AchievementService achievementService;
+
+    public AchievementController(AchievementService achievementService) {
+        this.achievementService = achievementService;
+    }
 
     @PostMapping(value = "/daily")
     @ApiOperation(

@@ -35,11 +35,14 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort
 public class AchievementRepository {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Inject
-    private MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
     @Value("${spring.data.mongodb.collection}")
     private String mongoCollectionName;
+
+    public AchievementRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     public String addAchievement(Achievement achievement) {
 

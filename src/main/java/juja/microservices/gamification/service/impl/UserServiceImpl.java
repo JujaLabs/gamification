@@ -17,8 +17,11 @@ public class UserServiceImpl implements UserService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Inject
-    private AchievementRepository repository;
+    private final AchievementRepository repository;
+
+    public UserServiceImpl(AchievementRepository repository) {
+        this.repository = repository;
+    }
 
     public List<UserAchievementDetails> getUserAchievementsDetails(UserIdsRequest ids) {
         logger.debug("Send request to repository: get users achievement detail");

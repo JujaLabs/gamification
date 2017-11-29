@@ -13,8 +13,11 @@ import java.util.List;
  */
 @Service
 public class KeeperServiceImpl implements KeeperService {
-    @Inject
-    private KeeperRepository keeperRepository;
+    private final KeeperRepository keeperRepository;
+
+    public KeeperServiceImpl(KeeperRepository keeperRepository) {
+        this.keeperRepository = keeperRepository;
+    }
 
     public List<KeeperDTO> getKeepers() {
         return keeperRepository.getKeepers();
