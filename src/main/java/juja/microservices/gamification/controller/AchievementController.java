@@ -3,15 +3,11 @@ package juja.microservices.gamification.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import juja.microservices.gamification.entity.CodenjoyRequest;
-import juja.microservices.gamification.entity.DailyRequest;
-import juja.microservices.gamification.entity.InterviewRequest;
-import juja.microservices.gamification.entity.TeamRequest;
-import juja.microservices.gamification.entity.ThanksRequest;
-import juja.microservices.gamification.entity.WelcomeRequest;
+import juja.microservices.gamification.entity.*;
 import juja.microservices.gamification.service.AchievementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,6 +46,60 @@ public class AchievementController {
         logger.debug("Received request on /achievements/daily : {}", request);
         List<String> ids = achievementService.addDaily(request);
         logger.info("Added 'Daily' achievement, id = {}", ids.toString());
+        return ResponseEntity.ok(ids);
+    }
+
+    @PostMapping(value = "${endpoint.achievements.addAdmin}")
+    @ApiOperation(
+            value = "Add any points",
+            notes = "This method adds points by admin"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns array with one achievement id"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
+            @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
+    })
+    public ResponseEntity<?> addAdmin(@Valid @RequestBody Achievement request) {
+        List<String> ids = new ArrayList<>();
+
+        if (request.getType().equals(AchievementType.DAILY)) {
+            logger.debug("Received request on /achievements/daily : {}", request);
+            DailyRequest dailyRequest = new DailyRequest(request.getFrom(), request.getDescription());
+            ids = achievementService.addDaily(dailyRequest);
+            logger.info("Added 'Daily' achievement, id = {}", ids.toString());
+        } else if (request.getType().equals(AchievementType.INTERVIEW)) {
+            logger.debug("Received request on /achievements/interview : {}", request);
+            InterviewRequest interviewRequest = new InterviewRequest(request.getFrom(), request.getDescription());
+            ids = achievementService.addInterview(interviewRequest);
+            logger.info("Added 'Interview' achievement, id = {}", ids.toString());
+        } else if (request.getType().equals(AchievementType.THANKS)) {
+            logger.debug("Received request on /achievements/thanks : {}", request);
+            ThanksRequest thanksRequest = new ThanksRequest(request.getFrom(), request.getTo(), request.getDescription());
+            ids = achievementService.addThanks(thanksRequest);
+            logger.info("Added 'Thanks' achievement, ids = {}", ids.toString());
+        } else if (request.getType().equals(AchievementType.THANKS_KEEPER)) {
+            logger.debug("Received request on /achievements/keepers/thanks");
+            ids = achievementService.addThanksKeeper();
+            logger.info("Added 'Thanks keeper' achievement, id = {}", ids.toString());
+        } else if (request.getType().equals(AchievementType.WELCOME)) {
+            logger.debug("Received request on /achievements/welcome : {}", request);
+            WelcomeRequest welcomeRequest = new WelcomeRequest(request.getFrom(), request.getTo());
+            ids = achievementService.addWelcome(welcomeRequest);
+            logger.info("Added welcome achievement, id = {}", ids.toString());
+        } else if (request.getType().equals(AchievementType.TEAM)) {
+            //TODO: implement 'TEAM' achievemnt
+            return new ResponseEntity<Error>(HttpStatus.NOT_IMPLEMENTED);
+        } else if (request.getType().equals(AchievementType.START)) {
+            //TODO: implement 'START' achievemnt
+            return new ResponseEntity<Error>(HttpStatus.NOT_IMPLEMENTED);
+        } else if (request.getType().equals(AchievementType.CODENJOY)) {
+            //TODO: implement 'CODENJOY' achievemnt
+            return new ResponseEntity<Error>(HttpStatus.NOT_IMPLEMENTED);
+        } else {
+            return new ResponseEntity<Error>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
         return ResponseEntity.ok(ids);
     }
 
