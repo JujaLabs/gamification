@@ -1,12 +1,16 @@
 package juja.microservices.gamification.dao;
 
 import feign.FeignException;
+import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.KeeperDTO;
 import juja.microservices.gamification.exceptions.KeepersMicroserviceExchangeException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -29,7 +33,9 @@ import static org.junit.Assert.assertEquals;
  * @author Ivan Shapovalov
  * @author Benjamin Novikov
  */
+
 @RunWith(SpringRunner.class)
+@EnableAutoConfiguration(exclude={MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 @SpringBootTest
 public class RestKeeperRepositoryTest {
 
@@ -41,6 +47,9 @@ public class RestKeeperRepositoryTest {
 
     @MockBean
     private KeeperClient keeperClient;
+
+    @MockBean
+    private AchievementRepository achievementRepository;
 
     @Test
     public void getKeepers_KeeperClientRequest_ReturnsListOfTwoKeeperDTOs() {

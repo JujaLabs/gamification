@@ -21,7 +21,7 @@ import java.net.HttpURLConnection;
 import java.util.List;
 
 @RestController
-@RequestMapping(produces = "application/json")
+@RequestMapping(value = "/v1/gamification/users", produces = "application/json")
 public class UserController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -29,7 +29,7 @@ public class UserController {
     @Inject
     private UserService userService;
 
-    @GetMapping(value = "${endpoint.users.getPointSum}")
+    @GetMapping(value = "/pointSum")
     @ApiOperation(
             value = "Get total points for all users",
             notes = "This method returns total points for all users"
@@ -46,7 +46,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping(value = "${endpoint.users.getAchievementDetails}", consumes = "application/json")
+    @PostMapping(value = "/achievementDetails", consumes = "application/json")
     @ApiOperation(
             value = "Get achievement details for some users",
             notes = "This method returns detailed information for selected users"

@@ -72,6 +72,7 @@ public class Gamification {
     @ConditionalOnProperty(
             value = "app.scheduling.enable", havingValue = "true", matchIfMissing = true
     )
+
     @Configuration
     @EnableScheduling
     public static class SchedulingConfiguration {

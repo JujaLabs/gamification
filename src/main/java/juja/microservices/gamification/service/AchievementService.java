@@ -12,6 +12,7 @@ import java.util.List;
 /*
  * @author Benjamin Novikov
  */
+
 public interface AchievementService {
     List<String> addDaily(DailyRequest request);
     List<String> addThanks(ThanksRequest request);
