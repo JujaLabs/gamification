@@ -1,5 +1,6 @@
 package juja.microservices.gamification.controller;
 
+import juja.microservices.gamification.dao.KeeperClient;
 import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.InterviewRequest;
@@ -35,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(AchievementController.class)
 public class AchievementControllerTest {
-
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
     private static final String THIRD_ACHIEVEMENT_ID = "3";
@@ -60,6 +60,9 @@ public class AchievementControllerTest {
     private String achievementsAddTeamUrl;
     @Inject
     private MockMvc mockMvc;
+
+    @MockBean
+    private KeeperClient keeperClient;
 
     @MockBean
     private AchievementService service;

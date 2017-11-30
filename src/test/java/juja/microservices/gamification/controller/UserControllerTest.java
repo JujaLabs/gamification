@@ -1,5 +1,6 @@
 package juja.microservices.gamification.controller;
 
+import juja.microservices.gamification.dao.KeeperClient;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
 import juja.microservices.gamification.entity.UserAchievementDetails;
@@ -37,7 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
-
     private static final String POINT_SUMS = "[{\"to\":\"max\",\"point\":5},{\"to\":\"john\",\"point\":3}]";
     private static final String ACHIEVEMENTS = "[" +
             "{\"user\":\"max\",\"details\":[" +
@@ -49,12 +49,18 @@ public class UserControllerTest {
             "{\"from\":\"john\",\"to\":\"john\",\"point\":10,\"description\":\"Interview\"," +
             "\"type\":\"INTERVIEW\",\"id\":null,\"sendDate\":\"2017-04-21\"}]}" +
             "]";
+
     @Value("${endpoint.users.getPointSum}")
     private String usersGetPointSum;
+
     @Value("${endpoint.users.getAchievementDetails}")
     private String usersGetAchievementDetails;
+
     @Inject
     private MockMvc mockMvc;
+
+    @MockBean
+    private KeeperClient keeperClient;
 
     @MockBean
     private UserService service;

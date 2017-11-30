@@ -1,5 +1,6 @@
 package juja.microservices.gamification.service;
 
+import juja.microservices.gamification.dao.KeeperClient;
 import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.UserAchievementDetails;
 import juja.microservices.gamification.entity.UserIdsRequest;
@@ -27,6 +28,9 @@ public class UserServiceTest {
 
     @Inject
     private UserService service;
+
+    @MockBean
+    private KeeperClient keeperClient;
 
     @MockBean
     private AchievementRepository repository;

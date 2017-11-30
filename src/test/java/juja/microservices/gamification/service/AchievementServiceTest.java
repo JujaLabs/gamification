@@ -1,5 +1,6 @@
 package juja.microservices.gamification.service;
 
+import juja.microservices.gamification.dao.KeeperClient;
 import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
@@ -43,7 +44,6 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @WebMvcTest(AchievementService.class)
 public class AchievementServiceTest {
-
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
     private static final String THIRD_ACHIEVEMENT_ID = "3";
@@ -62,6 +62,10 @@ public class AchievementServiceTest {
 
     @MockBean
     private AchievementRepository repository;
+
+    @MockBean
+    private KeeperClient keeperClient;
+
     @MockBean
     private KeeperService keeperService;
 
