@@ -9,6 +9,7 @@ import java.util.List;
 /*
  * @author Benjamin Novikov
  */
+
 public interface UserService {
     List<UserAchievementDetails> getUserAchievementsDetails(UserIdsRequest ids);
     List<UserPointsSum> getAllUsersWithPointSum();

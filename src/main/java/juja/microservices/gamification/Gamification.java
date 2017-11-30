@@ -44,6 +44,7 @@ public class Gamification {
         source.registerCorsConfiguration("/**", config);
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(0);
+
         return bean;
     }
 
@@ -51,6 +52,7 @@ public class Gamification {
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate(httpRequestFactory());
         restTemplate.setMessageConverters(getHttpMessageConverters());
+
         return restTemplate;
     }
 
@@ -66,6 +68,7 @@ public class Gamification {
         List<HttpMessageConverter<?>> converters = new ArrayList<>();
         converters.add(new MappingJackson2HttpMessageConverter());
         converters.add(new StringHttpMessageConverter());
+
         return converters;
     }
 

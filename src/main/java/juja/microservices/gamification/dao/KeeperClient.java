@@ -11,6 +11,7 @@ import java.util.List;
 /*
  * @author Benjamin Novikov
  */
+
 @FeignClient(name = "gateway")
 public interface KeeperClient {
     @RequestMapping(method = RequestMethod.GET, value = "/v1/keepers", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

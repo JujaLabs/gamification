@@ -14,6 +14,7 @@ import java.util.List;
  * @author Vadim Dyachenko
  * @author Benjamin Novikov
  */
+
 @Repository
 @Slf4j
 public class RestKeeperRepository implements KeeperRepository {
@@ -25,8 +26,9 @@ public class RestKeeperRepository implements KeeperRepository {
 
     @Override
     public List<KeeperDTO> getKeepers() {
-        log.debug("Keepers service request has been sent");
         List<KeeperDTO> result;
+
+        log.debug("Keepers service request has been sent");
         try {
             result = keeperClient.getKeepers();
             log.debug("Request to Keepers service has finished");

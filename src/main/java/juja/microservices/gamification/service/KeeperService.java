@@ -7,6 +7,7 @@ import java.util.List;
 /*
  * @author Benjamin Novikov
  */
+
 public interface KeeperService {
     List<KeeperDTO> getKeepers();
 }
