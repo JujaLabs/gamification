@@ -71,73 +71,55 @@ public class AchievementRepository {
 
     public List<Achievement> getAllAchievementsByUserFromIdCurrentDateType(String from, AchievementType type) {
         return mongoTemplate.find(
-                new Query(
-                        Criteria
-                                .where("from").is(from)
-                                .and("sendDate").gte(startCurrentDay())
-                                .and("type").is(type.toString())),
+                new Query(Criteria.where("from").is(from)
+                        .and("sendDate").gte(startCurrentDay())
+                        .and("type").is(type.toString())),
                 Achievement.class, mongoCollectionName);
     }
 
     public List<UserPointsSum> getAllUsersWithPointSum() {
         Aggregation aggregation = newAggregation(
-                group("to")
-                        .first("to").as("to")
-                        .sum("point").as("point"),
+                group("to").first("to").as("to").sum("point").as("point"),
                 sort(Sort.Direction.ASC, "to")
         );
-        AggregationResults<UserPointsSum> result = mongoTemplate
-                .aggregate(
-                        aggregation,
-                        mongoCollectionName,
-                        UserPointsSum.class);
+        AggregationResults<UserPointsSum> result = mongoTemplate.aggregate(
+                aggregation,
+                mongoCollectionName,
+                UserPointsSum.class);
 
         return result.getMappedResults();
     }
 
     public List<Achievement> getAllCodenjoyAchievementsCurrentDate() {
-        return mongoTemplate
-                .find(
-                        new Query(
-                                Criteria
-                                        .where("sendDate").gte(startCurrentDay())
-                                        .and("type").is(AchievementType.CODENJOY)),
-                        Achievement.class,
+        return mongoTemplate.find(
+                new Query(Criteria.where("sendDate").gte(startCurrentDay())
+                        .and("type").is(AchievementType.CODENJOY)),
+                Achievement.class,
                 mongoCollectionName);
     }
 
     public List<Achievement> getAllThanksKeepersAchievementsCurrentWeek() {
-        return mongoTemplate
-                .find(
-                        new Query(
-                                Criteria
-                                        .where("sendDate").gte(firstDayOfCurrentWeek())
-                                        .and("type").is(AchievementType.THANKS_KEEPER)),
-                        Achievement.class,
-                        mongoCollectionName);
+        return mongoTemplate.find(
+                new Query(Criteria.where("sendDate").gte(firstDayOfCurrentWeek())
+                        .and("type").is(AchievementType.THANKS_KEEPER)),
+                Achievement.class,
+                mongoCollectionName);
     }
 
     public List<Achievement> getWelcomeAchievementByUser(String to) {
-        return mongoTemplate
-                .find(
-                        new Query(
-                                Criteria
-                                        .where("to").is(to)
-                                        .and("type").is(AchievementType.WELCOME)),
-                        Achievement.class,
-                        mongoCollectionName);
+        return mongoTemplate.find(
+                new Query(Criteria.where("to").is(to).and("type").is(AchievementType.WELCOME)),
+                Achievement.class,
+                mongoCollectionName);
     }
 
     public List<Achievement> getAllTeamAchievementsCurrentWeek(Set<String> uuids) {
-        return mongoTemplate
-                .find(
-                        new Query(
-                                Criteria
-                                        .where("sendDate").gte(firstDayOfCurrentWeek())
-                                        .and("type").is(AchievementType.TEAM)
-                                        .and("to").in(uuids)),
-                        Achievement.class,
-                        mongoCollectionName);
+        return mongoTemplate.find(
+                new Query(Criteria.where("sendDate").gte(firstDayOfCurrentWeek())
+                        .and("type").is(AchievementType.TEAM)
+                        .and("to").in(uuids)),
+                Achievement.class,
+                mongoCollectionName);
     }
 
     private Date startCurrentDay() {

@@ -1,5 +1,6 @@
 package juja.microservices.gamification.service.impl;
 
+import javafx.util.Pair;
 import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
@@ -25,7 +26,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -184,44 +184,37 @@ public class AchievementServiceImpl implements AchievementService {
 
         log.debug("Preparing achievement for send to repository");
         String userFromId = request.getFrom();
-        String userFirstPlace = request.getFirstPlace();
-        String userSecondPlace = request.getSecondPlace();
-        String userThirdPlace = request.getThirdPlace();
-
-        Achievement firstPlace = new Achievement(
+        result.add(achievementRepository.addAchievement(new Achievement(
                 userFromId,
-                userFirstPlace,
+                request.getFirstPlace(),
                 CODENJOY_FIRST_PLACE,
                 "Codenjoy first place",
-                AchievementType.CODENJOY);
-        Achievement secondPlace = new Achievement(
+                AchievementType.CODENJOY)));
+        result.add(achievementRepository.addAchievement(new Achievement(
                 userFromId,
-                userSecondPlace,
+                request.getSecondPlace(),
                 CODENJOY_SECOND_PLACE,
                 "Codenjoy second place",
-                AchievementType.CODENJOY);
-        Achievement thirdPlace = new Achievement(
+                AchievementType.CODENJOY)));
+        result.add(achievementRepository.addAchievement(new Achievement(
                 userFromId,
-                userThirdPlace,
+                request.getThirdPlace(),
                 CODENJOY_THIRD_PLACE,
                 "Codenjoy third place",
-                AchievementType.CODENJOY);
-
-        result.add(achievementRepository.addAchievement(firstPlace));
-        result.add(achievementRepository.addAchievement(secondPlace));
-        result.add(achievementRepository.addAchievement(thirdPlace));
+                AchievementType.CODENJOY)));
 
         return result;
     }
 
     public List<String> addInterview(InterviewRequest request) {
         String userFromId = request.getFrom();
-        String description = request.getDescription();
-        Achievement achievement = new Achievement(userFromId, userFromId, INTERVIEW_POINTS, description,
-                AchievementType.INTERVIEW);
-
         log.debug("Send INTERVIEW achievement to repository");
-        String id = achievementRepository.addAchievement(achievement);
+        String id = achievementRepository.addAchievement(new Achievement(
+                userFromId,
+                userFromId,
+                INTERVIEW_POINTS,
+                request.getDescription(),
+                AchievementType.INTERVIEW));
         log.info("Added INTERVIEW achievement from user: '{}', id: [{}]", request.getFrom(), id);
 
         return Collections.singletonList(id);
@@ -276,28 +269,24 @@ public class AchievementServiceImpl implements AchievementService {
             log.debug("Sending 'Thanks Keeper' achievements to repository");
             result = keepers
                     .stream()
-                    .map(this::prepareThanksKeeperAchievements)
-                    .flatMap(Collection::stream)
+                    .collect(Collectors.toMap(KeeperDTO::getUuid, KeeperDTO::getDirections))
+                    .entrySet()
+                    .stream()
+                    .flatMap(map -> map
+                            .getValue()
+                            .stream()
+                            .map(value -> new Pair<>(map.getKey(), value)))
+                    .map(pair -> new Achievement(
+                            systemFrom,
+                            pair.getKey(),
+                            KEEPER_THANKS,
+                            String.format(THANKS_DESCRIPTION, pair.getValue()),
+                            AchievementType.THANKS_KEEPER))
                     .map(achievementRepository::addAchievement)
                     .collect(Collectors.toList());
         }
 
         return result;
-    }
-
-    private List<Achievement> prepareThanksKeeperAchievements(KeeperDTO keeper) {
-        log.debug("Preparing THANKS KEEPER achievements for send to repository. {}", keeper);
-        return keeper
-                .getDirections()
-                .stream()
-                .map(direction -> createAchievement(keeper.getUuid(), direction))
-                .collect(Collectors.toList());
-    }
-
-    private Achievement createAchievement(String uuid, String direction) {
-        String description = String.format(THANKS_DESCRIPTION, direction);
-
-        return new Achievement(systemFrom, uuid, KEEPER_THANKS, description, AchievementType.THANKS_KEEPER);
     }
 
     public List<String> addWelcome(WelcomeRequest request) {
@@ -309,11 +298,16 @@ public class AchievementServiceImpl implements AchievementService {
 
         if (!welcome.isEmpty()) {
             log.warn("User '{}' tried to give 'Welcome' achievement more than one time to {}",
-                    userFromId, userToId);
+                    userFromId,
+                    userToId);
             throw new WelcomeAchievementException(
                     "User tried to give WELCOME achievement more than one time to one person");
         } else {
-            Achievement achievement = new Achievement(userFromId, userToId, WELCOME_POINTS, WELCOME_DESCRIPTION,
+            Achievement achievement = new Achievement(
+                    userFromId,
+                    userToId,
+                    WELCOME_POINTS,
+                    WELCOME_DESCRIPTION,
                     AchievementType.WELCOME);
             log.debug("Send new WELCOME achievement to repository");
             String id = achievementRepository.addAchievement(achievement);
@@ -337,16 +331,13 @@ public class AchievementServiceImpl implements AchievementService {
 
         List<String> ids = members
                 .stream()
-                .map(userId -> achievementRepository
-                        .addAchievement(
-                                new Achievement(
-                                        userFromId,
-                                        userId,
-                                        TEAM_POINTS,
-                                        TEAM_DESCRIPTION,
-                                        AchievementType.TEAM)))
+                .map(userId -> achievementRepository.addAchievement(new Achievement(
+                        userFromId,
+                        userId,
+                        TEAM_POINTS,
+                        TEAM_DESCRIPTION,
+                        AchievementType.TEAM)))
                 .collect(Collectors.toList());
-
         log.info("Added TEAM achievements from user '{}', ids: '{}'", userFromId, ids);
 
         return ids;
