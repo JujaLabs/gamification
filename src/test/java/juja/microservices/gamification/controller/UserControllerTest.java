@@ -60,9 +60,6 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private KeeperClient keeperClient;
-
-    @MockBean
     private UserService service;
 
     @Test
