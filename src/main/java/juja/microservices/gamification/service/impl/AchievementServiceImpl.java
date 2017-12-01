@@ -1,7 +1,7 @@
 package juja.microservices.gamification.service.impl;
 
 import javafx.util.Pair;
-import juja.microservices.gamification.dao.impl.AchievementRepository;
+import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
 import juja.microservices.gamification.entity.CodenjoyRequest;

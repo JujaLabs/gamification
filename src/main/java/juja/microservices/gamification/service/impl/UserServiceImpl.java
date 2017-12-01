@@ -1,6 +1,6 @@
 package juja.microservices.gamification.service.impl;
 
-import juja.microservices.gamification.dao.impl.AchievementRepository;
+import juja.microservices.gamification.dao.AchievementRepository;
 import juja.microservices.gamification.entity.UserAchievementDetails;
 import juja.microservices.gamification.entity.UserIdsRequest;
 import juja.microservices.gamification.entity.UserPointsSum;

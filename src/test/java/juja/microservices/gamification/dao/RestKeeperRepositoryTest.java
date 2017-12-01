@@ -1,7 +1,6 @@
 package juja.microservices.gamification.dao;
 
 import feign.FeignException;
-import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.KeeperDTO;
 import juja.microservices.gamification.exceptions.KeepersMicroserviceExchangeException;
 import org.junit.Rule;

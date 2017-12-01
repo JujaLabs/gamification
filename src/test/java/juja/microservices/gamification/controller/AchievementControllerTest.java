@@ -1,6 +1,5 @@
 package juja.microservices.gamification.controller;
 
-import juja.microservices.gamification.dao.KeeperClient;
 import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.InterviewRequest;
@@ -61,9 +60,6 @@ public class AchievementControllerTest {
 
     @Inject
     private MockMvc mockMvc;
-
-    @MockBean
-    private KeeperClient keeperClient;
 
     @MockBean
     private AchievementService service;
