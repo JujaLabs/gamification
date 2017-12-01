@@ -3,7 +3,14 @@ package juja.microservices.gamification.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import juja.microservices.gamification.entity.*;
+import juja.microservices.gamification.entity.AdminAddRequest;
+import juja.microservices.gamification.entity.CodenjoyRequest;
+import juja.microservices.gamification.entity.DailyRequest;
+import juja.microservices.gamification.entity.ThanksRequest;
+import juja.microservices.gamification.entity.InterviewRequest;
+import juja.microservices.gamification.entity.AchievementType;
+import juja.microservices.gamification.entity.WelcomeRequest;
+import juja.microservices.gamification.entity.TeamRequest;
 import juja.microservices.gamification.service.AchievementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +67,7 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
-    public ResponseEntity<?> addAdmin(@Valid @RequestBody Achievement request) {
+    public ResponseEntity<?> addAdmin(@Valid @RequestBody AdminAddRequest request) {
         List<String> ids = new ArrayList<>();
 
         if (request.getType().equals(AchievementType.DAILY)) {
@@ -88,13 +95,18 @@ public class AchievementController {
             ids = achievementService.addWelcome(welcomeRequest);
             logger.info("Added welcome achievement, id = {}", ids.toString());
         } else if (request.getType().equals(AchievementType.TEAM)) {
-            //TODO: implement 'TEAM' achievemnt
-            return new ResponseEntity<Error>(HttpStatus.NOT_IMPLEMENTED);
+            logger.debug("Received request on /achievements/team: {}", request);
+            TeamRequest teamRequest = new TeamRequest(request.getFrom(), request.getMembers());
+            ids = achievementService.addTeam(teamRequest);
+            logger.info("Added team achievements, ids = {}", ids.toString());
+        } else if (request.getType().equals(AchievementType.CODENJOY)) {
+            logger.debug("Received request on /achievements/codenjoy : {}", request);
+            CodenjoyRequest codenjoyRequest = new CodenjoyRequest(request.getFrom(),
+                    request.getFirstPlace(), request.getSecondPlace(), request.getThirdPlace());
+            ids = achievementService.addCodenjoy(codenjoyRequest);
+            logger.info("Added 'Codenjoy' achievement, ids = {}", ids.toString());
         } else if (request.getType().equals(AchievementType.START)) {
             //TODO: implement 'START' achievemnt
-            return new ResponseEntity<Error>(HttpStatus.NOT_IMPLEMENTED);
-        } else if (request.getType().equals(AchievementType.CODENJOY)) {
-            //TODO: implement 'CODENJOY' achievemnt
             return new ResponseEntity<Error>(HttpStatus.NOT_IMPLEMENTED);
         } else {
             return new ResponseEntity<Error>(HttpStatus.UNPROCESSABLE_ENTITY);
