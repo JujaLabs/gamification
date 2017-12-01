@@ -44,20 +44,21 @@ public class AchievementControllerTest {
     private static final String TWO_ID = "[\"1\",\"2\"]";
     private static final String THREE_ID = "[\"1\",\"2\",\"3\"]";
     private static final String FOUR_ID = "[\"1\",\"2\",\"3\",\"4\"]";
-    @Value("${endpoint.achievements.addDaily}")
+    @Value("/v1/gamification/achievements/daily")
     private String achievementsAddDailyUrl;
-    @Value("${endpoint.achievements.addThanks}")
+    @Value("/v1/gamification/achievements/thanks")
     private String achievementsAddThanksUrl;
-    @Value("${endpoint.achievements.addCodenjoy}")
+    @Value("/v1/gamification/achievements/codenjoy")
     private String achievementsAddCodenjoyUrl;
-    @Value("${endpoint.achievements.addInterview}")
+    @Value("/v1/gamification/achievements/interview")
     private String achievementsAddInterviewUrl;
-    @Value("${endpoint.achievements.addKeeperThanks}")
+    @Value("/v1/gamification/achievements/keepers/thanks")
     private String achievementsAddKeeperThanksUrl;
-    @Value("${endpoint.achievements.addWelcome}")
+    @Value("/v1/gamification/achievements/welcome")
     private String achievementsAddWelcomeUrl;
-    @Value("${endpoint.achievements.addTeam}")
+    @Value("/v1/gamification/achievements/team")
     private String achievementsAddTeamUrl;
+
     @Inject
     private MockMvc mockMvc;
 

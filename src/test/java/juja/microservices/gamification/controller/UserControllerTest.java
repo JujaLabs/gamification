@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -50,10 +51,9 @@ public class UserControllerTest {
             "\"type\":\"INTERVIEW\",\"id\":null,\"sendDate\":\"2017-04-21\"}]}" +
             "]";
 
-    @Value("${endpoint.users.getPointSum}")
+    @Value("/v1/gamification/users/pointSum")
     private String usersGetPointSum;
-
-    @Value("${endpoint.users.getAchievementDetails}")
+    @Value("/v1/gamification/users/achievementDetails")
     private String usersGetAchievementDetails;
 
     @Inject
@@ -85,25 +85,26 @@ public class UserControllerTest {
 
     @Test
     public void getUsersWithAchievementDetails() throws Exception {
-        Achievement achievementOne = new Achievement("max", "max", 1, "Daily", AchievementType.DAILY);
-        Achievement achievementTwo = new Achievement("john", "max", 1, "Thanks", AchievementType.THANKS);
-        Achievement achievementThree = new Achievement("john", "john", 10, "Interview", AchievementType.INTERVIEW);
+        Achievement achievementOne =
+                new Achievement("max", "max", 1, "Daily", AchievementType.DAILY);
+        Achievement achievementTwo =
+                new Achievement("john", "max", 1, "Thanks", AchievementType.THANKS);
+        Achievement achievementThree =
+                new Achievement("john","john",10, "Interview", AchievementType.INTERVIEW);
         achievementOne.setSendDate(testDate());
         achievementTwo.setSendDate(testDate());
         achievementThree.setSendDate(testDate());
 
-        List<Achievement> achievementsFirstUser = Arrays.asList(achievementOne, achievementTwo);
-        List<Achievement> achievementsSecondUser = Arrays.asList(achievementThree);
-
         List<UserAchievementDetails> achievements = new ArrayList<>();
-        achievements.add(new UserAchievementDetails("max", achievementsFirstUser));
-        achievements.add(new UserAchievementDetails("john", achievementsSecondUser));
+        achievements.add(new UserAchievementDetails("max", Arrays.asList(achievementOne, achievementTwo)));
+        achievements.add(new UserAchievementDetails("john", Collections.singletonList(achievementThree)));
         when(service.getUserAchievementsDetails(any(UserIdsRequest.class))).thenReturn(achievements);
 
         String jsonContentRequest = "{\"toIds\":[\"max\",\"john\"]}";
-        String result = mockMvc.perform(post(usersGetAchievementDetails)
-                .contentType(APPLICATION_JSON_UTF8)
-                .content(jsonContentRequest))
+        String result = mockMvc
+                .perform(post(usersGetAchievementDetails)
+                        .contentType(APPLICATION_JSON_UTF8)
+                        .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();

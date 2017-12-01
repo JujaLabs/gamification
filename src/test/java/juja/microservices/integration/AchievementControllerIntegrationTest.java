@@ -40,25 +40,27 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
-    @Value("${endpoint.achievements.addDaily}")
+    @Value("/v1/gamification/achievements/daily")
     private String achievementsAddDailyUrl;
-    @Value("${endpoint.achievements.addThanks}")
+    @Value("/v1/gamification/achievements/thanks")
     private String achievementsAddThanksUrl;
-    @Value("${endpoint.achievements.addCodenjoy}")
+    @Value("/v1/gamification/achievements/codenjoy")
     private String achievementsAddCodenjoyUrl;
-    @Value("${endpoint.achievements.addInterview}")
+    @Value("/v1/gamification/achievements/interview")
     private String achievementsAddInterviewUrl;
-    @Value("${endpoint.achievements.addKeeperThanks}")
+    @Value("/v1/gamification/achievements/keepers/thanks")
     private String achievementsAddKeeperThanksUrl;
-    @Value("${endpoint.achievements.addWelcome}")
+    @Value("/v1/gamification/achievements/welcome")
     private String achievementsAddWelcomeUrl;
-    @Value("${endpoint.achievements.addTeam}")
+    @Value("/v1/gamification/achievements/team")
     private String achievementsAddTeamUrl;
-    @Value("${endpoint.users.getPointSum}")
+    @Value("/v1/gamification/users/pointSum")
     private String usersGetPointSum;
-    @Value("${endpoint.users.getAchievementDetails}")
+    @Value("/v1/gamification/users/achievementDetails")
+
     private String usersGetAchievementDetails;
     private MockMvc mockMvc;
+
     @MockBean
     private KeeperRepository keeperRepository;
 
