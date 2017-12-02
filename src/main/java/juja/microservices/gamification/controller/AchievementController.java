@@ -58,7 +58,7 @@ public class AchievementController {
 
     @PostMapping(value = "${endpoint.achievements.addAdmin}")
     @ApiOperation(
-            value = "Add any points",
+            value = "Add any points by admin",
             notes = "This method adds points by admin"
     )
     @ApiResponses(value = {
@@ -68,50 +68,11 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addAdmin(@Valid @RequestBody AdminAddRequest request) {
-        List<String> ids = new ArrayList<>();
-
-        if (request.getType().equals(AchievementType.DAILY)) {
-            logger.debug("Received request on /achievements/daily : {}", request);
-            DailyRequest dailyRequest = new DailyRequest(request.getFrom(), request.getDescription());
-            ids = achievementService.addDaily(dailyRequest);
-            logger.info("Added 'Daily' achievement, id = {}", ids.toString());
-        } else if (request.getType().equals(AchievementType.INTERVIEW)) {
-            logger.debug("Received request on /achievements/interview : {}", request);
-            InterviewRequest interviewRequest = new InterviewRequest(request.getFrom(), request.getDescription());
-            ids = achievementService.addInterview(interviewRequest);
-            logger.info("Added 'Interview' achievement, id = {}", ids.toString());
-        } else if (request.getType().equals(AchievementType.THANKS)) {
-            logger.debug("Received request on /achievements/thanks : {}", request);
-            ThanksRequest thanksRequest = new ThanksRequest(request.getFrom(), request.getTo(), request.getDescription());
-            ids = achievementService.addThanks(thanksRequest);
-            logger.info("Added 'Thanks' achievement, ids = {}", ids.toString());
-        } else if (request.getType().equals(AchievementType.THANKS_KEEPER)) {
-            logger.debug("Received request on /achievements/keepers/thanks");
-            ids = achievementService.addThanksKeeper();
-            logger.info("Added 'Thanks keeper' achievement, id = {}", ids.toString());
-        } else if (request.getType().equals(AchievementType.WELCOME)) {
-            logger.debug("Received request on /achievements/welcome : {}", request);
-            WelcomeRequest welcomeRequest = new WelcomeRequest(request.getFrom(), request.getTo());
-            ids = achievementService.addWelcome(welcomeRequest);
-            logger.info("Added welcome achievement, id = {}", ids.toString());
-        } else if (request.getType().equals(AchievementType.TEAM)) {
-            logger.debug("Received request on /achievements/team: {}", request);
-            TeamRequest teamRequest = new TeamRequest(request.getFrom(), request.getMembers());
-            ids = achievementService.addTeam(teamRequest);
-            logger.info("Added team achievements, ids = {}", ids.toString());
-        } else if (request.getType().equals(AchievementType.CODENJOY)) {
-            logger.debug("Received request on /achievements/codenjoy : {}", request);
-            CodenjoyRequest codenjoyRequest = new CodenjoyRequest(request.getFrom(),
-                    request.getFirstPlace(), request.getSecondPlace(), request.getThirdPlace());
-            ids = achievementService.addCodenjoy(codenjoyRequest);
-            logger.info("Added 'Codenjoy' achievement, ids = {}", ids.toString());
-        } else if (request.getType().equals(AchievementType.START)) {
-            //TODO: implement 'START' achievemnt
-            return new ResponseEntity<Error>(HttpStatus.NOT_IMPLEMENTED);
-        } else {
-            return new ResponseEntity<Error>(HttpStatus.UNPROCESSABLE_ENTITY);
+        logger.debug("Received request on achievements addAdmin {}", request);
+        List<String> ids = achievementService.addAdmin(request);
+        if (ids.isEmpty()) {
+            return new ResponseEntity<>("Not able to process", HttpStatus.UNPROCESSABLE_ENTITY);
         }
-
         return ResponseEntity.ok(ids);
     }
 
