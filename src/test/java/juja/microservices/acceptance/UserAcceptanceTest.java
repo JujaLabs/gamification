@@ -22,9 +22,9 @@ import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 public class UserAcceptanceTest extends BaseAcceptanceTest {
 
     private static final String EMPTY_JSON_CONTENT_REQUEST = "";
-    @Value("${endpoint.users.getPointSum}")
+    @Value("/v1/gamification/users/pointSum")
     private String usersGetPointSum;
-    @Value("${endpoint.users.getAchievementDetails}")
+    @Value("/v1/gamification/users/achievementDetails")
     private String usersGetAchievementDetails;
 
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)

@@ -6,6 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -22,6 +24,8 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+@EnableDiscoveryClient
+@EnableFeignClients
 @SpringBootApplication
 public class Gamification {
 
@@ -40,6 +44,7 @@ public class Gamification {
         source.registerCorsConfiguration("/**", config);
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(0);
+
         return bean;
     }
 
@@ -47,6 +52,7 @@ public class Gamification {
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate(httpRequestFactory());
         restTemplate.setMessageConverters(getHttpMessageConverters());
+
         return restTemplate;
     }
 
@@ -62,12 +68,14 @@ public class Gamification {
         List<HttpMessageConverter<?>> converters = new ArrayList<>();
         converters.add(new MappingJackson2HttpMessageConverter());
         converters.add(new StringHttpMessageConverter());
+
         return converters;
     }
 
     @ConditionalOnProperty(
             value = "app.scheduling.enable", havingValue = "true", matchIfMissing = true
     )
+
     @Configuration
     @EnableScheduling
     public static class SchedulingConfiguration {
