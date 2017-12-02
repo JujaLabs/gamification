@@ -1,7 +1,7 @@
 package juja.microservices.gamification.service;
 
-import juja.microservices.gamification.dao.KeeperClient;
 import juja.microservices.gamification.dao.AchievementRepository;
+import juja.microservices.gamification.dao.KeeperClient;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
 import juja.microservices.gamification.entity.CodenjoyRequest;
@@ -26,7 +26,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
