@@ -26,7 +26,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -109,25 +111,11 @@ public class AchievementServiceImpl implements AchievementService {
         List<Achievement> userFromThanksAchievementToday = achievementRepository
                 .getAllAchievementsByUserFromIdCurrentDateType(fromId, AchievementType.THANKS);
         log.debug("Received list of THANKS achievements, size = {}", userFromThanksAchievementToday.size());
-        if (userFromThanksAchievementToday.size() >= TWO_THANKS) {
-            log.warn("User '{}' tried to give THANKS achievement more than two times per day", fromId);
-            throw new ThanksAchievementMoreThanTwoException(
-                    "User tried to give THANKS achievement more than two times per day");
-        }
+        checkThanks(userFromThanksAchievementToday, fromId, toId);
 
-        for (Achievement achievement : userFromThanksAchievementToday) {
-            if (achievement.getTo().equals(toId)) {
-                log.warn("User '{}' tried to give THANKS achievement more than one times to person '{}'",
-                        fromId,
-                        toId);
-                throw new ThanksAchievementMoreThanOneException(
-                        "User tried to give THANKS achievement more than one times to person");
-            }
-        }
-
-        Achievement achievement = new Achievement(fromId, toId, THANKS_POINTS, description, AchievementType.THANKS);
         log.debug("Send THANKS achievement to repository");
-        result.add(achievementRepository.addAchievement(achievement));
+        result.add(achievementRepository.addAchievement(
+                new Achievement(fromId, toId, THANKS_POINTS, description, AchievementType.THANKS)));
 
         if (!userFromThanksAchievementToday.isEmpty()) {
             String descriptionTwoThanks = ("You got THANKS achievement for thanking to other two users");
@@ -141,15 +129,32 @@ public class AchievementServiceImpl implements AchievementService {
         return result;
     }
 
+    private void checkThanks(List<Achievement> userFromThanksAchievementToday, String fromId, String toId) {
+        if (userFromThanksAchievementToday.size() >= TWO_THANKS) {
+            log.warn("User '{}' tried to give THANKS achievement more than two times per day", fromId);
+            throw new ThanksAchievementMoreThanTwoException(
+                    "User tried to give THANKS achievement more than two times per day");
+        }
+        for (Achievement achievement : userFromThanksAchievementToday) {
+            if (achievement.getTo().equals(toId)) {
+                log.warn("User '{}' more than once tried to give THANKS achievement to person '{}'", fromId, toId);
+                throw new ThanksAchievementMoreThanOneException(
+                        "User tried to give a person THANKS achievement more than once");
+            }
+        }
+    }
+
     public List<String> addCodenjoy(CodenjoyRequest request) {
         checkUsers(request);
         String userFromId = request.getFrom();
+
         log.debug("Send request to repository: get already created CODENJOY achievements for current date");
         List<Achievement> codenjoyUsersToday = achievementRepository.getAllCodenjoyAchievementsCurrentDate();
         log.debug("Received list of CODENJOY achievements, size = {}", codenjoyUsersToday.size());
         if (!codenjoyUsersToday.isEmpty()) {
-            log.warn("User '{}' tried to give CODENJOY achievement points twice a day", userFromId);
-            throw new CodenjoyAchievementTwiceInOneDayException("User tried to give CODENJOY achievement points twice a day");
+            log.warn("User '{}' tried to give CODENJOY achievement points two times a day", userFromId);
+            throw new CodenjoyAchievementTwiceInOneDayException(
+                    "User tried to give CODENJOY achievement points second time a day");
         }
 
         List<String> result = addCodenjoyAchievement(request);
@@ -160,29 +165,23 @@ public class AchievementServiceImpl implements AchievementService {
 
     private void checkUsers(CodenjoyRequest request) {
         log.debug("Verification users in codenjoy request");
-        String firstUserId = request.getFirstPlace();
-        String secondUserId = request.getSecondPlace();
-        String thirdUserId = request.getThirdPlace();
+        Set<String> users = new HashSet<>(Arrays.asList(
+                request.getFirstPlace(),
+                request.getSecondPlace(),
+                request.getThirdPlace()));
 
-        if (firstUserId.equalsIgnoreCase(secondUserId)) {
-            log.warn("CODENJOY request rejected: first and second place users is same");
-            throw new CodenjoyAchievementException("First and second users is same");
+        if (users.size() < 3) {
+            log.warn("CODENJOY request rejected: the same user referred several times");
+            throw new CodenjoyAchievementException("The same user referred more than once");
         }
-        if (firstUserId.equalsIgnoreCase(thirdUserId)) {
-            log.warn("CODENJOY request rejected: first and third place users is same");
-            throw new CodenjoyAchievementException("First and third users is same");
-        }
-        if (secondUserId.equalsIgnoreCase(thirdUserId)) {
-            log.warn("CODENJOY request rejected: second and third place users is same");
-            throw new CodenjoyAchievementException("Second and third users is same");
-        }
-        log.debug("Verification was successful");
+
+        log.debug("Verification successful");
     }
 
     private List<String> addCodenjoyAchievement(CodenjoyRequest request) {
         List<String> result = new ArrayList<>();
 
-        log.debug("Preparing achievement for send to repository");
+        log.debug("Preparing achievement to be sent to repository");
         String userFromId = request.getFrom();
         result.add(achievementRepository.addAchievement(new Achievement(
                 userFromId,
@@ -242,7 +241,7 @@ public class AchievementServiceImpl implements AchievementService {
                     .stream()
                     .map(Achievement::getId)
                     .collect(Collectors.toList());
-            log.info("Returned already created THANKS KEEPER achievements in current week {}", achievementIds);
+            log.info("Returned THANKS KEEPER achievements already created this week {}", achievementIds);
         }
 
         return achievementIds;
@@ -295,38 +294,35 @@ public class AchievementServiceImpl implements AchievementService {
 
         log.debug("Send request to repository: get already created  WELCOME achievement by user '{}'", userToId);
         List<Achievement> welcome = achievementRepository.getWelcomeAchievementByUser(userToId);
-
         if (!welcome.isEmpty()) {
-            log.warn("User '{}' tried to give 'Welcome' achievement more than one time to {}",
-                    userFromId,
-                    userToId);
+            log.warn("User '{}' tried to give 'Welcome' achievement to {} more than once", userFromId, userToId);
             throw new WelcomeAchievementException(
-                    "User tried to give WELCOME achievement more than one time to one person");
-        } else {
-            Achievement achievement = new Achievement(
-                    userFromId,
-                    userToId,
-                    WELCOME_POINTS,
-                    WELCOME_DESCRIPTION,
-                    AchievementType.WELCOME);
-            log.debug("Send new WELCOME achievement to repository");
-            String id = achievementRepository.addAchievement(achievement);
-            log.info("Added WELCOME achievement from user: '{}', id: [{}]", request.getFrom(), id);
-
-            return Collections.singletonList(id);
+                    "User tried to give WELCOME achievement to the same person more than once");
         }
+
+        log.debug("Send new WELCOME achievement to repository");
+        String id = achievementRepository.addAchievement(new Achievement(
+                userFromId,
+                userToId,
+                WELCOME_POINTS,
+                WELCOME_DESCRIPTION,
+                AchievementType.WELCOME));
+        log.info("Added WELCOME achievement from user: '{}', id: [{}]", request.getFrom(), id);
+
+        return Collections.singletonList(id);
     }
 
     public List<String> addTeam(TeamRequest request) {
-        log.debug("Preparing TEAM achievements for send to repository");
         String userFromId = request.getFrom();
         Set<String> members = request.getMembers();
+
+        log.debug("Send new TEAM achievement to repository");
         List<Achievement> teamAchievements = achievementRepository.getAllTeamAchievementsCurrentWeek(members);
         if (!teamAchievements.isEmpty()) {
-            log.warn("User '{}' tried to give TEAM achievements but some members have such achievements this week",
+            log.warn("User '{}' tried to give TEAM achievements but some members received such achievements this week",
                     userFromId);
-            throw new TeamAchievementException("Cannot add 'Team' achievements. Some team members have such " +
-                    " achievements this week.");
+            throw new TeamAchievementException(
+                    "Cannot add 'Team' achievements. Some team members received such achievements this week.");
         }
 
         List<String> ids = members
