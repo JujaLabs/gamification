@@ -7,7 +7,6 @@ import net.javacrumbs.jsonunit.core.Option;
 import org.eclipse.jetty.http.HttpMethod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -25,22 +24,14 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
     private static final String FOUR_ACHIEVEMENT_ID = "[ achievement1 id, achievement2 id, achievement3 id, " +
             "achievement4 id]";
 
-    @Value("${endpoint.achievements.addDaily}")
-    private String achievementsAddDailyUrl;
-    @Value("${endpoint.achievements.addThanks}")
-    private String achievementsAddThanksUrl;
-    @Value("${endpoint.achievements.addCodenjoy}")
-    private String achievementsAddCodenjoyUrl;
-    @Value("${endpoint.achievements.addInterview}")
-    private String achievementsAddInterviewUrl;
-    @Value("${endpoint.achievements.addKeeperThanks}")
-    private String achievementsAddKeeperThanksUrl;
-    @Value("${endpoint.achievements.addWelcome}")
-    private String achievementsAddWelcomeUrl;
-    @Value("${endpoint.achievements.addTeam}")
-    private String achievementsAddTeamUrl;
-    @Value("${endpoint.users.getPointSum}")
-    private String usersGetPointSum;
+    private static final String ACHIEVEMENTS_ADD_DAILY_URL = "/v1/gamification/achievements/daily";
+    private static final String ACHIEVEMENTS_ADD_THANKS_URL = "/v1/gamification/achievements/thanks";
+    private static final String ACHIEVEMENTS_ADD_CODENJOY_URL = "/v1/gamification/achievements/codenjoy";
+    private static final String ACHIEVEMENTS_ADD_INTERVIEW_URL = "/v1/gamification/achievements/interview";
+    private static final String ACHIEVEMENTS_ADD_KEEPER_THANKS_URL = "/v1/gamification/achievements/keepers/thanks";
+    private static final String ACHIEVEMENTS_ADD_WELCOME_URL = "/v1/gamification/achievements/welcome";
+    private static final String ACHIEVEMENTS_ADD_TEAM_URL = "/v1/gamification/achievements/team";
+    private static final String USERS_GET_POINT_SUM = "/v1/gamification/users/pointSum";
 
     @UsingDataSet(locations = "/datasets/initEmptyDb.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
@@ -49,8 +40,8 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         String jsonContentControlResponse = convertToString(
                 resource("acceptance/response/responseUserPointSumOnePoint.json"));
 
-        Response actualResponse = getResponse(achievementsAddDailyUrl, jsonContentRequest, HttpMethod.POST);
-        printConsoleReport(achievementsAddDailyUrl, ONE_ACHIEVEMENT_ID, actualResponse.body());
+        Response actualResponse = getResponse(ACHIEVEMENTS_ADD_DAILY_URL, jsonContentRequest, HttpMethod.POST);
+        printConsoleReport(ACHIEVEMENTS_ADD_DAILY_URL, ONE_ACHIEVEMENT_ID, actualResponse.body());
         Response controlResponse = getControlResponse();
 
         assertThatJson(controlResponse.asString())
@@ -65,8 +56,8 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         String jsonContentControlResponse = convertToString(resource(
                 "acceptance/response/responseUserPointSumOnePoint.json"));
 
-        Response actualResponse = getResponse(achievementsAddThanksUrl, jsonContentRequest, HttpMethod.POST);
-        printConsoleReport(achievementsAddThanksUrl, ONE_ACHIEVEMENT_ID, actualResponse.body());
+        Response actualResponse = getResponse(ACHIEVEMENTS_ADD_THANKS_URL, jsonContentRequest, HttpMethod.POST);
+        printConsoleReport(ACHIEVEMENTS_ADD_THANKS_URL, ONE_ACHIEVEMENT_ID, actualResponse.body());
         Response controlResponse = getControlResponse();
 
         assertThatJson(controlResponse.asString())
@@ -82,10 +73,10 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         String jsonContentControlResponse = convertToString(resource(
                 "acceptance/response/responseUserPointSumTwoThanks.json"));
 
-        Response actualResponse = getResponse(achievementsAddThanksUrl, jsonFirstContentRequest, HttpMethod.POST);
-        printConsoleReport(achievementsAddThanksUrl, ONE_ACHIEVEMENT_ID, actualResponse.body());
-        actualResponse = getResponse(achievementsAddThanksUrl, jsonSecondContentRequest, HttpMethod.POST);
-        printConsoleReport(achievementsAddThanksUrl, TWO_ACHIEVEMENT_ID, actualResponse.body());
+        Response actualResponse = getResponse(ACHIEVEMENTS_ADD_THANKS_URL, jsonFirstContentRequest, HttpMethod.POST);
+        printConsoleReport(ACHIEVEMENTS_ADD_THANKS_URL, ONE_ACHIEVEMENT_ID, actualResponse.body());
+        actualResponse = getResponse(ACHIEVEMENTS_ADD_THANKS_URL, jsonSecondContentRequest, HttpMethod.POST);
+        printConsoleReport(ACHIEVEMENTS_ADD_THANKS_URL, TWO_ACHIEVEMENT_ID, actualResponse.body());
         Response controlResponse = getControlResponse();
 
         assertThatJson(controlResponse.asString())
@@ -100,8 +91,8 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         String jsonContentControlResponse = convertToString(resource(
                 "acceptance/response/responseUserPointSumCodenjoy.json"));
 
-        Response actualResponse = getResponse(achievementsAddCodenjoyUrl, jsonContentRequest, HttpMethod.POST);
-        printConsoleReport(achievementsAddCodenjoyUrl, THREE_ACHIEVEMENT_ID, actualResponse.body());
+        Response actualResponse = getResponse(ACHIEVEMENTS_ADD_CODENJOY_URL, jsonContentRequest, HttpMethod.POST);
+        printConsoleReport(ACHIEVEMENTS_ADD_CODENJOY_URL, THREE_ACHIEVEMENT_ID, actualResponse.body());
         Response controlResponse = getControlResponse();
 
         assertThatJson(controlResponse.asString())
@@ -116,8 +107,8 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         String jsonContentControlResponse = convertToString(resource(
                 "acceptance/response/responseUserPointSumTenPoints.json"));
 
-        Response actualResponse = getResponse(achievementsAddInterviewUrl, jsonContentRequest, HttpMethod.POST);
-        printConsoleReport(achievementsAddInterviewUrl, ONE_ACHIEVEMENT_ID, actualResponse.body());
+        Response actualResponse = getResponse(ACHIEVEMENTS_ADD_INTERVIEW_URL, jsonContentRequest, HttpMethod.POST);
+        printConsoleReport(ACHIEVEMENTS_ADD_INTERVIEW_URL, ONE_ACHIEVEMENT_ID, actualResponse.body());
         Response controlResponse = getControlResponse();
 
         assertThatJson(controlResponse.asString())
@@ -132,8 +123,8 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         String jsonContentControlResponse = convertToString(resource(
                 "acceptance/response/responseUserPointSumOnePoint.json"));
 
-        Response actualResponse = getResponse(achievementsAddWelcomeUrl, jsonContentRequest, HttpMethod.POST);
-        printConsoleReport(achievementsAddWelcomeUrl, ONE_ACHIEVEMENT_ID, actualResponse.body());
+        Response actualResponse = getResponse(ACHIEVEMENTS_ADD_WELCOME_URL, jsonContentRequest, HttpMethod.POST);
+        printConsoleReport(ACHIEVEMENTS_ADD_WELCOME_URL, ONE_ACHIEVEMENT_ID, actualResponse.body());
         Response controlResponse = getControlResponse();
 
         assertThatJson(controlResponse.asString())
@@ -148,8 +139,8 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
         String jsonContentControlResponse = convertToString(resource(
                 "acceptance/response/responseUserPointSumTeam.json"));
 
-        Response actualResponse = getResponse(achievementsAddTeamUrl, jsonContentRequest, HttpMethod.POST);
-        printConsoleReport(achievementsAddTeamUrl, FOUR_ACHIEVEMENT_ID, actualResponse.body());
+        Response actualResponse = getResponse(ACHIEVEMENTS_ADD_TEAM_URL, jsonContentRequest, HttpMethod.POST);
+        printConsoleReport(ACHIEVEMENTS_ADD_TEAM_URL, FOUR_ACHIEVEMENT_ID, actualResponse.body());
         Response controlResponse = getControlResponse();
 
         assertThatJson(controlResponse.asString())
@@ -158,6 +149,6 @@ public class AchievementAcceptanceTest extends BaseAcceptanceTest {
     }
 
     Response getControlResponse() {
-        return getResponse(usersGetPointSum, EMPTY_JSON_CONTENT_REQUEST, HttpMethod.GET);
+        return getResponse(USERS_GET_POINT_SUM, EMPTY_JSON_CONTENT_REQUEST, HttpMethod.GET);
     }
 }

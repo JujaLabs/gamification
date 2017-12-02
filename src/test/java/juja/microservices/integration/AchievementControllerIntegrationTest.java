@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -40,25 +39,19 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
-    @Value("${endpoint.achievements.addDaily}")
-    private String achievementsAddDailyUrl;
-    @Value("${endpoint.achievements.addThanks}")
-    private String achievementsAddThanksUrl;
-    @Value("${endpoint.achievements.addCodenjoy}")
-    private String achievementsAddCodenjoyUrl;
-    @Value("${endpoint.achievements.addInterview}")
-    private String achievementsAddInterviewUrl;
-    @Value("${endpoint.achievements.addKeeperThanks}")
-    private String achievementsAddKeeperThanksUrl;
-    @Value("${endpoint.achievements.addWelcome}")
-    private String achievementsAddWelcomeUrl;
-    @Value("${endpoint.achievements.addTeam}")
-    private String achievementsAddTeamUrl;
-    @Value("${endpoint.users.getPointSum}")
-    private String usersGetPointSum;
-    @Value("${endpoint.users.getAchievementDetails}")
-    private String usersGetAchievementDetails;
+
+    private static final String ACHIEVEMENTS_ADD_DAILY_URL = "/v1/gamification/achievements/daily";
+    private static final String ACHIEVEMENTS_ADD_THANKS_URL = "/v1/gamification/achievements/thanks";
+    private static final String ACHIEVEMENTS_ADD_CODENJOY_URL = "/v1/gamification/achievements/codenjoy";
+    private static final String ACHIEVEMENTS_ADD_INTERVIEW_URL = "/v1/gamification/achievements/interview";
+    private static final String ACHIEVEMENTS_ADD_KEEPER_THANKS_URL = "/v1/gamification/achievements/keepers/thanks";
+    private static final String ACHIEVEMENTS_ADD_WELCOME_URL = "/v1/gamification/achievements/welcome";
+    private static final String ACHIEVEMENTS_ADD_TEAM_URL = "/v1/gamification/achievements/team";
+    private static final String USERS_GET_POINT_SUM = "/v1/gamification/users/pointSum";
+    private static final String USERS_GET_ACHIEVEMENT_DETAILS = "/v1/gamification/users/achievementDetails";
+
     private MockMvc mockMvc;
+
     @MockBean
     private KeeperRepository keeperRepository;
 
@@ -70,7 +63,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @Test
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json")
     public void getAllUsersWithAchievementAndReturnJson() throws Exception {
-        mockMvc.perform(get(usersGetPointSum)
+        mockMvc.perform(get(USERS_GET_POINT_SUM)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
@@ -80,7 +73,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     @UsingDataSet(locations = "/datasets/selectAchievementById.json")
     public void getUsersAchievementDetailsAndReturnJson() throws Exception {
         String json = "{\"toIds\":[\"sasha\", \"ira\"]}";
-        mockMvc.perform(post(usersGetAchievementDetails)
+        mockMvc.perform(post(USERS_GET_ACHIEVEMENT_DETAILS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -93,7 +86,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String expectedJson = "[{\"to\":\"ira\",\"point\":1}]";
         String jsonContentRequest = "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"good work\"}";
 
-        addAchievementsIsOk(jsonContentRequest, achievementsAddThanksUrl);
+        addAchievementsIsOk(jsonContentRequest, ACHIEVEMENTS_ADD_THANKS_URL);
 
         MvcResult result = getMvcResultUserAchieveSum();
 
@@ -106,7 +99,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     public void addThanksShouldReturnExceptionCannotThankYourself() throws Exception {
         String jsonContentRequest = "{\"from\":\"sasha\",\"to\":\"sasha\",\"description\":\"thanks\"}";
 
-        addAchievementsFailed(jsonContentRequest, achievementsAddThanksUrl);
+        addAchievementsFailed(jsonContentRequest, ACHIEVEMENTS_ADD_THANKS_URL);
     }
 
     @Test
@@ -115,8 +108,8 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String firstContentRequest = "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
         String secondContentRequest = "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"thanks\"}";
 
-        addAchievementsIsOk(firstContentRequest, achievementsAddThanksUrl);
-        addAchievementsFailed(secondContentRequest, achievementsAddThanksUrl);
+        addAchievementsIsOk(firstContentRequest, ACHIEVEMENTS_ADD_THANKS_URL);
+        addAchievementsFailed(secondContentRequest, ACHIEVEMENTS_ADD_THANKS_URL);
     }
 
     @Test
@@ -126,9 +119,9 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String secondContentRequest = "{\"from\":\"sasha\",\"to\":\"max\",\"description\":\"thanks\"}";
         String thirdContentRequest = "{\"from\":\"sasha\",\"to\":\"peter\",\"description\":\"thanks\"}";
 
-        addAchievementsIsOk(firstContentRequest, achievementsAddThanksUrl);
-        addAchievementsIsOk(secondContentRequest, achievementsAddThanksUrl);
-        addAchievementsFailed(thirdContentRequest, achievementsAddThanksUrl);
+        addAchievementsIsOk(firstContentRequest, ACHIEVEMENTS_ADD_THANKS_URL);
+        addAchievementsIsOk(secondContentRequest, ACHIEVEMENTS_ADD_THANKS_URL);
+        addAchievementsFailed(thirdContentRequest, ACHIEVEMENTS_ADD_THANKS_URL);
     }
 
     @Test
@@ -143,8 +136,8 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String secondContentRequest =
                 "{\"from\":\"sasha\",\"to\":\"max\",\"description\":\"thanks\"}";
 
-        addAchievementsIsOk(firstContentRequest, achievementsAddThanksUrl);
-        addAchievementsIsOk(secondContentRequest, achievementsAddThanksUrl);
+        addAchievementsIsOk(firstContentRequest, ACHIEVEMENTS_ADD_THANKS_URL);
+        addAchievementsIsOk(secondContentRequest, ACHIEVEMENTS_ADD_THANKS_URL);
 
         MvcResult result = getMvcResultUserAchieveSum();
 
@@ -159,7 +152,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
         String expectedJson =
                 "[{\"to\":\"alex\",\"point\":5},{\"to\":\"jack\",\"point\":3},{\"to\":\"tomas\",\"point\":1}]";
-        addAchievementsIsOk(jsonContentRequest, achievementsAddCodenjoyUrl);
+        addAchievementsIsOk(jsonContentRequest, ACHIEVEMENTS_ADD_CODENJOY_URL);
         MvcResult result = getMvcResultUserAchieveSum();
         String content = result.getResponse().getContentAsString();
         JSONAssert.assertEquals(expectedJson, content, false);
@@ -170,11 +163,11 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     public void addCodenjoyShouldReturnExceptionFromMissed() throws Exception {
         String jsonContentRequest =
                 "{\"from\":\"\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
-        addAchievementsFailed(jsonContentRequest, achievementsAddCodenjoyUrl);
+        addAchievementsFailed(jsonContentRequest, ACHIEVEMENTS_ADD_CODENJOY_URL);
     }
 
     private MvcResult getMvcResultUserAchieveSum() throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.get(usersGetPointSum)
+        return mockMvc.perform(MockMvcRequestBuilders.get(USERS_GET_POINT_SUM)
                 .contentType(APPLICATION_JSON_UTF8)).andReturn();
     }
 
@@ -184,7 +177,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"interview report\"}";
         String expectedJson = "[{\"to\":\"sasha\",\"point\":10}]";
 
-        mockMvc.perform(post(achievementsAddInterviewUrl)
+        mockMvc.perform(post(ACHIEVEMENTS_ADD_INTERVIEW_URL)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -201,7 +194,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     public void addInterviewShouldReturnExceptionFromMissed() throws Exception {
         String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
 
-        mockMvc.perform(post(achievementsAddInterviewUrl)
+        mockMvc.perform(post(ACHIEVEMENTS_ADD_INTERVIEW_URL)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -214,7 +207,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"text\"}";
         String expectedJson = "[{\"to\":\"sasha\",\"point\":1}]";
 
-        mockMvc.perform(post(achievementsAddDailyUrl)
+        mockMvc.perform(post(ACHIEVEMENTS_ADD_DAILY_URL)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -233,8 +226,8 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String firstContentRequest = "{\"from\":\"sasha\",\"description\":\"text\"}";
         String secondContentRequest = "{\"from\":\"sasha\",\"description\":\"add text\"}";
 
-        addAchievementsIsOk(firstContentRequest, achievementsAddDailyUrl);
-        addAchievementsIsOk(secondContentRequest, achievementsAddDailyUrl);
+        addAchievementsIsOk(firstContentRequest, ACHIEVEMENTS_ADD_DAILY_URL);
+        addAchievementsIsOk(secondContentRequest, ACHIEVEMENTS_ADD_DAILY_URL);
 
         MvcResult result = getMvcResultUserAchieveSum();
 
@@ -247,7 +240,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     public void addDailyShouldReturnExceptionFromMissed() throws Exception {
         String jsonContentRequest = "{\"from\":\"\",\"description\":\"daily description\"}";
 
-        mockMvc.perform(post(achievementsAddDailyUrl)
+        mockMvc.perform(post(ACHIEVEMENTS_ADD_DAILY_URL)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -259,7 +252,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     public void addDailyShouldReturnExceptionDescriptionMissed() throws Exception {
         String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
 
-        mockMvc.perform(post(achievementsAddDailyUrl)
+        mockMvc.perform(post(ACHIEVEMENTS_ADD_DAILY_URL)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -272,7 +265,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String expectedJson = "[{\"to\":\"john\",\"point\":1}]";
         String jsonContentRequest = "{\"from\":\"max\",\"to\":\"john\"}";
 
-        addAchievementsIsOk(jsonContentRequest, achievementsAddWelcomeUrl);
+        addAchievementsIsOk(jsonContentRequest, ACHIEVEMENTS_ADD_WELCOME_URL);
 
         MvcResult result = getMvcResultUserAchieveSum();
 
@@ -290,7 +283,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         List<KeeperDTO> keepers = Arrays.asList(keeper);
         when(keeperRepository.getKeepers()).thenReturn(keepers);
 
-        addAchievementsIsOk("", achievementsAddKeeperThanksUrl);
+        addAchievementsIsOk("", ACHIEVEMENTS_ADD_KEEPER_THANKS_URL);
         MvcResult result = getMvcResultUserAchieveSum();
         String content = result.getResponse().getContentAsString();
 
@@ -306,7 +299,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String expectedJson = "[{\"to\":\"uuid1\",\"point\":6},{\"to\":\"uuid2\",\"point\":6}," +
                 "{\"to\":\"uuid3\",\"point\":6},{\"to\":\"uuid4\",\"point\":6}]";
 
-        addAchievementsIsOk(jsonContentRequest, achievementsAddTeamUrl);
+        addAchievementsIsOk(jsonContentRequest, ACHIEVEMENTS_ADD_TEAM_URL);
         MvcResult result = getMvcResultUserAchieveSum();
         String content = result.getResponse().getContentAsString();
 
@@ -318,8 +311,8 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     public void addTeamShouldReturnTeamAchievementException() throws Exception {
         String jsonContentRequest = "{\"from\":\"uuid1\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
 
-        addAchievementsIsOk(jsonContentRequest, achievementsAddTeamUrl);
-        addAchievementsFailed(jsonContentRequest, achievementsAddTeamUrl);
+        addAchievementsIsOk(jsonContentRequest, ACHIEVEMENTS_ADD_TEAM_URL);
+        addAchievementsFailed(jsonContentRequest, ACHIEVEMENTS_ADD_TEAM_URL);
     }
 
 
