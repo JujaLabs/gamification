@@ -9,7 +9,6 @@ import juja.microservices.gamification.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -49,10 +48,10 @@ public class UserControllerTest {
             "{\"from\":\"john\",\"to\":\"john\",\"point\":10,\"description\":\"Interview\"," +
             "\"type\":\"INTERVIEW\",\"id\":null,\"sendDate\":\"2017-04-21\"}]}" +
             "]";
-    @Value("${endpoint.users.getPointSum}")
-    private String usersGetPointSum;
-    @Value("${endpoint.users.getAchievementDetails}")
-    private String usersGetAchievementDetails;
+
+    private static final String USERS_GET_POINT_SUM = "/v1/gamification/users/pointSum";
+    private static final String USERS_GET_ACHIEVEMENT_DETAILS = "/v1/gamification/users/achievementDetails";
+
     @Inject
     private MockMvc mockMvc;
 
@@ -66,7 +65,7 @@ public class UserControllerTest {
         list.add(new UserPointsSum("john", 3));
         when(service.getAllUsersWithPointSum()).thenReturn(list);
 
-        String result = mockMvc.perform(get(usersGetPointSum)
+        String result = mockMvc.perform(get(USERS_GET_POINT_SUM)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
@@ -95,7 +94,7 @@ public class UserControllerTest {
         when(service.getUserAchievementsDetails(any(UserIdsRequest.class))).thenReturn(achievements);
 
         String jsonContentRequest = "{\"toIds\":[\"max\",\"john\"]}";
-        String result = mockMvc.perform(post(usersGetAchievementDetails)
+        String result = mockMvc.perform(post(USERS_GET_ACHIEVEMENT_DETAILS)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -115,14 +114,14 @@ public class UserControllerTest {
 
     @Test()
     public void getHttpRequestMethodNotSupportedException() throws Exception {
-        mockMvc.perform(post(usersGetPointSum)
+        mockMvc.perform(post(USERS_GET_POINT_SUM)
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isMethodNotAllowed());
     }
 
     @Test()
     public void getHttpMediaTypeNotSupportedException() throws Exception {
-        mockMvc.perform(post(usersGetAchievementDetails)
+        mockMvc.perform(post(USERS_GET_ACHIEVEMENT_DETAILS)
                 .contentType(APPLICATION_ATOM_XML))
                 .andExpect(status().isUnsupportedMediaType());
     }

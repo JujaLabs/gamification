@@ -28,14 +28,14 @@ import java.util.List;
  * @author Vadim Dyachenko
  */
 @RestController
-@RequestMapping(consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/v1/gamification/achievements", consumes = "application/json", produces = "application/json")
 public class AchievementController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
     private AchievementService achievementService;
 
-    @PostMapping(value = "${endpoint.achievements.addDaily}")
+    @PostMapping(value = "/daily")
     @ApiOperation(
             value = "Add points for daily report",
             notes = "This method adds points for daily report"
@@ -52,7 +52,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addThanks}")
+    @PostMapping(value = "/thanks")
     @ApiOperation(
             value = "Add points for thanks one user by another",
             notes = "This method adds points for help one user by another"
@@ -71,7 +71,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addCodenjoy}")
+    @PostMapping(value = "/codenjoy")
     @ApiOperation(
             value = "Add points for codenjoy winners",
             notes = "This method adds points for winners in codenjoy tournament"
@@ -89,7 +89,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addInterview}")
+    @PostMapping(value = "/interview")
     @ApiOperation(
             value = "Add points for interview",
             notes = "This method adds points for successful or unsuccessful interview"
@@ -106,7 +106,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addKeeperThanks}")
+    @PostMapping(value = "/keepers/thanks")
     @ApiOperation(
             value = "Add points for thanks keeper",
             notes = "This method adds points for successful or unsuccessful thanks keeper"
@@ -123,7 +123,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addWelcome}")
+    @PostMapping(value = "/welcome")
     @ApiOperation(
             value = "Add welcome points to new user",
             notes = "This method adds points to new user"
@@ -140,7 +140,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addTeam}")
+    @PostMapping(value = "/team")
     @ApiOperation(
             value = "Add team points to active team members",
             notes = "This method adds points to active team"
