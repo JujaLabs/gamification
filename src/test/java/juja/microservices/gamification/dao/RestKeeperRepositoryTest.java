@@ -45,7 +45,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
  * @author Benjamin Novikov
  */
 @RunWith(SpringRunner.class)
-@EnableAutoConfiguration(exclude={MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 @SpringBootTest
 public class RestKeeperRepositoryTest {
 
@@ -65,7 +65,7 @@ public class RestKeeperRepositoryTest {
     public void getKeepers_KeeperClientRequest_ReturnsListOfTwoKeeperDTOs() {
         //given
         List<KeeperDTO> expectedList = new ArrayList<>(Arrays.asList(
-                new KeeperDTO("0002A", Arrays.asList("First direction","Second direction")),
+                new KeeperDTO("0002A", Arrays.asList("First direction", "Second direction")),
                 new KeeperDTO("0002B", Collections.singletonList("Third direction"))));
         when(keeperClient.getKeepers()).thenReturn(expectedList);
 
