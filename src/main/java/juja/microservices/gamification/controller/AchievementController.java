@@ -6,11 +6,10 @@ import io.swagger.annotations.ApiResponses;
 import juja.microservices.gamification.entity.AdminAddRequest;
 import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.entity.DailyRequest;
-import juja.microservices.gamification.entity.ThanksRequest;
 import juja.microservices.gamification.entity.InterviewRequest;
-import juja.microservices.gamification.entity.AchievementType;
-import juja.microservices.gamification.entity.WelcomeRequest;
 import juja.microservices.gamification.entity.TeamRequest;
+import juja.microservices.gamification.entity.ThanksRequest;
+import juja.microservices.gamification.entity.WelcomeRequest;
 import juja.microservices.gamification.service.AchievementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,21 +23,21 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Olga Kulykova
+ * @author Vadim Dyachenko
  */
 @RestController
-@RequestMapping(consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/v1/gamification/achievements", consumes = "application/json", produces = "application/json")
 public class AchievementController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
     private AchievementService achievementService;
 
-    @PostMapping(value = "${endpoint.achievements.addDaily}")
+    @PostMapping(value = "/daily")
     @ApiOperation(
             value = "Add points for daily report",
             notes = "This method adds points for daily report"
@@ -50,13 +49,12 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addDaily(@Valid @RequestBody DailyRequest request) {
-        logger.debug("Received request on /achievements/daily : {}", request);
+        logger.info("Received request on /achievements/daily from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
         List<String> ids = achievementService.addDaily(request);
-        logger.info("Added 'Daily' achievement, id = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addAdmin}")
+    @PostMapping(value = "/admin")
     @ApiOperation(
             value = "Add any points by admin",
             notes = "This method adds points by admin"
@@ -76,7 +74,7 @@ public class AchievementController {
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addThanks}")
+    @PostMapping(value = "/thanks")
     @ApiOperation(
             value = "Add points for thanks one user by another",
             notes = "This method adds points for help one user by another"
@@ -90,13 +88,12 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addThanks(@Valid @RequestBody ThanksRequest request) {
-        logger.debug("Received request on /achievements/thanks : {}", request);
+        logger.info("Received request on /achievements/thanks from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
         List<String> ids = achievementService.addThanks(request);
-        logger.info("Added 'Thanks' achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addCodenjoy}")
+    @PostMapping(value = "/codenjoy")
     @ApiOperation(
             value = "Add points for codenjoy winners",
             notes = "This method adds points for winners in codenjoy tournament"
@@ -108,13 +105,13 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addCodenjoy(@Valid @RequestBody CodenjoyRequest request) {
-        logger.debug("Received request on /achievements/codenjoy : {}", request);
+        logger.info("Received request on /achievements/codenjoy from user: '{}', places: 1st-'{}', 2nd-'{}', 3rd-'{}'",
+                request.getFrom(), request.getFirstPlace(), request.getSecondPlace(), request.getThirdPlace());
         List<String> ids = achievementService.addCodenjoy(request);
-        logger.info("Added 'Codenjoy' achievement, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addInterview}")
+    @PostMapping(value = "/interview")
     @ApiOperation(
             value = "Add points for interview",
             notes = "This method adds points for successful or unsuccessful interview"
@@ -126,13 +123,12 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addInterview(@Valid @RequestBody InterviewRequest request) {
-        logger.debug("Received request on /achievements/interview : {}", request);
+        logger.info("Received request on /achievements/interview from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
         List<String> ids = achievementService.addInterview(request);
-        logger.info("Added 'Interview' achievement, id = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addKeeperThanks}")
+    @PostMapping(value = "/keepers/thanks")
     @ApiOperation(
             value = "Add points for thanks keeper",
             notes = "This method adds points for successful or unsuccessful thanks keeper"
@@ -144,13 +140,12 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addThanksKeeper() {
-        logger.debug("Received request on /achievements/keepers/thanks");
+        logger.info("Received request on /achievements/keepers/thanks");
         List<String> ids = achievementService.addThanksKeeper();
-        logger.info("Added 'Thanks keeper' achievement, id = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addWelcome}")
+    @PostMapping(value = "/welcome")
     @ApiOperation(
             value = "Add welcome points to new user",
             notes = "This method adds points to new user"
@@ -162,13 +157,12 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addWelcome(@Valid @RequestBody WelcomeRequest request) {
-        logger.debug("Received request on /achievements/welcome : {}", request);
+        logger.info("Received request on /achievements/welcome from user: '{}'", request.getFrom());
         List<String> ids = achievementService.addWelcome(request);
-        logger.info("Added welcome achievement, id = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 
-    @PostMapping(value = "${endpoint.achievements.addTeam}")
+    @PostMapping(value = "/team")
     @ApiOperation(
             value = "Add team points to active team members",
             notes = "This method adds points to active team"
@@ -180,9 +174,8 @@ public class AchievementController {
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
     })
     public ResponseEntity<?> addTeam(@Valid @RequestBody TeamRequest request) {
-        logger.debug("Received request on /achievements/team: {}", request);
+        logger.info("Received request on /achievements/team from user: '{}'", request.getFrom());
         List<String> ids = achievementService.addTeam(request);
-        logger.info("Added team achievements, ids = {}", ids.toString());
         return ResponseEntity.ok(ids);
     }
 }

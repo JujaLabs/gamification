@@ -179,7 +179,7 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         achievementService.addThanks(firstRequest);
         achievementService.addThanks(secondRequest);
 
-        String expectedDescription = "You got 'thanks' achievement for thanking to other two users";
+        String expectedDescription = "You got THANKS achievement for thanking to other two users";
         String expectedType = "THANKS";
         List<Achievement> achievementList = achievementRepository.getAllAchievementsByUserToId(userFrom);
         String actualDescription = achievementList.get(0).getDescription();
@@ -277,11 +277,9 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
         AchievementType expectedType = AchievementType.THANKS_KEEPER;
         String expectedDescription = "Thank you for keeping in the direction of Codenjoy";
 
-        List<KeeperDTO> keepers = new ArrayList<>();
-        List<String> directions = new ArrayList<>();
-        directions.add("Codenjoy");
+        List<String> directions = Arrays.asList("Codenjoy");
         KeeperDTO keeper = new KeeperDTO("0002A", directions);
-        keepers.add(keeper);
+        List<KeeperDTO> keepers = Arrays.asList(keeper);
         when(keeperRepository.getKeepers()).thenReturn(keepers);
 
         //when
@@ -312,8 +310,6 @@ public class AchievementServiceIntegrationTest extends BaseIntegrationTest {
 
         achievementService.addWelcome(request);
         achievementService.addWelcome(request);
-
-        fail();
     }
 
     @Test

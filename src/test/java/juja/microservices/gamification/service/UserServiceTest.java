@@ -1,6 +1,6 @@
 package juja.microservices.gamification.service;
 
-import juja.microservices.WithoutScheduling;
+import juja.microservices.gamification.dao.KeeperClient;
 import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.UserAchievementDetails;
 import juja.microservices.gamification.entity.UserIdsRequest;
@@ -8,6 +8,7 @@ import juja.microservices.gamification.entity.UserPointsSum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -24,11 +25,14 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(UserService.class)
-public class UserServiceTest implements WithoutScheduling {
+@SpringBootTest
+public class UserServiceTest {
 
     @Inject
     private UserService service;
+
+    @MockBean
+    private KeeperClient keeperClient;
 
     @MockBean
     private AchievementRepository repository;
@@ -66,9 +70,5 @@ public class UserServiceTest implements WithoutScheduling {
         when(repository.getAllUsersWithPointSum()).thenReturn(expectedList);
 
         service.getAllUsersWithPointSum();
-
-        fail();
-        verify(repository).getAllUsersWithPointSum();
-        verifyNoMoreInteractions(repository);
     }
 }

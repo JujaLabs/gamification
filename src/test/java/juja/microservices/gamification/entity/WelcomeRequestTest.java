@@ -1,12 +1,11 @@
 package juja.microservices.gamification.entity;
 
-import juja.microservices.WithoutScheduling;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class WelcomeRequestTest implements WithoutScheduling {
+public class WelcomeRequestTest {
 
     @Test
     public void shouldReturnWelcome() {

@@ -7,7 +7,6 @@ import net.javacrumbs.jsonunit.core.Option;
 import org.eclipse.jetty.http.HttpMethod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -22,18 +21,16 @@ import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 public class UserAcceptanceTest extends BaseAcceptanceTest {
 
     private static final String EMPTY_JSON_CONTENT_REQUEST = "";
-    @Value("${endpoint.users.getPointSum}")
-    private String usersGetPointSum;
-    @Value("${endpoint.users.getAchievementDetails}")
-    private String usersGetAchievementDetails;
+    private static final String USERS_GET_POINT_SUM = "/v1/gamification/users/pointSum";
+    private static final String USERS_GET_ACHIEVEMENT_DETAILS = "/v1/gamification/users/achievementDetails";
 
     @UsingDataSet(locations = "/datasets/addNewUsersAndAchievement.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
     public void testUrlPointSum() throws IOException {
         String expectedResponse = convertToString(resource("acceptance/response/responseUserPointSum.json"));
 
-        Response actualResponse = getResponse(usersGetPointSum, EMPTY_JSON_CONTENT_REQUEST, HttpMethod.GET);
-        printConsoleReport(usersGetPointSum, expectedResponse, actualResponse.body());
+        Response actualResponse = getResponse(USERS_GET_POINT_SUM, EMPTY_JSON_CONTENT_REQUEST, HttpMethod.GET);
+        printConsoleReport(USERS_GET_POINT_SUM, expectedResponse, actualResponse.body());
 
         assertThatJson(actualResponse.asString())
                 .when(Option.IGNORING_ARRAY_ORDER)
@@ -46,8 +43,8 @@ public class UserAcceptanceTest extends BaseAcceptanceTest {
         String jsonContentRequest = convertToString(resource("acceptance/request/selectAchieveDetails.json"));
         String expectedResponse = convertToString(resource("acceptance/response/responseUserAchieveDetails.json"));
 
-        Response actualResponse = getResponse(usersGetAchievementDetails, jsonContentRequest, HttpMethod.POST);
-        printConsoleReport(usersGetAchievementDetails, expectedResponse, actualResponse.body());
+        Response actualResponse = getResponse(USERS_GET_ACHIEVEMENT_DETAILS, jsonContentRequest, HttpMethod.POST);
+        printConsoleReport(USERS_GET_ACHIEVEMENT_DETAILS, expectedResponse, actualResponse.body());
 
         assertThatJson(actualResponse.asString())
                 .when(Option.IGNORING_ARRAY_ORDER)

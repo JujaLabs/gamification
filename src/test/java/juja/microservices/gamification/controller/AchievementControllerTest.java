@@ -1,6 +1,5 @@
 package juja.microservices.gamification.controller;
 
-import juja.microservices.WithoutScheduling;
 import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.InterviewRequest;
@@ -11,14 +10,12 @@ import juja.microservices.gamification.service.AchievementService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AchievementController.class)
-public class AchievementControllerTest implements WithoutScheduling {
+public class AchievementControllerTest {
 
     private static final String FIRST_ACHIEVEMENT_ID = "1";
     private static final String SECOND_ACHIEVEMENT_ID = "2";
@@ -46,20 +43,15 @@ public class AchievementControllerTest implements WithoutScheduling {
     private static final String TWO_ID = "[\"1\",\"2\"]";
     private static final String THREE_ID = "[\"1\",\"2\",\"3\"]";
     private static final String FOUR_ID = "[\"1\",\"2\",\"3\",\"4\"]";
-    @Value("${endpoint.achievements.addDaily}")
-    private String achievementsAddDailyUrl;
-    @Value("${endpoint.achievements.addThanks}")
-    private String achievementsAddThanksUrl;
-    @Value("${endpoint.achievements.addCodenjoy}")
-    private String achievementsAddCodenjoyUrl;
-    @Value("${endpoint.achievements.addInterview}")
-    private String achievementsAddInterviewUrl;
-    @Value("${endpoint.achievements.addKeeperThanks}")
-    private String achievementsAddKeeperThanksUrl;
-    @Value("${endpoint.achievements.addWelcome}")
-    private String achievementsAddWelcomeUrl;
-    @Value("${endpoint.achievements.addTeam}")
-    private String achievementsAddTeamUrl;
+
+    private static final String ACHIEVEMENTS_ADD_DAILY_URL = "/v1/gamification/achievements/daily";
+    private static final String ACHIEVEMENTS_ADD_THANKS_URL = "/v1/gamification/achievements/thanks";
+    private static final String ACHIEVEMENTS_ADD_CODENJOY_URL = "/v1/gamification/achievements/codenjoy";
+    private static final String ACHIEVEMENTS_ADD_INTERVIEW_URL = "/v1/gamification/achievements/interview";
+    private static final String ACHIEVEMENTS_ADD_KEEPER_THANKS_URL = "/v1/gamification/achievements/keepers/thanks";
+    private static final String ACHIEVEMENTS_ADD_WELCOME_URL = "/v1/gamification/achievements/welcome";
+    private static final String ACHIEVEMENTS_ADD_TEAM_URL = "/v1/gamification/achievements/team";
+
     @Inject
     private MockMvc mockMvc;
 
@@ -68,12 +60,11 @@ public class AchievementControllerTest implements WithoutScheduling {
 
     @Test
     public void addDaily() throws Exception {
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        List<String> expectedList = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         when(service.addDaily(any(DailyRequest.class))).thenReturn(expectedList);
         String jsonContentRequest = "{\"from\":\"max\",\"description\":\"Daily report\"}";
 
-        String result = getResult(achievementsAddDailyUrl, jsonContentRequest);
+        String result = getResult(ACHIEVEMENTS_ADD_DAILY_URL, jsonContentRequest);
 
         ArgumentCaptor<DailyRequest> captor = ArgumentCaptor.forClass(DailyRequest.class);
         verify(service).addDaily(captor.capture());
@@ -87,24 +78,23 @@ public class AchievementControllerTest implements WithoutScheduling {
     public void addDailyWithEmptyFrom() throws Exception {
         String jsonContentRequest = "{\"from\":\"\",\"description\":\"Daily report\"}";
 
-        checkBadRequest(achievementsAddDailyUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_DAILY_URL, jsonContentRequest);
     }
 
     @Test
     public void addDailyWithEmptyDescription() throws Exception {
         String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
 
-        checkBadRequest(achievementsAddDailyUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_DAILY_URL, jsonContentRequest);
     }
 
     @Test
     public void addFirstThanks() throws Exception {
-        List<String> ids = new ArrayList<>();
-        ids.add(FIRST_ACHIEVEMENT_ID);
+        List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         when(service.addThanks(any(ThanksRequest.class))).thenReturn(ids);
         String jsonContentRequest = "{\"from\":\"max\",\"to\":\"john\",\"description\":\"thanks\"}";
 
-        String result = getResult(achievementsAddThanksUrl, jsonContentRequest);
+        String result = getResult(ACHIEVEMENTS_ADD_THANKS_URL, jsonContentRequest);
 
         ArgumentCaptor<ThanksRequest> captor = ArgumentCaptor.forClass(ThanksRequest.class);
         verify(service).addThanks(captor.capture());
@@ -117,13 +107,11 @@ public class AchievementControllerTest implements WithoutScheduling {
 
     @Test
     public void addSecondThanks() throws Exception {
-        List<String> ids = new ArrayList<>();
-        ids.add(FIRST_ACHIEVEMENT_ID);
-        ids.add(SECOND_ACHIEVEMENT_ID);
+        List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID, SECOND_ACHIEVEMENT_ID);
         when(service.addThanks(any(ThanksRequest.class))).thenReturn(ids);
         String jsonContentRequest = "{\"from\":\"max\",\"to\":\"john\",\"description\":\"thanks\"}";
 
-        String result = getResult(achievementsAddThanksUrl, jsonContentRequest);
+        String result = getResult(ACHIEVEMENTS_ADD_THANKS_URL, jsonContentRequest);
 
         ArgumentCaptor<ThanksRequest> captor = ArgumentCaptor.forClass(ThanksRequest.class);
         verify(service).addThanks(captor.capture());
@@ -138,30 +126,29 @@ public class AchievementControllerTest implements WithoutScheduling {
     public void addThanksWithEmptyFrom() throws Exception {
         String jsonContentRequest = "{\"from\":\"\",\"to\":\"john\",\"description\":\"thanks\"}";
 
-        checkBadRequest(achievementsAddThanksUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_THANKS_URL, jsonContentRequest);
     }
 
     @Test
     public void addThanksWithEmptyTo() throws Exception {
         String jsonContentRequest = "{\"from\":\"max\",\"to\":\"\",\"description\":\"thanks\"}";
 
-        checkBadRequest(achievementsAddThanksUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_THANKS_URL, jsonContentRequest);
     }
 
     @Test
     public void addThanksWithEmptyDescription() throws Exception {
         String jsonContentRequest = "{\"from\":\"max\",\"to\":\"john\",\"description\":\"\"}";
 
-        checkBadRequest(achievementsAddThanksUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_THANKS_URL, jsonContentRequest);
     }
 
     @Test
     public void addThanksKeeper() throws Exception {
-        List<String> ids = new ArrayList<>();
-        ids.add(FIRST_ACHIEVEMENT_ID);
+        List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         when(service.addThanksKeeper()).thenReturn(ids);
 
-        String result = getResult(achievementsAddKeeperThanksUrl, "");
+        String result = getResult(ACHIEVEMENTS_ADD_KEEPER_THANKS_URL, "");
 
         verify(service).addThanksKeeper();
         assertEquals(ONE_ID, result);
@@ -170,16 +157,14 @@ public class AchievementControllerTest implements WithoutScheduling {
 
     @Test
     public void addCodenjoy() throws Exception {
-        List<String> ids = new ArrayList<>();
         CodenjoyRequest expected = new CodenjoyRequest("max", "alex", "jack", "tomas");
-        ids.add(FIRST_ACHIEVEMENT_ID);
-        ids.add(SECOND_ACHIEVEMENT_ID);
-        ids.add(THIRD_ACHIEVEMENT_ID);
+        List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID, SECOND_ACHIEVEMENT_ID, THIRD_ACHIEVEMENT_ID);
+
         when(service.addCodenjoy(any(CodenjoyRequest.class))).thenReturn(ids);
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
 
-        String result = getResult(achievementsAddCodenjoyUrl, jsonContentRequest);
+        String result = getResult(ACHIEVEMENTS_ADD_CODENJOY_URL, jsonContentRequest);
 
         ArgumentCaptor<CodenjoyRequest> captor = ArgumentCaptor.forClass(CodenjoyRequest.class);
         verify(service).addCodenjoy(captor.capture());
@@ -196,7 +181,7 @@ public class AchievementControllerTest implements WithoutScheduling {
         String jsonContentRequest =
                 "{\"from\":\"\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
 
-        checkBadRequest(achievementsAddCodenjoyUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_CODENJOY_URL, jsonContentRequest);
     }
 
     @Test
@@ -204,7 +189,7 @@ public class AchievementControllerTest implements WithoutScheduling {
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
 
-        checkBadRequest(achievementsAddCodenjoyUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_CODENJOY_URL, jsonContentRequest);
     }
 
     @Test
@@ -212,7 +197,7 @@ public class AchievementControllerTest implements WithoutScheduling {
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"\",\"thirdPlace\":\"tomas\"}";
 
-        checkBadRequest(achievementsAddCodenjoyUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_CODENJOY_URL, jsonContentRequest);
     }
 
     @Test
@@ -220,18 +205,17 @@ public class AchievementControllerTest implements WithoutScheduling {
         String jsonContentRequest =
                 "{\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"\"}";
 
-        checkBadRequest(achievementsAddCodenjoyUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_CODENJOY_URL, jsonContentRequest);
     }
 
     @Test
     public void addInterview() throws Exception {
-        List<String> expectedList = new ArrayList<>();
-        expectedList.add(FIRST_ACHIEVEMENT_ID);
+        List<String> expectedList = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         InterviewRequest expected = new InterviewRequest("max", "Interview report");
         when(service.addInterview((any(InterviewRequest.class)))).thenReturn(expectedList);
         String jsonContentRequest = "{\"from\":\"max\",\"description\":\"Interview report\"}";
 
-        String result = getResult(achievementsAddInterviewUrl, jsonContentRequest);
+        String result = getResult(ACHIEVEMENTS_ADD_INTERVIEW_URL, jsonContentRequest);
 
         ArgumentCaptor<InterviewRequest> captor = ArgumentCaptor.forClass(InterviewRequest.class);
         verify(service).addInterview(captor.capture());
@@ -245,24 +229,23 @@ public class AchievementControllerTest implements WithoutScheduling {
     public void addInterviewWithEmptyFrom() throws Exception {
         String jsonContentRequest = "{\"from\":\"\",\"description\":\"Interview report\"}";
 
-        checkBadRequest(achievementsAddInterviewUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_INTERVIEW_URL, jsonContentRequest);
     }
 
     @Test
     public void addInterviewWithEmptyDescription() throws Exception {
         String jsonContentRequest = "{\"from\":\"max\",\"description\":\"\"}";
 
-        checkBadRequest(achievementsAddInterviewUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_INTERVIEW_URL, jsonContentRequest);
     }
 
     @Test
     public void addWelcome() throws Exception {
-        List<String> ids = new ArrayList<>();
-        ids.add(FIRST_ACHIEVEMENT_ID);
+        List<String> ids = Arrays.asList(FIRST_ACHIEVEMENT_ID);
         String jsonContentRequest = "{\"from\":\"max\",\"to\":\"john\"}";
         when(service.addWelcome(any(WelcomeRequest.class))).thenReturn(ids);
 
-        String result = getResult(achievementsAddWelcomeUrl, jsonContentRequest);
+        String result = getResult(ACHIEVEMENTS_ADD_WELCOME_URL, jsonContentRequest);
 
         ArgumentCaptor<WelcomeRequest> captor = ArgumentCaptor.forClass(WelcomeRequest.class);
         verify(service).addWelcome(captor.capture());
@@ -275,7 +258,7 @@ public class AchievementControllerTest implements WithoutScheduling {
     @Test
     public void addWelcomeWithEmptyTo() throws Exception {
         String jsonContentRequest = "{\"from\":\"max\",\"to\":\"\"}";
-        checkBadRequest(achievementsAddWelcomeUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_WELCOME_URL, jsonContentRequest);
     }
 
     @Test
@@ -287,7 +270,7 @@ public class AchievementControllerTest implements WithoutScheduling {
         String jsonContentRequest =
                 "{\"from\":\"uuid1\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
 
-        String result = getResult(achievementsAddTeamUrl, jsonContentRequest);
+        String result = getResult(ACHIEVEMENTS_ADD_TEAM_URL, jsonContentRequest);
 
         ArgumentCaptor<TeamRequest> captor = ArgumentCaptor.forClass(TeamRequest.class);
         verify(service).addTeam(captor.capture());
@@ -302,14 +285,14 @@ public class AchievementControllerTest implements WithoutScheduling {
     public void addTeamWithEmptyFrom() throws Exception {
         String jsonContentRequest = "{\"from\":\"\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
 
-        checkBadRequest(achievementsAddTeamUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_TEAM_URL, jsonContentRequest);
     }
 
     @Test
     public void addTeamWithEmptyMembers() throws Exception {
         String jsonContentRequest = "{\"from\":\"uuid1\",\"members\":[]}";
 
-        checkBadRequest(achievementsAddTeamUrl, jsonContentRequest);
+        checkBadRequest(ACHIEVEMENTS_ADD_TEAM_URL, jsonContentRequest);
     }
 
     private String getResult(String uri, String jsonContentRequest) throws Exception {
