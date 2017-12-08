@@ -44,7 +44,7 @@ public class AchievementController {
             notes = "This method adds points for daily report"
     )
     @ApiResponses(value = {
-            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns array with one achievement id"),
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns array with achievement id"),
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")

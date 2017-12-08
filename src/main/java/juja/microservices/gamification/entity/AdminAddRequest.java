@@ -13,11 +13,8 @@ public class AdminAddRequest {
 
     @Setter
     private AchievementType type;
-    @NotEmpty
     private String from;
-    @NotEmpty
     private String to;
-    @NotEmpty
     private String description;
 
     private String firstPlace;
