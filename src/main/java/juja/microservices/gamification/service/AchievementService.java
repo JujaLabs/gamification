@@ -92,7 +92,7 @@ public class AchievementService {
         List<String> result = new ArrayList<>();
         AchievementType type = request.getType();
 
-        logger.debug("Received request on /achievements/" + type.toString() + " : {}", request);
+        logger.debug("Received request on /achievements/{} : {}", type.toString(), request);
 
         if (type.equals(AchievementType.DAILY)) {
             DailyRequest dailyRequest = new DailyRequest(request.getFrom(), request.getDescription());
@@ -129,7 +129,7 @@ public class AchievementService {
         if (result.isEmpty()) {
             logger.error("Failed to process request {}", request);
         } else {
-            logger.info("Added '" + type.toString() + "' achievement, id = {}", result.toString());
+            logger.info("Added '{}' achievement, id = {}", type.toString(), result.toString());
         }
         return result;
     }
