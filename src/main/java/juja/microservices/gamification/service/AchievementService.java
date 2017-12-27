@@ -92,7 +92,7 @@ public class AchievementService {
         List<String> result = new ArrayList<>();
         AchievementType type = request.getType();
 
-        logger.debug("Received request on /achievements/{} : {}", type.toString(), request);
+        logger.debug("Admin achievement '{}' request: '{}'", type.toString(), request);
 
         if (type.equals(AchievementType.DAILY)) {
             DailyRequest dailyRequest = new DailyRequest(request.getFrom(), request.getDescription());
