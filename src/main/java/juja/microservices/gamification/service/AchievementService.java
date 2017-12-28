@@ -3,6 +3,7 @@ package juja.microservices.gamification.service;
 import juja.microservices.gamification.dao.impl.AchievementRepository;
 import juja.microservices.gamification.entity.Achievement;
 import juja.microservices.gamification.entity.AchievementType;
+import juja.microservices.gamification.entity.AdminAddRequest;
 import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.InterviewRequest;
@@ -85,6 +86,52 @@ public class AchievementService {
         String id = achievementRepository.addAchievement(achievement);
         logger.info("Added DAILY achievement from user: '{}', id: [{}]", request.getFrom(), id);
         return Collections.singletonList(id);
+    }
+
+    public List<String> addAdmin(AdminAddRequest request) {
+        List<String> result = new ArrayList<>();
+        AchievementType type = request.getType();
+
+        logger.debug("Admin achievement '{}' request: '{}'", type.toString(), request);
+
+        if (type.equals(AchievementType.DAILY)) {
+            DailyRequest dailyRequest = new DailyRequest(request.getFrom(), request.getDescription());
+            result = addDaily(dailyRequest);
+
+        } else if (type.equals(AchievementType.INTERVIEW)) {
+            InterviewRequest interviewRequest = new InterviewRequest(request.getFrom(), request.getDescription());
+            result = addInterview(interviewRequest);
+
+        } else if (type.equals(AchievementType.THANKS)) {
+            ThanksRequest thanksRequest = new ThanksRequest(request.getFrom(), request.getTo(), request.getDescription());
+            result = addThanks(thanksRequest);
+
+        } else if (type.equals(AchievementType.THANKS_KEEPER)) {
+            result = addThanksKeeper();
+
+        } else if (type.equals(AchievementType.WELCOME)) {
+            WelcomeRequest welcomeRequest = new WelcomeRequest(request.getFrom(), request.getTo());
+            result = addWelcome(welcomeRequest);
+
+        } else if (type.equals(AchievementType.TEAM)) {
+            TeamRequest teamRequest = new TeamRequest(request.getFrom(), request.getMembers());
+            result = addTeam(teamRequest);
+
+        } else if (type.equals(AchievementType.CODENJOY)) {
+            CodenjoyRequest codenjoyRequest = new CodenjoyRequest(request.getFrom(),
+                    request.getFirstPlace(), request.getSecondPlace(), request.getThirdPlace());
+            result = addCodenjoy(codenjoyRequest);
+
+        } else {
+            logger.warn("Unprocessable type {}", type.toString());
+        }
+
+        if (result.isEmpty()) {
+            logger.error("Failed to process request {}", request);
+        } else {
+            logger.info("Added '{}' achievement, id = {}", type.toString(), result.toString());
+        }
+        return result;
     }
 
     public List<String> addThanks(ThanksRequest request) {

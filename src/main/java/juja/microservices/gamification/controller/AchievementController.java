@@ -3,6 +3,7 @@ package juja.microservices.gamification.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import juja.microservices.gamification.entity.AdminAddRequest;
 import juja.microservices.gamification.entity.CodenjoyRequest;
 import juja.microservices.gamification.entity.DailyRequest;
 import juja.microservices.gamification.entity.InterviewRequest;
@@ -12,6 +13,7 @@ import juja.microservices.gamification.entity.WelcomeRequest;
 import juja.microservices.gamification.service.AchievementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +43,7 @@ public class AchievementController {
             notes = "This method adds points for daily report"
     )
     @ApiResponses(value = {
-            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns array with one achievement id"),
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns array with achievement id"),
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
             @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
@@ -49,6 +51,26 @@ public class AchievementController {
     public ResponseEntity<?> addDaily(@Valid @RequestBody DailyRequest request) {
         logger.info("Received request on /achievements/daily from user: '{}', description: '{}'", request.getFrom(), request.getDescription());
         List<String> ids = achievementService.addDaily(request);
+        return ResponseEntity.ok(ids);
+    }
+
+    @PostMapping(value = "/admin")
+    @ApiOperation(
+            value = "Add any points by admin",
+            notes = "This method adds points by admin"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Returns array with one achievement id"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Bad request"),
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_METHOD, message = "Bad method"),
+            @ApiResponse(code = HttpURLConnection.HTTP_UNSUPPORTED_TYPE, message = "Unsupported request media type")
+    })
+    public ResponseEntity<?> addAdmin(@Valid @RequestBody AdminAddRequest request) {
+        logger.debug("Received request on achievements addAdmin {}", request);
+        List<String> ids = achievementService.addAdmin(request);
+        if (ids.isEmpty()) {
+            return new ResponseEntity<>("Not able to process", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
         return ResponseEntity.ok(ids);
     }
 

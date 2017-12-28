@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
     private static final String ACHIEVEMENTS_ADD_KEEPER_THANKS_URL = "/v1/gamification/achievements/keepers/thanks";
     private static final String ACHIEVEMENTS_ADD_WELCOME_URL = "/v1/gamification/achievements/welcome";
     private static final String ACHIEVEMENTS_ADD_TEAM_URL = "/v1/gamification/achievements/team";
+    private static final String ACHIEVEMENTS_ADD_ADMIN = "/v1/gamification/achievements/admin";
     private static final String USERS_GET_POINT_SUM = "/v1/gamification/users/pointSum";
     private static final String USERS_GET_ACHIEVEMENT_DETAILS = "/v1/gamification/users/achievementDetails";
 
@@ -87,6 +89,22 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String jsonContentRequest = "{\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"good work\"}";
 
         addAchievementsIsOk(jsonContentRequest, ACHIEVEMENTS_ADD_THANKS_URL);
+
+        MvcResult result = getMvcResultUserAchieveSum();
+
+        String content = result.getResponse().getContentAsString();
+        assertEquals(expectedJson, content);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addAdminThanksShouldReturnValidJson() throws Exception {
+        String expectedJson =
+                "[{\"to\":\"ira\",\"point\":1}]";
+        String jsonContentRequest =
+                "{\"type\":\"THANKS\",\"from\":\"sasha\",\"to\":\"ira\",\"description\":\"good work\"}";
+
+        addAchievementsIsOk(jsonContentRequest, ACHIEVEMENTS_ADD_ADMIN);
 
         MvcResult result = getMvcResultUserAchieveSum();
 
@@ -160,6 +178,19 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addAdminCodenjoyReturnValidJson() throws Exception {
+        String jsonContentRequest =
+                "{\"type\":\"CODENJOY\",\"from\":\"max\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
+        String expectedJson =
+                "[{\"to\":\"alex\",\"point\":5},{\"to\":\"jack\",\"point\":3},{\"to\":\"tomas\",\"point\":1}]";
+        addAchievementsIsOk(jsonContentRequest, ACHIEVEMENTS_ADD_ADMIN);
+        MvcResult result = getMvcResultUserAchieveSum();
+        String content = result.getResponse().getContentAsString();
+        JSONAssert.assertEquals(expectedJson, content, false);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addCodenjoyShouldReturnExceptionFromMissed() throws Exception {
         String jsonContentRequest =
                 "{\"from\":\"\",\"firstPlace\":\"alex\",\"secondPlace\":\"jack\",\"thirdPlace\":\"tomas\"}";
@@ -191,6 +222,24 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addAdminInterviewReturnValidJson() throws Exception {
+        String jsonContentRequest = "{\"type\":\"INTERVIEW\",\"from\":\"sasha\",\"description\":\"interview report\"}";
+        String expectedJson = "[{\"to\":\"sasha\",\"point\":10}]";
+
+        mockMvc.perform(post(ACHIEVEMENTS_ADD_ADMIN)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+        MvcResult result = getMvcResultUserAchieveSum();
+        String content = result.getResponse().getContentAsString();
+
+        assertEquals(expectedJson, content);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addInterviewShouldReturnExceptionFromMissed() throws Exception {
         String jsonContentRequest = "{\"from\":\"sasha\",\"description\":\"\"}";
 
@@ -208,6 +257,24 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
         String expectedJson = "[{\"to\":\"sasha\",\"point\":1}]";
 
         mockMvc.perform(post(ACHIEVEMENTS_ADD_DAILY_URL)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(jsonContentRequest))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+        MvcResult result = getMvcResultUserAchieveSum();
+        String content = result.getResponse().getContentAsString();
+
+        assertEquals(expectedJson, content);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addAdminDailyReturnValidJson() throws Exception {
+        String jsonContentRequest = "{\"type\":\"DAILY\",\"from\":\"sasha\",\"description\":\"text\"}";
+        String expectedJson = "[{\"to\":\"sasha\",\"point\":1}]";
+
+        mockMvc.perform(post(ACHIEVEMENTS_ADD_ADMIN)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(jsonContentRequest))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
@@ -275,6 +342,22 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addAdminWelcomeShouldReturnValidJson() throws Exception {
+        String expectedJson =
+                "[{\"to\":\"john\",\"point\":1}]";
+        String jsonContentRequest =
+                "{\"type\":\"WELCOME\",\"from\":\"max\",\"to\":\"john\"}";
+
+        addAchievementsIsOk(jsonContentRequest, ACHIEVEMENTS_ADD_ADMIN);
+
+        MvcResult result = getMvcResultUserAchieveSum();
+
+        String content = result.getResponse().getContentAsString();
+        assertEquals(expectedJson, content);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addThanksKeeperShouldReturnValidJson() throws Exception {
         String expectedJson = "[{\"to\":\"0002A\",\"point\":2}]";
 
@@ -294,12 +377,49 @@ public class AchievementControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addAdminThanksKeeperShouldReturnValidJson() throws Exception {
+        String expectedJson =
+                "[{\"to\":\"0002A\",\"point\":2}]";
+
+        List<KeeperDTO> keepers = new ArrayList<>();
+        List<String> directions = new ArrayList<>();
+        directions.add("direction");
+        KeeperDTO keeper = new KeeperDTO("0002A", directions);
+        keepers.add(keeper);
+        when(keeperRepository.getKeepers()).thenReturn(keepers);
+
+        addAchievementsIsOk("{\"type\":\"THANKS_KEEPER\"}", ACHIEVEMENTS_ADD_ADMIN);
+        MvcResult result = getMvcResultUserAchieveSum();
+        String content = result.getResponse().getContentAsString();
+
+        assertEquals(expectedJson, content);
+        verify(keeperRepository).getKeepers();
+        verifyNoMoreInteractions(keeperRepository);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
     public void addTeamShouldReturnValidJson() throws Exception {
         String jsonContentRequest = "{\"from\":\"uuid1\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
         String expectedJson = "[{\"to\":\"uuid1\",\"point\":6},{\"to\":\"uuid2\",\"point\":6}," +
                 "{\"to\":\"uuid3\",\"point\":6},{\"to\":\"uuid4\",\"point\":6}]";
 
         addAchievementsIsOk(jsonContentRequest, ACHIEVEMENTS_ADD_TEAM_URL);
+        MvcResult result = getMvcResultUserAchieveSum();
+        String content = result.getResponse().getContentAsString();
+
+        assertEquals(expectedJson, content);
+    }
+
+    @Test
+    @UsingDataSet(locations = "/datasets/initEmptyDb.json")
+    public void addAdminTeamShouldReturnValidJson() throws Exception {
+        String jsonContentRequest =
+                "{\"type\":\"TEAM\",\"from\":\"uuid1\",\"members\":[\"uuid1\",\"uuid2\",\"uuid3\",\"uuid4\"]}";
+        String expectedJson = "[{\"to\":\"uuid1\",\"point\":6},{\"to\":\"uuid2\",\"point\":6}," +
+                "{\"to\":\"uuid3\",\"point\":6},{\"to\":\"uuid4\",\"point\":6}]";
+
+        addAchievementsIsOk(jsonContentRequest, ACHIEVEMENTS_ADD_ADMIN);
         MvcResult result = getMvcResultUserAchieveSum();
         String content = result.getResponse().getContentAsString();
 

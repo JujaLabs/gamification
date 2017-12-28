@@ -1,18 +1,17 @@
-### Java template
+### Java
 *.class
-.idea
-.gitignore
-
-# Package Files #
 *.jar
 *.war
 *.ear
-/gamification.iws
-/gamification.ipr
-/gamification.iml
-*.log
-/out
-!/gradle/wrapper/gradle-wrapper.jar
+
+### intellij
+.idea
+*.iml
+
+### gradle
 .gradle/
 build/
-/logs/
+out/
+
+# project related
+logs/
